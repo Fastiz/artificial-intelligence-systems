@@ -95,17 +95,7 @@ public class Game {
 	}
 
 	public void applyAction(Action action, Heuristic heuristic) {
-		actionStack.push(action);
-
-		//TODO: funcion de costos
-		this.acumulatedCost += action.getActionCost();
-
-		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.EMPTY;
-		map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]] = CellTypeEnum.BOX;
-		map[action.getBoxCurrentPosition()[0]][action.getBoxCurrentPosition()[1]] = CellTypeEnum.PLAYER;
-
-		this.playerPosition = action.getBoxCurrentPosition();
-
+		applyAction(action);
 		this.estimatedCost = heuristic.evaluate(this);
 	}
 
