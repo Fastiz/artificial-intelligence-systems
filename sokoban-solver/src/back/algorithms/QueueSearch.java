@@ -1,9 +1,9 @@
-package back.Algorithms;
+package back.algorithms;
 
-import back.Interfaces.Heuristic;
 import back.ResultPrinter;
 import back.game.Action;
 import back.game.Game;
+import back.interfaces.Heuristic;
 
 import java.util.Queue;
 

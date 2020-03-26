@@ -1,4 +1,4 @@
-package back.Interfaces;
+package back.interfaces;
 
 import back.game.Game;
 

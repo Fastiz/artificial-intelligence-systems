@@ -11,7 +11,7 @@ public class ResultPrinter {
     public static void printResult(int expandedNodes, int borderNodes, Game solution, long time) {
         System.out.println("Solution found!");
 
-        List<Action> allActions = new ArrayList<>(solution.getActionStack());
+        List<Action> allActions = new ArrayList<>(solution.getActionList());
         System.out.println("Solution depth: " + allActions.size());
 
         int solutionCost = 0;

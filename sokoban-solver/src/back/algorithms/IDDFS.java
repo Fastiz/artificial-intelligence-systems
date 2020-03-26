@@ -1,4 +1,4 @@
-package back.Algorithms;
+package back.algorithms;
 
 import back.ResultPrinter;
 import back.game.Action;

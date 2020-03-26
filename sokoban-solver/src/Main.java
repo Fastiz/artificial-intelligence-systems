@@ -1,14 +1,17 @@
 import java.io.IOException;
 
+import back.AlgorithmSolution;
+import back.algorithms.DFS;
 import back.game.Game;
-import back.game.exception.InvalidMapException;
+import back.game.exceptions.InvalidMapException;
+import back.interfaces.Algorithm;
 import reader.MapReader;
 
 public class Main {
 	public static void main(String[] args){
 		MapReader mapReader;
 		try {
-			mapReader = new MapReader("map");
+			mapReader = new MapReader("map2.txt");
 		}catch(IOException e) {
 			System.err.println(e);
 			return;
@@ -24,15 +27,14 @@ public class Main {
 			return;
 		}
 		
-		System.out.println(game);
+		Algorithm dfs = new DFS();
 		
-		game.applyAction(game.getAvailableActions().get(0));
+		AlgorithmSolution solution = dfs.run(game);
 		
-		System.out.println(game);
+		System.out.println(solution.isGoalFound());
 		
-		game.applyAction(game.getAvailableActions().get(0));
-
-		System.out.println(game);
-
+		for(Game state : solution.getSolutionStates()) {
+			System.out.print(state);
+		}
 	}
 }

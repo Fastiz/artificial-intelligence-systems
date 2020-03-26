@@ -2,28 +2,28 @@ package back.game;
 
 import java.util.*;
 
-import back.Interfaces.Heuristic;
-import back.game.exception.InvalidMapException;
+import back.game.exceptions.InvalidMapException;
+import back.interfaces.Heuristic;
 
 public class Game {
 	private CellTypeEnum map[][];
 	private int playerPosition[];
 	private int[][] boxesPositions;
-	private Stack<Action> actionStack;
+	private LinkedList<Action> actionList;
 	private int acumulatedCost = 0;
 	private int estimatedCost;
 
 	public Game(CellTypeEnum map[][]) throws InvalidMapException {
 		this.map = map;
-		actionStack = new Stack<>();
+		actionList = new LinkedList<>();
 		gatherMapData();
 	}
 
-	public Game(CellTypeEnum map[][], int[] playerPosition, int[][] boxesPositions, Stack<Action> actionStack) {
+	public Game(CellTypeEnum map[][], int[] playerPosition, int[][] boxesPositions, LinkedList<Action> actionList) {
 		this.map = map;
 		this.playerPosition = playerPosition;
 		this.boxesPositions = boxesPositions;
-		this.actionStack = actionStack;
+		this.actionList = actionList;
 	}
 
 	public List<Action> getAvailableActions() {
@@ -69,7 +69,11 @@ public class Game {
 
 	//TODO
 	public boolean gameFinished(){
-		return false;
+		for(int[] boxPosition : boxesPositions) {
+			if(map[boxPosition[0]][boxPosition[1]] != CellTypeEnum.GOALANDBOX)
+				return false;
+		}
+		return true;
 	}
 
 	public void applyMultipleActions(List<Action> actions) {
@@ -78,8 +82,8 @@ public class Game {
 		}
 	}
 
-	public Stack<Action> getActionStack() {
-		return actionStack;
+	public List<Action> getActionList() {
+		return actionList;
 	}
 
 	public Game applyActionAndClone(Action action, Heuristic heuristic) {
@@ -100,34 +104,57 @@ public class Game {
 	}
 
 	public void applyAction(Action action) {
-		actionStack.push(action);
+		actionList.add(action);
 
 		//TODO: funcion de costos
 		this.acumulatedCost += action.getActionCost();
 
-		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.EMPTY;
-		map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]] = CellTypeEnum.BOX;
-		map[action.getBoxCurrentPosition()[0]][action.getBoxCurrentPosition()[1]] = CellTypeEnum.PLAYER;
+		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.moveFrom(map[this.playerPosition[0]][this.playerPosition[1]]);
+		map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]] = CellTypeEnum.moveBoxTo(map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]]);
+		map[action.getBoxCurrentPosition()[0]][action.getBoxCurrentPosition()[1]] = CellTypeEnum.movePlayerTo(map[action.getBoxCurrentPosition()[0]][action.getBoxCurrentPosition()[1]]);
 		
+		updateBoxPosition(action.getBoxCurrentPosition(), action.getBoxTargetPosition());
 		this.playerPosition = action.getBoxCurrentPosition();
+		
+		int countPlayers = countPlayers();
+		
+		return;
 	}
 
 	public boolean revertAction() {
-		if(actionStack.isEmpty())
+		if(actionList.isEmpty())
 			return false;
 
-		Action lastAction = actionStack.pop();
+		Action lastAction = actionList.getLast();
+		actionList.removeLast();
 
 		//TODO:
 		this.acumulatedCost -= lastAction.getActionCost();
 
-		map[lastAction.getBoxTargetPosition()[0]][lastAction.getBoxTargetPosition()[1]] = CellTypeEnum.EMPTY;
-		map[lastAction.getBoxCurrentPosition()[0]][lastAction.getBoxCurrentPosition()[1]] = CellTypeEnum.BOX;
-		map[lastAction.getPlayerPosition()[0]][lastAction.getPlayerPosition()[1]] = CellTypeEnum.PLAYER;
+		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.moveFrom(map[this.playerPosition[0]][this.playerPosition[1]]);
+		map[lastAction.getBoxTargetPosition()[0]][lastAction.getBoxTargetPosition()[1]] = CellTypeEnum.moveFrom(map[lastAction.getBoxTargetPosition()[0]][lastAction.getBoxTargetPosition()[1]]);
+		map[lastAction.getBoxCurrentPosition()[0]][lastAction.getBoxCurrentPosition()[1]] = CellTypeEnum.moveBoxTo(map[lastAction.getBoxCurrentPosition()[0]][lastAction.getBoxCurrentPosition()[1]]);
+		map[lastAction.getPlayerPosition()[0]][lastAction.getPlayerPosition()[1]] = CellTypeEnum.movePlayerTo(map[lastAction.getPlayerPosition()[0]][lastAction.getPlayerPosition()[1]]);
 		
+		updateBoxPosition(lastAction.getBoxTargetPosition(), lastAction.getBoxCurrentPosition());
 		this.playerPosition = lastAction.getPlayerPosition();
 
+		//TODO: borrar
+		int countPlayers = countPlayers();
+		
 		return true;
+	}
+	
+	private int countPlayers() {
+		int count = 0;
+		for(int i=0; i<this.map.length; i++) {
+			for(int j=0; j<this.map[0].length; j++) {
+				if(map[i][j] == CellTypeEnum.PLAYER || map[i][j] == CellTypeEnum.PLAYERANDGOAL) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 	@Override
@@ -136,22 +163,27 @@ public class Game {
 		for (int i = 0; i < this.map.length; i++) {
 			for (int j = 0; j < this.map[0].length; j++) {
 				switch (this.map[i][j]) {
-				case WALL:
-					sb.append('X');
-					break;
-				case EMPTY:
-					sb.append(' ');
-					break;
-				case PLAYER:
-					sb.append('@');
-					break;
-				case GOAL:
-					sb.append('.');
-					break;
-				case BOX:
-					sb.append('*');
-					break;
-				default:
+					case WALL:
+						sb.append('X');
+						break;
+					case EMPTY:
+						sb.append(' ');
+						break;
+					case PLAYER:
+						sb.append('@');
+						break;
+					case GOAL:
+						sb.append('.');
+						break;
+					case BOX:
+						sb.append('*');
+						break;
+					case PLAYERANDGOAL:
+						sb.append("(@)");
+						break;
+					case GOALANDBOX:
+						sb.append("(*)");
+					default:
 				}
 			}
 			sb.append('\n');
@@ -231,9 +263,18 @@ public class Game {
 		int[] playerPosition = new int[this.playerPosition.length];
 		System.arraycopy( this.playerPosition, 0, playerPosition, 0, this.playerPosition.length);
 		int[][] boxesPositions = Arrays.stream(this.boxesPositions).map(int[]::clone).toArray(int[][]::new);
-		Stack<Action> actionStack = (Stack<Action>) this.actionStack.clone();
+		LinkedList<Action> actionList = (LinkedList<Action>) this.actionList.clone();
 
-		return new Game(map, playerPosition, boxesPositions, actionStack);
+		return new Game(map, playerPosition, boxesPositions, actionList);
+	}
+	
+	private void updateBoxPosition(int[] oldPosition, int[] newPosition) {
+		for(int[] boxPosition : this.boxesPositions) {
+			if(boxPosition[0] == oldPosition[0] && boxPosition[1] == oldPosition[1]) {
+				boxPosition[0] = newPosition[0];
+				boxPosition[1] = newPosition[1];
+			}
+		}
 	}
 
 	public int getAcumulatedCost() {
@@ -247,4 +288,44 @@ public class Game {
 	public void setEstimatedCost(int estimatedCost) {
 		this.estimatedCost = estimatedCost;
 	}
+	
+	public List<Game> getPathToCurrentState(){
+		List<Game> path = new LinkedList<>();
+		Game state = cloneGame();
+		while(state.revertAction());
+		
+		path.add(state);
+		
+		for(Action action: this.actionList) {
+			Game newState = state.applyActionAndClone(action);
+			path.add(newState);
+			state = newState;
+		}
+		
+		return path;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.deepHashCode(boxesPositions);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Game other = (Game) obj;
+		if (!Arrays.deepEquals(boxesPositions, other.boxesPositions))
+			return false;
+		return true;
+	}
+	
+	
 }
