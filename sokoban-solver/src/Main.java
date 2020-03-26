@@ -1,7 +1,7 @@
 import java.io.IOException;
 
-import game.Game;
-import game.exception.InvalidMapException;
+import back.game.Game;
+import back.game.exception.InvalidMapException;
 import reader.MapReader;
 
 public class Main {

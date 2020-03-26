@@ -1,6 +1,6 @@
 package back.Interfaces;
 
-import game.Game;
+import back.game.Game;
 
 public interface Heuristic {
 

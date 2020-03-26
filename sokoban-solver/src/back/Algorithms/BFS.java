@@ -1,6 +1,5 @@
 package back.Algorithms;
-import back.ResultPrinter;
-import game.Game;
+import back.game.Game;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -1,4 +1,4 @@
-package game;
+package back.game;
 
 public class Action {
 	private int[] boxCurrentPosition;

@@ -1,7 +1,7 @@
-package game;
+package back.game;
 
 import java.util.*;
-import game.exception.InvalidMapException;
+import back.game.exception.InvalidMapException;
 
 public class Game {
 	private CellTypeEnum map[][];

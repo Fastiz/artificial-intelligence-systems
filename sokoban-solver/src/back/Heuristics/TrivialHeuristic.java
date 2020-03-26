@@ -1,7 +1,7 @@
 package back.Heuristics;
 
 import back.Interfaces.Heuristic;
-import game.Game;
+import back.game.Game;
 
 public class TrivialHeuristic implements Heuristic {
 

@@ -1,7 +1,7 @@
 package back.Algorithms;
 
 import back.Interfaces.Heuristic;
-import game.Game;
+import back.game.Game;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;

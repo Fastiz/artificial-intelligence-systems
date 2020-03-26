@@ -1,8 +1,8 @@
 package back.Algorithms;
 
 import back.ResultPrinter;
-import game.Action;
-import game.Game;
+import back.game.Action;
+import back.game.Game;
 
 import java.util.Queue;
 

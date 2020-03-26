@@ -1,7 +1,7 @@
 package back;
 
-import game.Action;
-import game.Game;
+import back.game.Action;
+import back.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package game.exception;
+package back.game.exception;
 
 public class InvalidMapException extends Exception {
 	/**

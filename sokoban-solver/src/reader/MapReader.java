@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import game.CellTypeEnum;
+import back.game.CellTypeEnum;
 
 public class MapReader {
 	private CellTypeEnum[][] map;

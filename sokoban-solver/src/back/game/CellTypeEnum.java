@@ -1,4 +1,4 @@
-package game;
+package back.game;
 
 public enum CellTypeEnum {
 	WALL, BOX, EMPTY, PLAYER, GOAL, GOALANDBOX, PLAYERANDGOAL;
