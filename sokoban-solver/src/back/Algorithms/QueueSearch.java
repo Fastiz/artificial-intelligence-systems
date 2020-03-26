@@ -9,13 +9,15 @@ import java.util.Queue;
 public class QueueSearch {
     private int expandedNodes;
     private Game gameSolved;
+    private Queue<Game> queue;
 
     public void runAlgorithm(Queue<Game> queue) {
         expandedNodes = 0;
         gameSolved = null;
+        this.queue = queue;
 
         long startTime = System.nanoTime();
-        boolean result = recursiveQueueSearch(queue);
+        boolean result = recursiveQueueSearch();
         long endTime = System.nanoTime();
 
         if(result)
@@ -24,21 +26,22 @@ public class QueueSearch {
             ResultPrinter.printNoSolutionFound(expandedNodes, queue.size(), endTime - startTime);
     }
 
-    public boolean recursiveQueueSearch(Queue<Game> queue) {
-        if(queue.isEmpty())
-            return false;
+    public boolean recursiveQueueSearch() {
+        while (!queue.isEmpty()) {
+            Game game = queue.poll();
 
-        Game game = queue.poll();
-        if(game.gameFinished()){
-            this.gameSolved = game;
-            return true;
+            if(game.gameFinished()){
+                this.gameSolved = game;
+                return true;
+            }
+
+            for (Action action : game.getAvailableActions()) {
+                queue.add(game.applyActionAndClone(action));
+            }
+
+            this.expandedNodes++;
         }
 
-        for (Action action : game.getAvailableActions()) {
-            queue.add(game.applyActionAndClone(action));
-        }
-
-        this.expandedNodes++;
-        return recursiveQueueSearch(queue);
+        return false;
     }
 }
