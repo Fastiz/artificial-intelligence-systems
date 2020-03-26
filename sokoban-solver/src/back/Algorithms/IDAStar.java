@@ -22,11 +22,13 @@ public class IDAStar {
         this.stack = new Stack<>();
 
         Comparator<Game> gameComparator = (g1, g2) -> {
-            int f1 = heuristic.evaluate(g1) + g1.getAcumulatedCost();
-            int f2 = heuristic.evaluate(g2) + g2.getAcumulatedCost();
+            int f1 = g1.getEstimatedCost() + g1.getAcumulatedCost();
+            int f2 = g2.getEstimatedCost() + g2.getAcumulatedCost();
             return f1 - f2;
         };
         this.exceededQueue = new PriorityQueue<>(gameComparator);
+        game.setEstimatedCost(heuristic.evaluate(game));
+        exceededQueue.add(game);
 
         long startTime = System.nanoTime();
         boolean result = queueAStarSearch();
@@ -72,7 +74,7 @@ public class IDAStar {
         List<Action> availableActions = game.getAvailableActions();
         for(int i = 0; i < availableActions.size(); i++) {
             Action action = availableActions.get(i);
-            stack.push(game.applyActionAndClone(action));
+            stack.push(game.applyActionAndClone(action, this.heuristic));
             if(recursiveAStarSearch(limit)) {
                 if(i + 1 == availableActions.size())
                     this.expandedNodes++;
@@ -85,7 +87,7 @@ public class IDAStar {
     }
 
     private int getFunctionValue(Game game) {
-        return this.heuristic.evaluate(game) + game.getAcumulatedCost();
+        return game.getEstimatedCost() + game.getAcumulatedCost();
     }
 
 }

@@ -1,5 +1,6 @@
 package back.Algorithms;
 
+import back.Interfaces.Heuristic;
 import back.ResultPrinter;
 import back.game.Action;
 import back.game.Game;
@@ -10,6 +11,7 @@ public class QueueSearch {
     private int expandedNodes;
     private Game gameSolved;
     private Queue<Game> queue;
+    private Heuristic heuristic = null;
 
     public void runAlgorithm(Queue<Game> queue) {
         expandedNodes = 0;
@@ -24,6 +26,13 @@ public class QueueSearch {
             ResultPrinter.printResult(expandedNodes, queue.size(), gameSolved, endTime - startTime);
         else
             ResultPrinter.printNoSolutionFound(expandedNodes, queue.size(), endTime - startTime);
+
+        this.heuristic = null;
+    }
+
+    public void runAlgorithm(Queue<Game> queue, Heuristic heuristic) {
+        this.heuristic = heuristic;
+        runAlgorithm(queue);
     }
 
     public boolean queueSearch() {
@@ -36,7 +45,10 @@ public class QueueSearch {
             }
 
             for (Action action : game.getAvailableActions()) {
-                queue.add(game.applyActionAndClone(action));
+                if(this.heuristic == null)
+                    queue.add(game.applyActionAndClone(action));
+                else
+                    queue.add(game.applyActionAndClone(action, heuristic));
             }
 
             this.expandedNodes++;

@@ -1,6 +1,8 @@
 package back.game;
 
 import java.util.*;
+
+import back.Interfaces.Heuristic;
 import back.game.exception.InvalidMapException;
 
 public class Game {
@@ -9,6 +11,7 @@ public class Game {
 	private int[][] boxesPositions;
 	private Stack<Action> actionStack;
 	private int acumulatedCost = 0;
+	private int estimatedCost;
 
 	public Game(CellTypeEnum map[][]) throws InvalidMapException {
 		this.map = map;
@@ -79,10 +82,31 @@ public class Game {
 		return actionStack;
 	}
 
+	public Game applyActionAndClone(Action action, Heuristic heuristic) {
+		Game cloned = cloneGame();
+		cloned.applyAction(action, heuristic);
+		return cloned;
+	}
+
 	public Game applyActionAndClone(Action action) {
 		Game cloned = cloneGame();
 		cloned.applyAction(action);
 		return cloned;
+	}
+
+	public void applyAction(Action action, Heuristic heuristic) {
+		actionStack.push(action);
+
+		//TODO: funcion de costos
+		this.acumulatedCost += action.getActionCost();
+
+		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.EMPTY;
+		map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]] = CellTypeEnum.BOX;
+		map[action.getBoxCurrentPosition()[0]][action.getBoxCurrentPosition()[1]] = CellTypeEnum.PLAYER;
+
+		this.playerPosition = action.getBoxCurrentPosition();
+
+		this.estimatedCost = heuristic.evaluate(this);
 	}
 
 	public void applyAction(Action action) {
@@ -224,5 +248,13 @@ public class Game {
 
 	public int getAcumulatedCost() {
 		return acumulatedCost;
+	}
+
+	public int getEstimatedCost() {
+		return estimatedCost;
+	}
+
+	public void setEstimatedCost(int estimatedCost) {
+		this.estimatedCost = estimatedCost;
 	}
 }
