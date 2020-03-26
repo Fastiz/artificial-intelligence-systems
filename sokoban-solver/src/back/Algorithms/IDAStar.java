@@ -59,8 +59,6 @@ public class IDAStar {
             return false;
 
         Game game = stack.pop();
-        /* Terminamos evaluando la heuristica dos veces cuando despues seteo el nuevo limite,
-        solo en ese momento, no creo que afecte demasiado... */
         if(getFunctionValue(game) >= limit) {
             this.exceededQueue.add(game);
             return false;
