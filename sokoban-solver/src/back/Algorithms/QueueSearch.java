@@ -17,7 +17,7 @@ public class QueueSearch {
         this.queue = queue;
 
         long startTime = System.nanoTime();
-        boolean result = recursiveQueueSearch();
+        boolean result = queueSearch();
         long endTime = System.nanoTime();
 
         if(result)
@@ -26,7 +26,7 @@ public class QueueSearch {
             ResultPrinter.printNoSolutionFound(expandedNodes, queue.size(), endTime - startTime);
     }
 
-    public boolean recursiveQueueSearch() {
+    public boolean queueSearch() {
         while (!queue.isEmpty()) {
             Game game = queue.poll();
 

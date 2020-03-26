@@ -8,10 +8,13 @@ import java.util.List;
 
 public class DFS {
 
-    private int expandedNodes = 0;
-    private int visitedNodes = 0;
+    private int expandedNodes;
+    private int visitedNodes;
 
     public void runAlgorithm(Game game) {
+        expandedNodes = 0;
+        visitedNodes = 0;
+
         long startTime = System.nanoTime();
         boolean result = recursiveDFS(game);
         long endTime = System.nanoTime();

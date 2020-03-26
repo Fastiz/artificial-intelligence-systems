@@ -9,9 +9,12 @@ import java.util.Stack;
 
 public class IDDFS {
 
-    private int expandedNodes = 0;
+    private int expandedNodes;
+    private Game gameSolved;
 
     public void runAlgorithm(Game game, int maxDepth) {
+        this.gameSolved = null;
+        expandedNodes = 0;
         Stack<Game> gamesStack = new Stack<>();
         gamesStack.push(game);
 
@@ -24,7 +27,7 @@ public class IDDFS {
         long endTime = System.nanoTime();
 
         if(result)
-            ResultPrinter.printResult(expandedNodes, gamesStack.size(), game, endTime - startTime);
+            ResultPrinter.printResult(expandedNodes, gamesStack.size(), gameSolved, endTime - startTime);
         else
             ResultPrinter.printNoSolutionFound(expandedNodes, gamesStack.size(), endTime - startTime);
 
@@ -32,11 +35,13 @@ public class IDDFS {
 
     private boolean recursiveIDDFS(Stack<Game> stack, int depthLeft) {
 
+        //Creo que isEmpty no deberia pasar
         if(stack.isEmpty() || depthLeft == 0)
             return false;
 
         Game game = stack.pop();
         if(game.gameFinished()){
+            this.gameSolved = game;
             return true;
         }
 
