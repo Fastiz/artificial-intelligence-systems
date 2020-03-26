@@ -1,10 +1,6 @@
 package game;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
+import java.util.*;
 import game.exception.InvalidMapException;
 
 public class Game {
@@ -12,11 +8,19 @@ public class Game {
 	private int playerPosition[];
 	private int[][] boxesPositions;
 	private Stack<Action> actionStack;
+	private int acumulatedCost = 0;
 
 	public Game(CellTypeEnum map[][]) throws InvalidMapException {
 		this.map = map;
 		actionStack = new Stack<>();
 		gatherMapData();
+	}
+
+	public Game(CellTypeEnum map[][], int[] playerPosition, int[][] boxesPositions, Stack<Action> actionStack) {
+		this.map = map;
+		this.playerPosition = playerPosition;
+		this.boxesPositions = boxesPositions;
+		this.actionStack = actionStack;
 	}
 
 	public List<Action> getAvailableActions() {
@@ -25,7 +29,7 @@ public class Game {
 
 		for (int[] boxPosition : this.boxesPositions) {
 			int i = boxPosition[0], j = boxPosition[1];
-			if (visitedPositions[i][j] == true) {
+			if (visitedPositions[i][j]) {
 				// VERTICAL MOVEMENT
 				if (i + 1 < map.length) {
 					if (i - 1 >= 0) {
@@ -60,14 +64,32 @@ public class Game {
 		return actions;
 	}
 
+	//TODO
+	public boolean gameFinished(){
+		return false;
+	}
+
 	public void applyMultipleActions(List<Action> actions) {
 		for (Action action : actions) {
 			applyAction(action);
 		}
 	}
 
+	public Stack<Action> getActionStack() {
+		return actionStack;
+	}
+
+	public Game applyActionAndClone(Action action) {
+		Game cloned = cloneGame();
+		cloned.applyAction(action);
+		return cloned;
+	}
+
 	public void applyAction(Action action) {
 		actionStack.push(action);
+
+		//TODO: funcion de costos
+		this.acumulatedCost += action.getActionCost();
 
 		map[this.playerPosition[0]][this.playerPosition[1]] = CellTypeEnum.EMPTY;
 		map[action.getBoxTargetPosition()[0]][action.getBoxTargetPosition()[1]] = CellTypeEnum.BOX;
@@ -76,14 +98,22 @@ public class Game {
 		this.playerPosition = action.getBoxCurrentPosition();
 	}
 
-	public void revertAction() {
+	public boolean revertAction() {
+		if(actionStack.isEmpty())
+			return false;
+
 		Action lastAction = actionStack.pop();
+
+		//TODO:
+		this.acumulatedCost -= lastAction.getActionCost();
 
 		map[lastAction.getBoxTargetPosition()[0]][lastAction.getBoxTargetPosition()[1]] = CellTypeEnum.EMPTY;
 		map[lastAction.getBoxCurrentPosition()[0]][lastAction.getBoxCurrentPosition()[1]] = CellTypeEnum.BOX;
 		map[lastAction.getPlayerPosition()[0]][lastAction.getPlayerPosition()[1]] = CellTypeEnum.PLAYER;
 		
 		this.playerPosition = lastAction.getPlayerPosition();
+
+		return true;
 	}
 
 	@Override
@@ -180,5 +210,19 @@ public class Game {
 		}
 
 		return visitedMap;
+	}
+
+	private Game cloneGame() {
+		CellTypeEnum[][] map = Arrays.stream(this.map).map(CellTypeEnum[]::clone).toArray(CellTypeEnum[][]::new);
+		int[] playerPosition = new int[this.playerPosition.length];
+		System.arraycopy( this.playerPosition, 0, playerPosition, 0, this.playerPosition.length);
+		int[][] boxesPositions = Arrays.stream(this.boxesPositions).map(int[]::clone).toArray(int[][]::new);
+		Stack<Action> actionStack = (Stack<Action>) this.actionStack.clone();
+
+		return new Game(map, playerPosition, boxesPositions, actionStack);
+	}
+
+	public int getAcumulatedCost() {
+		return acumulatedCost;
 	}
 }
