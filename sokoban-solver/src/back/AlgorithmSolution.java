@@ -2,7 +2,7 @@ package back;
 
 import java.util.List;
 
-import back.game.Game;
+import back.interfaces.Game;
 
 public class AlgorithmSolution {
 	private String parameters;
@@ -15,14 +15,14 @@ public class AlgorithmSolution {
 	private float processingTime;
 	
 	public AlgorithmSolution (String parameters, boolean goalFound, int solutionDepth, int solutionCost, 
-			int numberOfExpandedNodes, int numberOfBorderNodes, List<Game> solutionStates, float processingTime) {
+			int numberOfExpandedNodes, int numberOfBorderNodes, List<Game> visitedStates, long processingTime) {
 		this.parameters = parameters;
 		this.goalFound = goalFound;
 		this.solutionDepth = solutionDepth;
 		this.solutionCost = solutionCost;
 		this.numberOfExpandedNodes = numberOfExpandedNodes;
 		this.numberOfBorderNodes = numberOfBorderNodes;
-		this.solutionStates = solutionStates;
+		this.solutionStates = visitedStates;
 		this.processingTime = processingTime;
 	}
 	

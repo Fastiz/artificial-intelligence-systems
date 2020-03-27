@@ -2,7 +2,8 @@ import java.io.IOException;
 
 import back.AlgorithmSolution;
 import back.algorithms.DFS;
-import back.game.Game;
+import back.interfaces.Game;
+import back.game.GameImplementation;
 import back.game.exceptions.InvalidMapException;
 import back.interfaces.Algorithm;
 import reader.MapReader;
@@ -19,22 +20,20 @@ public class Main {
 		
 
 		
-		Game game;
-		try {
-			game = new Game(mapReader.getMap());
-		}catch(InvalidMapException e) {
-			System.err.print(e);
-			return;
-		}
+		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions());
+
 		
 		Algorithm dfs = new DFS();
 		
 		AlgorithmSolution solution = dfs.run(game);
 		
-		System.out.println(solution.isGoalFound());
-		
-		for(Game state : solution.getSolutionStates()) {
-			System.out.print(state);
+		if(solution.isGoalFound()) {
+			for(Game state : solution.getSolutionStates()) {
+				System.out.print(state);
+			}
+		}else {
+			System.out.println("THERE ARE NO SOLUTIONS TO THIS PROBLEM.");
 		}
+		
 	}
 }
