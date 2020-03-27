@@ -1,66 +1,75 @@
 package back.algorithms;
 
-import back.ResultPrinter;
-import back.game.Action;
-import back.game.Game;
+import back.AlgorithmSolution;
+import back.interfaces.Algorithm;
+import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.*;
 
-public class IDAStar {
+public class IDAStar implements Algorithm {
 
     private int expandedNodes;
     private Game gameSolved;
-    private Stack<Game> stack;
-    private PriorityQueue<Game> exceededQueue;
     private Heuristic heuristic;
+    private Comparator<Game> gameComparator = (g1, g2) -> {
+        int f1 = g1.getEstimatedCost() + g1.getAccumulatedCost();
+        int f2 = g2.getEstimatedCost() + g2.getAccumulatedCost();
+        return f1 - f2;
+    };
 
-    public void runAlgorithm(Game game, Heuristic heuristic) {
+    IDAStar(Heuristic heuristic) {
         this.heuristic = heuristic;
-        this.expandedNodes = 0;
-        this.gameSolved = null;
-        this.stack = new Stack<>();
+    }
 
-        Comparator<Game> gameComparator = (g1, g2) -> {
-            int f1 = g1.getEstimatedCost() + g1.getAcumulatedCost();
-            int f2 = g2.getEstimatedCost() + g2.getAcumulatedCost();
-            return f1 - f2;
-        };
-        this.exceededQueue = new PriorityQueue<>(gameComparator);
-        game.setEstimatedCost(heuristic.evaluate(game));
-        exceededQueue.add(game);
+    public Heuristic getHeuristic() {
+        return heuristic;
+    }
+
+    public void setHeuristic(Heuristic heuristic) {
+        this.heuristic = heuristic;
+    }
+
+    public AlgorithmSolution run(Game game) {
+        this.gameSolved = null;
+        this.expandedNodes = 0;
+        boolean result = false;
+
+        Queue<Game> gamesToAnalize = new LinkedList<>();
+        gamesToAnalize.add(game);
+        PriorityQueue<Game> nextIterationGames = new PriorityQueue<>(gameComparator);
 
         long startTime = System.nanoTime();
-        boolean result = queueAStarSearch();
+
+        int limit = heuristic.evaluate(game);
+
+        while(!result & !gamesToAnalize.isEmpty()) {
+            while (!gamesToAnalize.isEmpty()) {
+                Game gameToAnalize = gamesToAnalize.poll();
+                result = recursiveAStarSearch(gameToAnalize, nextIterationGames, limit);
+            }
+            if(!nextIterationGames.isEmpty()) {
+                limit = getFunctionValue(nextIterationGames.peek());
+                gamesToAnalize.addAll(nextIterationGames);
+                nextIterationGames.clear();
+            }
+        }
+
         long endTime = System.nanoTime();
 
-        if (result)
-            ResultPrinter.printResult(expandedNodes, stack.size() + exceededQueue.size(), gameSolved, endTime - startTime);
+        AlgorithmSolution solution;
+        if(result)
+            solution = new AlgorithmSolution(this.expandedNodes, gamesToAnalize.size() + nextIterationGames.size(), this.gameSolved, endTime - startTime);
         else
-            ResultPrinter.printNoSolutionFound(expandedNodes, stack.size() + exceededQueue.size(), endTime - startTime);
+            solution = new AlgorithmSolution(false, this.expandedNodes, endTime - startTime);
+
+        return solution;
     }
 
-    private boolean queueAStarSearch() {
-        boolean result = false;
-        while(!exceededQueue.isEmpty() & !result) {
-            Game smallestFunctionValueGame = exceededQueue.peek();
-            //ACA EL STACK SE SUPONE QUE ESTA VACIO!
-            stack.addAll(exceededQueue);
-            exceededQueue.clear();
-            result = recursiveAStarSearch(getFunctionValue(smallestFunctionValueGame));
-        }
-        return result;
-    }
+    private boolean recursiveAStarSearch(Game game, PriorityQueue<Game> nextIterationGames, int limit) {
 
-    private boolean recursiveAStarSearch(int limit) {
-
-        //Este caso no deberia pasar creo
-        if(stack.isEmpty())
-            return false;
-
-        Game game = stack.pop();
-        if(getFunctionValue(game) >= limit) {
-            this.exceededQueue.add(game);
+        if (limit < getFunctionValue(game)) {
+            nextIterationGames.add(game);
             return false;
         }
 
@@ -69,12 +78,11 @@ public class IDAStar {
             return true;
         }
 
-        List<Action> availableActions = game.getAvailableActions();
-        for(int i = 0; i < availableActions.size(); i++) {
-            Action action = availableActions.get(i);
-            stack.push(game.applyActionAndClone(action, this.heuristic));
-            if(recursiveAStarSearch(limit)) {
-                if(i + 1 == availableActions.size())
+        List<Game> children = game.calculateChildrenWithStack();
+        for(int i = 0; i < children.size(); i++) {
+            Game gameChild = children.get(i);
+            if(recursiveAStarSearch(gameChild, nextIterationGames, limit)) {
+                if(i + 1 == children.size())
                     this.expandedNodes++;
                 return true;
             }
@@ -85,7 +93,7 @@ public class IDAStar {
     }
 
     private int getFunctionValue(Game game) {
-        return game.getEstimatedCost() + game.getAcumulatedCost();
+        return game.getEstimatedCost() + game.getAccumulatedCost();
     }
 
 }

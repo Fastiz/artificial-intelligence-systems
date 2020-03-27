@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import back.game.CellTypeEnum;
-import back.game.exceptions.InvalidMapException;
 
 public class MapReader {
 	private CellTypeEnum[][] map;

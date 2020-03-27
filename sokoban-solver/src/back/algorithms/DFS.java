@@ -32,7 +32,7 @@ public class DFS implements Algorithm {
         long processingTime = endTime - startTime;
         
         //TODO: see cost and border count
-        return new AlgorithmSolution(null, result, this.visitedStates.size(), 0, expandedNodes, 1, this.visitedStates, processingTime);
+        return new AlgorithmSolution(null, result, this.visitedStates.size(), this.visitedStates.getLast().getAccumulatedCost(), expandedNodes, 1, this.visitedStates, processingTime);
 
     }
 
@@ -50,9 +50,9 @@ public class DFS implements Algorithm {
         }
         
 
-        List<Game> childs = game.calculateChilds();
+        List<Game> children = game.calculateChildren();
 
-        for(Game child : childs) {
+        for(Game child : children) {
         	if(recursiveDFS(child)) {
         		/*if(i + 1 == availableActions.size())
                 this.expandedNodes++;*/

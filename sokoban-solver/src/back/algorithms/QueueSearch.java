@@ -1,8 +1,7 @@
 package back.algorithms;
 
-import back.ResultPrinter;
-import back.game.Action;
-import back.game.Game;
+import back.AlgorithmSolution;
+import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.Queue;
@@ -13,7 +12,7 @@ public class QueueSearch {
     private Queue<Game> queue;
     private Heuristic heuristic = null;
 
-    public void runAlgorithm(Queue<Game> queue) {
+    public AlgorithmSolution run(Queue<Game> queue) {
         expandedNodes = 0;
         gameSolved = null;
         this.queue = queue;
@@ -22,17 +21,19 @@ public class QueueSearch {
         boolean result = queueSearch();
         long endTime = System.nanoTime();
 
+        AlgorithmSolution solution;
         if(result)
-            ResultPrinter.printResult(expandedNodes, queue.size(), gameSolved, endTime - startTime);
+            solution = new AlgorithmSolution(this.expandedNodes, queue.size(), this.gameSolved, endTime - startTime);
         else
-            ResultPrinter.printNoSolutionFound(expandedNodes, queue.size(), endTime - startTime);
+            solution = new AlgorithmSolution(false, this.expandedNodes, endTime - startTime);
 
         this.heuristic = null;
+        return solution;
     }
 
-    public void runAlgorithm(Queue<Game> queue, Heuristic heuristic) {
+    public AlgorithmSolution run(Queue<Game> queue, Heuristic heuristic) {
         this.heuristic = heuristic;
-        runAlgorithm(queue);
+        return run(queue);
     }
 
     public boolean queueSearch() {
@@ -44,11 +45,11 @@ public class QueueSearch {
                 return true;
             }
 
-            for (Action action : game.getAvailableActions()) {
-                if(this.heuristic == null)
-                    queue.add(game.applyActionAndClone(action));
-                else
-                    queue.add(game.applyActionAndClone(action, heuristic));
+            for (Game gameChild : game.calculateChildrenWithStack()) {
+                if(this.heuristic != null)
+                    gameChild.setEstimatedCost(heuristic.evaluate(gameChild));
+
+                queue.add(gameChild);
             }
 
             this.expandedNodes++;

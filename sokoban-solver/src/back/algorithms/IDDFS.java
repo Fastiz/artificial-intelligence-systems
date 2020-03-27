@@ -1,56 +1,84 @@
 package back.algorithms;
 
-import back.ResultPrinter;
-import back.game.Action;
-import back.game.Game;
+import back.AlgorithmSolution;
+import back.interfaces.Algorithm;
+import back.interfaces.Game;
 
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
-public class IDDFS {
+public class IDDFS implements Algorithm {
 
     private int expandedNodes;
     private Game gameSolved;
+    private int maxDepth;
 
-    public void runAlgorithm(Game game, int maxDepth) {
-        this.gameSolved = null;
-        expandedNodes = 0;
-        Stack<Game> gamesStack = new Stack<>();
-        gamesStack.push(game);
-
-        boolean result = false;
-
-        long startTime = System.nanoTime();
-        for(int i = 0; i < maxDepth & !result; i++) {
-            result = recursiveIDDFS(gamesStack, maxDepth);
-        }
-        long endTime = System.nanoTime();
-
-        if(result)
-            ResultPrinter.printResult(expandedNodes, gamesStack.size(), gameSolved, endTime - startTime);
-        else
-            ResultPrinter.printNoSolutionFound(expandedNodes, gamesStack.size(), endTime - startTime);
-
+    IDDFS(int maxDepth) {
+        if (maxDepth < 0)
+            maxDepth = 1;
+        this.maxDepth = maxDepth;
     }
 
-    private boolean recursiveIDDFS(Stack<Game> stack, int depthLeft) {
+    public int getMaxDepth() {
+        return maxDepth;
+    }
 
-        //Creo que isEmpty no deberia pasar
-        if(stack.isEmpty() || depthLeft == 0)
+    public void setMaxDepth(int maxDepth) {
+        if (maxDepth < 0)
+            maxDepth = 1;
+        this.maxDepth = maxDepth;
+    }
+
+    public AlgorithmSolution run(Game game) {
+        this.gameSolved = null;
+        expandedNodes = 0;
+        boolean result = false;
+
+        Queue<Game> gamesToAnalize = new LinkedList<>();
+        gamesToAnalize.add(game);
+        Queue<Game> nextIterationGames = new LinkedList<>();
+
+        long startTime = System.nanoTime();
+
+        /* En gameToAnalize pongo los que voy a analizar, en nextIterationGames pongo los que se pasan de depth cuando hago dfs,
+        entonces cuando me retorna, en la proxima iteracion, los que van a analizar son los que se pasaron.
+         */
+        for (int i = 0; i < maxDepth & !result; i++) {
+            while (!gamesToAnalize.isEmpty()) {
+                Game gameToAnalize = gamesToAnalize.poll();
+                result = recursiveIDDFS(gameToAnalize, nextIterationGames, i);
+            }
+            gamesToAnalize.addAll(nextIterationGames);
+            nextIterationGames.clear();
+        }
+
+        long endTime = System.nanoTime();
+
+        AlgorithmSolution solution;
+        if (result)
+            solution = new AlgorithmSolution(this.expandedNodes, nextIterationGames.size(), this.gameSolved, endTime - startTime);
+        else
+            solution = new AlgorithmSolution(false, this.expandedNodes, endTime - startTime);
+
+        return solution;
+    }
+
+    private boolean recursiveIDDFS(Game game, Queue<Game> nextIterationGames, int depthLeft) {
+
+        if (depthLeft < 0) {
+            nextIterationGames.add(game);
             return false;
+        }
 
-        Game game = stack.pop();
-        if(game.gameFinished()){
+        if (game.gameFinished()) {
             this.gameSolved = game;
             return true;
         }
 
-        List<Action> availableActions = game.getAvailableActions();
-        for(int i = 0; i < availableActions.size(); i++) {
-            Action action = availableActions.get(i);
-            stack.push(game.applyActionAndClone(action));
-            if(recursiveIDDFS(stack, depthLeft - 1)) {
-                if(i + 1 == availableActions.size())
+        List<Game> children = game.calculateChildrenWithStack();
+        for (int i = 0; i < children.size(); i++) {
+            Game gameChild = children.get(i);
+            if (recursiveIDDFS(gameChild, nextIterationGames, depthLeft - 1)) {
+                if (i + 1 == children.size())
                     this.expandedNodes++;
                 return true;
             }

@@ -1,37 +1,31 @@
 package back;
 
 import back.game.Action;
-import back.game.Game;
+import back.interfaces.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ResultPrinter {
 
-    public static void printResult(int expandedNodes, int borderNodes, Game solution, long time) {
+    public static void printResult(AlgorithmSolution solution) {
         System.out.println("Solution found!");
 
-        List<Action> allActions = new ArrayList<>(solution.getActionList());
-        System.out.println("Solution depth: " + allActions.size());
+        List<Game> allGames = new ArrayList<>(solution.getSolutionStates());
+        System.out.println("Solution depth: " + solution.getSolutionDepth());
 
-        int solutionCost = 0;
-        for(Action action : allActions)
-            solutionCost += action.getActionCost();
-        System.out.println("Solution cost: " + solutionCost);
+        System.out.println("Solution cost: " + solution.getSolutionCost());
 
-        System.out.println("Expanded nodes: " + expandedNodes);
+        System.out.println("Expanded nodes: " + solution.getNumberOfExpandedNodes());
 
-        System.out.println("Border nodes: " + borderNodes);
+        System.out.println("Border nodes: " + solution.getNumberOfBorderNodes());
 
-        System.out.println("Time: " + time);
+        System.out.println("Time: " + solution.getProcessingTime());
 
         List<String> states = new ArrayList<>();
-        do {
-            states.add(solution.toString());
-        } while (solution.revertAction());
-
-        for(String state : states)
-            System.out.println(states);
+        for(int i = allGames.size() - 1; i >= 0; i--) {
+            System.out.println(allGames.get(i).toString());
+        }
     }
 
     public static void printNoSolutionFound(int expandedNodes, int borderNodes, long time) {

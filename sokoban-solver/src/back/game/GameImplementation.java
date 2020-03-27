@@ -1,9 +1,6 @@
 package back.game;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import back.game.exceptions.InvalidMapException;
 import back.interfaces.Game;
@@ -13,7 +10,8 @@ public class GameImplementation implements Game {
 	private CellTypeEnum[][] map;
 	private int[][] boxesPositions;
 	private int[] playerPosition;
-	
+	private Stack<Game> gameStack;
+
 	//TODO:
 	private int accumulatedCost;
 	private int estimatedCost;
@@ -26,38 +24,74 @@ public class GameImplementation implements Game {
 	}
 	
 	// ** public
-	
-	public List<Game> calculateChilds(){
+	public List<Game> calculateChildren(){
 		int i=playerPosition[0], j=playerPosition[1];
-		List<Game> childs = new LinkedList<>();
-		
+		List<Game> children = new LinkedList<>();
+
 		Game newChild;
-		
+
 		//consider top
 		newChild = createChild('t');
 		if(newChild != null) {
-			childs.add(newChild);
+			children.add(newChild);
 		}
-		
+
 		//consider bottom
 		newChild = createChild('b');
 		if(newChild != null) {
-			childs.add(newChild);
+			children.add(newChild);
 		}
-		
+
 		//consider left
 		newChild = createChild('l');
 		if(newChild != null) {
-			childs.add(newChild);
+			children.add(newChild);
 		}
-		
+
 		//consider right
 		newChild = createChild('r');
 		if(newChild != null) {
-			childs.add(newChild);
+			children.add(newChild);
 		}
-		
-		return childs;
+
+		return children;
+	}
+
+	public List<Game> calculateChildrenWithStack(){
+		List<Game> children = calculateChildren();
+		addStackToChildren(children);
+		return children;
+	}
+
+	private void addStackToChildren(List<Game> children) {
+		if(children.isEmpty())
+			return;
+
+		if(this.gameStack == null)
+			this.gameStack = new Stack<>();
+
+		this.gameStack.push(this);
+
+		for(int i = 0; i < children.size(); i++) {
+			Stack<Game> newStack;
+			if(i == 0) {
+				newStack = this.gameStack;
+			} else {
+				newStack = new Stack<>();
+				newStack.addAll(this.gameStack);
+			}
+			children.get(i).setGameStack(newStack);
+		}
+
+		this.gameStack = null;
+	}
+
+	public Stack<Game> getGameStack() {
+		return gameStack;
+	}
+
+	public void setGameStack(Stack<Game> gameStack) {
+		this.gameStack = gameStack;
 	}
 	
 	public boolean gameFinished() {
@@ -242,6 +276,8 @@ public class GameImplementation implements Game {
 		}
 		return -1;
 	}
+
+
 }
 
 

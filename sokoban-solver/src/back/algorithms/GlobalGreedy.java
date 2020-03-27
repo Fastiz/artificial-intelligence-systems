@@ -1,14 +1,30 @@
 package back.algorithms;
 
-import back.game.Game;
+import back.AlgorithmSolution;
+import back.interfaces.Algorithm;
+import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class GlobalGreedy {
+public class GlobalGreedy implements Algorithm {
 
-    public void runAlgorithm(Game game, Heuristic heuristic) {
+    private Heuristic heuristic;
+
+    GlobalGreedy(Heuristic heuristic) {
+        this.heuristic = heuristic;
+    }
+
+    public Heuristic getHeuristic() {
+        return heuristic;
+    }
+
+    public void setHeuristic(Heuristic heuristic) {
+        this.heuristic = heuristic;
+    }
+
+    public AlgorithmSolution run(Game game) {
         Comparator<Game> gameComparator = Comparator.comparingInt(Game::getEstimatedCost);
         PriorityQueue<Game> gamesPriorityQueue = new PriorityQueue<>(gameComparator);
 
@@ -16,6 +32,6 @@ public class GlobalGreedy {
         gamesPriorityQueue.add(game);
 
         QueueSearch queueSearch = new QueueSearch();
-        queueSearch.runAlgorithm(gamesPriorityQueue, heuristic);
+        return queueSearch.run(gamesPriorityQueue, heuristic);
     }
 }

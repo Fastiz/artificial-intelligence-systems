@@ -1,5 +1,6 @@
 package back;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import back.interfaces.Game;
@@ -13,6 +14,23 @@ public class AlgorithmSolution {
 	private int numberOfBorderNodes;
 	private List<Game> solutionStates;
 	private float processingTime;
+
+	public AlgorithmSolution (boolean goalFound, int numberOfExpandedNodes, long processingTime) {
+		this.goalFound = goalFound;
+		this.numberOfExpandedNodes = numberOfExpandedNodes;
+		this.processingTime = processingTime;
+	}
+
+	public AlgorithmSolution (int numberOfExpandedNodes, int numberOfBorderNodes, Game solution, long processingTime) {
+		this.goalFound = true;
+		this.solutionDepth = solution.getGameStack().size();
+		this.solutionCost = solution.getAccumulatedCost();
+		this.numberOfExpandedNodes = numberOfExpandedNodes;
+		this.numberOfBorderNodes = numberOfBorderNodes;
+		this.solutionStates = new ArrayList<>(solution.getGameStack());
+		this.solutionStates.add(solution);
+		this.processingTime = processingTime;
+	}
 	
 	public AlgorithmSolution (String parameters, boolean goalFound, int solutionDepth, int solutionCost, 
 			int numberOfExpandedNodes, int numberOfBorderNodes, List<Game> visitedStates, long processingTime) {
@@ -75,6 +93,8 @@ public class AlgorithmSolution {
 	}
 
 	public void setSolutionStates(List<Game> solutionStates) {
+		if(solutionStates != null && !solutionStates.isEmpty())
+			this.setGoalFound(true);
 		this.solutionStates = solutionStates;
 	}
 
