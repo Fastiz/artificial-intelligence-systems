@@ -15,10 +15,14 @@ public class DFS implements Algorithm {
 	
     private int expandedNodes;
     private int visitedNodes;
+    
+    private boolean onlyCachePathStates;
 
     public DFS() {
     	hashSet = new HashSet<>();
     	visitedStates = new LinkedList<>();
+    	
+    	onlyCachePathStates = false;
     }
     
     public AlgorithmSolution run(Game game) {
@@ -61,7 +65,9 @@ public class DFS implements Algorithm {
         }
                 
         visitedStates.removeLast();
-        hashSet.remove(game);
+        
+        if(this.onlyCachePathStates)
+        	hashSet.remove(game);
 
         this.expandedNodes++;
         return false;
