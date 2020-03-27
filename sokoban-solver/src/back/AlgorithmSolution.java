@@ -13,7 +13,7 @@ public class AlgorithmSolution {
 	private int numberOfExpandedNodes;
 	private int numberOfBorderNodes;
 	private List<Game> solutionStates;
-	private float processingTime;
+	private long processingTime;
 
 	public AlgorithmSolution (boolean goalFound, int numberOfExpandedNodes, long processingTime) {
 		this.goalFound = goalFound;
@@ -98,17 +98,60 @@ public class AlgorithmSolution {
 		this.solutionStates = solutionStates;
 	}
 
-	public float getProcessingTime() {
+	public long getProcessingTime() {
 		return processingTime;
 	}
 
-	public void setProcessingTime(float processingTime) {
+	public void setProcessingTime(long processingTime) {
 		this.processingTime = processingTime;
 	}
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		if(this.goalFound) {
+			return printSolution(this);
+		} else {
+			return printNoSolution(this.numberOfExpandedNodes, this.processingTime);
+		}
+	}
+
+	private String printNoSolution(int expandedNodes, long time) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("No solution found" + "\n\n");
+
+		sb.append("Expanded nodes: ").append(expandedNodes).append("\n\n");
+
+		sb.append("Time: ").append(time).append("\n\n");
+
+		return sb.toString();
+	}
+
+	private String printSolution(AlgorithmSolution solution) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("Solution found!" + "\n\n");
+
+		List<Game> allGames = new ArrayList<>(solution.getSolutionStates());
+		sb.append("Solution depth: ").append(solution.getSolutionDepth()).append("\n\n");
+
+		sb.append("Solution cost: ").append(solution.getSolutionCost()).append("\n\n");
+
+		sb.append("Expanded nodes: ").append(solution.getNumberOfExpandedNodes()).append("\n\n");
+
+		sb.append("Border nodes: ").append(solution.getNumberOfBorderNodes()).append("\n\n");
+
+		sb.append("Time: ").append(solution.getProcessingTime()).append("\n\n");
+
+		for(int i = allGames.size() - 1; i >= 0; i--) {
+			sb.append(allGames.get(i).toString()).append("\n\n");
+		}
+
+		return sb.toString();
+	}
+
 }
