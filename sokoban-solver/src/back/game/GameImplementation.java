@@ -71,11 +71,10 @@ public class GameImplementation implements Game {
 		if(this.gameStack == null)
 			this.gameStack = new Stack<>();
 
-		this.gameStack.push(this);
-
 		for (Game child : children) {
 			child.setEstimatedCost(this.estimatedCost + 1);
 			child.getGameStack().addAll(this.gameStack);
+			child.getGameStack().add(this);
 		}
 
 	}
