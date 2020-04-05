@@ -41,7 +41,7 @@ public class DFS implements Algorithm {
     }
 
     private boolean recursiveDFS(Game game) {
-    	visitedNodes++;
+    	this.visitedNodes++;
 
     	if(hashSet.contains(game))
     		return false;
@@ -56,12 +56,14 @@ public class DFS implements Algorithm {
 
         List<Game> children = game.calculateChildren();
 
+        int i = 0;
         for(Game child : children) {
         	if(recursiveDFS(child)) {
-        		/*if(i + 1 == availableActions.size())
-                this.expandedNodes++;*/
+        		if(i + 1 == children.size())
+                    this.expandedNodes++;
         		return true;
         	}
+        	i++;
         }
                 
         visitedStates.removeLast();
