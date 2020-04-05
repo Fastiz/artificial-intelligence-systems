@@ -8,7 +8,7 @@ import java.util.*;
 
 public class IDDFS implements Algorithm {
 
-    private HashSet<Game> hashSet;
+    private HashMap<Game, Integer> hashMap;
 
     private boolean remainingToSearch;
 
@@ -18,7 +18,7 @@ public class IDDFS implements Algorithm {
     private int maxDepth;
 
     public IDDFS() {
-        hashSet = new HashSet<>();
+        hashMap = new HashMap<>();
 
         this.remainingToSearch = true;
 
@@ -43,14 +43,11 @@ public class IDDFS implements Algorithm {
 
         long startTime = System.currentTimeMillis();
 
-        /* En gameToAnalize pongo los que voy a analizar, en nextIterationGames pongo los que se pasan de depth cuando hago dfs,
-        entonces cuando me retorna, en la proxima iteracion, los que van a analizar son los que se pasaron.
-         */
         for (int i = 0; i < maxDepth && this.remainingToSearch && !result; i++) {
             this.expandedNodes = 0;
             this.remainingToSearch = false;
             result = recursiveIDDFS(game, i);
-            hashSet.clear();
+            game.getGameStack().clear();
         }
 
         long endTime = System.currentTimeMillis();
@@ -66,7 +63,7 @@ public class IDDFS implements Algorithm {
 
     private boolean recursiveIDDFS(Game game, int depthLeft) {
         this.visitedNodes++;
-        this.hashSet.add(game);
+        this.hashMap.put(game, game.getGameStack().size());
 
         List<Game> children = game.calculateChildrenWithStack();
 
@@ -83,7 +80,7 @@ public class IDDFS implements Algorithm {
         for (int i = 0; i < children.size(); i++) {
             Game gameChild = children.get(i);
 
-            if(!this.hashSet.contains(gameChild)){
+            if(Utils.checkIfHashMapContainsElementAndReplace(this.hashMap, gameChild)){
                 if (recursiveIDDFS(gameChild, depthLeft - 1)) {
                     if (i + 1 == children.size())
                         this.expandedNodes++;
@@ -95,4 +92,5 @@ public class IDDFS implements Algorithm {
         this.expandedNodes++;
         return false;
     }
+
 }
