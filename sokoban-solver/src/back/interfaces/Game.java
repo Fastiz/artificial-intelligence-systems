@@ -19,8 +19,6 @@ public interface Game {
 
 	public int getEstimatedCost();
 
-	public CellTypeEnum[][] getMap();
-
 	public Stack<Game> getGameStack();
 
 	public void setGameStack(Stack<Game> gameStack);

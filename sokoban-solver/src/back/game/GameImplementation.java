@@ -31,6 +31,9 @@ public class GameImplementation implements Game {
 		int i=playerPosition[0], j=playerPosition[1];
 		List<Game> children = new LinkedList<>();
 
+		if(deadlockState())
+			return children;
+
 		Game newChild;
 
 		//consider top
@@ -183,7 +186,22 @@ public class GameImplementation implements Game {
 	}
 	
 	// ** private
+	private boolean deadlockState(){
 
+		for(int x = -1; x < 2; x ++) {
+			for(int i = 0; i < this.boxesPositions.length && x != 0; i++) {
+				int xBox = this.boxesPositions[i][0], yBox = this.boxesPositions[i][1];
+				if(xBox + x >= 0 && xBox + x < map.length) {
+					if(map[xBox][yBox] != CellTypeEnum.GOAL){
+						if(map[xBox + x][yBox].equals(CellTypeEnum.WALL) && (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) || map[xBox][yBox - 1].equals(CellTypeEnum.WALL))) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	private Game createChild(char direction) {
 		int[] pos = this.playerPosition;

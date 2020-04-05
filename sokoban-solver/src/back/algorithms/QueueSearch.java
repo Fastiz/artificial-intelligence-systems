@@ -50,7 +50,6 @@ public class QueueSearch {
                 return true;
             }
 
-            System.out.println(expandedNodes);
             hashSet.add(game);
 
             for (Game gameChild : game.calculateChildrenWithStack()) {

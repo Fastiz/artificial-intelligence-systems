@@ -22,19 +22,6 @@ public class ManhattanHeuristic implements Heuristic {
             totalDistance += max;
         }
 
-        CellTypeEnum[][] map = game.getMap();
-
-        for(int x = -1; x < 2; x ++) {
-            for(int i = 0; i < game.getBoxesPositions().length && x != 0; i++) {
-                int xBox = boxes[i][0], yBox = boxes[i][1];
-                if(xBox + x >= 0 && xBox + x < map.length) {
-                    if(map[xBox + x][yBox].equals(CellTypeEnum.WALL) && (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) || map[xBox][yBox - 1].equals(CellTypeEnum.WALL))) {
-                        return Integer.MAX_VALUE;
-                    }
-                }
-            }
-        }
-
         return totalDistance;
     }
 }
