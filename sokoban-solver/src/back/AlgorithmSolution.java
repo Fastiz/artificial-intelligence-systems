@@ -23,11 +23,11 @@ public class AlgorithmSolution {
 
 	public AlgorithmSolution (int numberOfExpandedNodes, int numberOfBorderNodes, Game solution, long processingTime) {
 		this.goalFound = true;
-		this.solutionDepth = solution.getGameStack().size();
-		this.solutionCost = solution.getAccumulatedCost();
+		this.solutionDepth = solution.getDepth();
+		this.solutionCost = solution.getDepth();
 		this.numberOfExpandedNodes = numberOfExpandedNodes;
 		this.numberOfBorderNodes = numberOfBorderNodes;
-		this.solutionStates = new ArrayList<>(solution.getGameStack());
+		this.solutionStates = solution.getPathToRoot();
 		this.solutionStates.add(solution);
 		this.processingTime = processingTime;
 	}

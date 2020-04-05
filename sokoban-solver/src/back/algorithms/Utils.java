@@ -8,7 +8,7 @@ public class Utils {
     public static boolean checkIfHashMapContainsElementAndReplace(HashMap<Game, Integer> hashMap, Game node){
         if(hashMap.containsKey(node)){
             int depth = hashMap.get(node);
-            int nodeDepth = node.getGameStack().size();
+            int nodeDepth = node.getDepth();
             if(depth>nodeDepth){
                 hashMap.replace(node, nodeDepth);
                 return true;

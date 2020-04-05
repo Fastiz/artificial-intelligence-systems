@@ -13,19 +13,17 @@ public interface Game {
 
 	public List<Game> calculateChildren();
 
-	public List<Game> calculateChildrenWithStack();
-
-	public int getAccumulatedCost();
+	public int getDepth();
 
 	public int getEstimatedCost();
-
-	public Stack<Game> getGameStack();
-
-	public void setGameStack(Stack<Game> gameStack);
 
 	public int[][] getBoxesPositions();
 
 	public int[][] getGoalsPositions();
 
 	public int[] getPlayerPosition();
+
+	public Game getParent();
+
+	public List<Game> getPathToRoot();
 }

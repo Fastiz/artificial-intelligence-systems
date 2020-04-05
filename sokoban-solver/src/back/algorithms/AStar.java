@@ -26,8 +26,8 @@ public class AStar implements Algorithm {
 
     public AlgorithmSolution run(Game game) {
         Comparator<Game> gameComparator = (g1, g2) -> {
-            int f1 = g1.getEstimatedCost() + g1.getAccumulatedCost();
-            int f2 = g2.getEstimatedCost() + g2.getAccumulatedCost();
+            int f1 = g1.getEstimatedCost() + g1.getDepth();
+            int f2 = g2.getEstimatedCost() + g2.getDepth();
             return f1 - f2;
         };
 

@@ -52,7 +52,7 @@ public class QueueSearch {
 
             hashSet.add(game);
 
-            for (Game gameChild : game.calculateChildrenWithStack()) {
+            for (Game gameChild : game.calculateChildren()) {
                 int estimatedCost = 0;
                 if(this.heuristic != null) {
                     estimatedCost = heuristic.evaluate(gameChild);

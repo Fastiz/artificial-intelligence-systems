@@ -15,8 +15,8 @@ public class IDAStar implements Algorithm {
     private HashSet<Game> hashSet;
     private int newLimit;
     private Comparator<Game> gameComparator = (g1, g2) -> {
-        int f1 = g1.getEstimatedCost() + g1.getAccumulatedCost();
-        int f2 = g2.getEstimatedCost() + g2.getAccumulatedCost();
+        int f1 = g1.getEstimatedCost() + g1.getDepth();
+        int f2 = g2.getEstimatedCost() + g2.getDepth();
         return f1 - f2;
     };
 
@@ -83,7 +83,7 @@ public class IDAStar implements Algorithm {
 
         hashSet.add(game);
 
-        List<Game> children = game.calculateChildrenWithStack();
+        List<Game> children = game.calculateChildren();
         for(int i = 0; i < children.size(); i++) {
             Game gameChild = children.get(i);
             if(!hashSet.contains(gameChild)) {
@@ -100,7 +100,7 @@ public class IDAStar implements Algorithm {
     }
 
     private int getFunctionValue(Game game) {
-        return heuristic.evaluate(game) + game.getAccumulatedCost();
+        return heuristic.evaluate(game) + game.getDepth();
     }
 
 }

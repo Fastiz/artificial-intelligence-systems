@@ -47,7 +47,6 @@ public class IDDFS implements Algorithm {
             this.expandedNodes = 0;
             this.remainingToSearch = false;
             result = recursiveIDDFS(game, i);
-            game.getGameStack().clear();
         }
 
         long endTime = System.currentTimeMillis();
@@ -63,9 +62,9 @@ public class IDDFS implements Algorithm {
 
     private boolean recursiveIDDFS(Game game, int depthLeft) {
         this.visitedNodes++;
-        this.hashMap.put(game, game.getGameStack().size());
+        this.hashMap.put(game, game.getDepth());
 
-        List<Game> children = game.calculateChildrenWithStack();
+        List<Game> children = game.calculateChildren();
 
         if (depthLeft < 0) {
             this.remainingToSearch = this.remainingToSearch || !children.isEmpty();

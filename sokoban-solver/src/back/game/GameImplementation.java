@@ -11,19 +11,19 @@ public class GameImplementation implements Game {
 	private int[][] boxesPositions;
 	private int[][] goalsPositions;
 	private int[] playerPosition;
-	private Stack<Game> gameStack;
 
-	//TODO:
-	private int accumulatedCost;
+	private Game parent;
+	private int depth;
 	private int estimatedCost;
 
 	
-	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions) {
+	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth) {
 		this.map = map;
 		this.playerPosition = playerPosition;
 		this.boxesPositions = boxesPositions;
 		this.goalsPositions = goalsPositions;
-		this.gameStack = new Stack<>();
+		this.parent = parent;
+		this.depth = depth;
 	}
 	
 	// ** public
@@ -63,35 +63,6 @@ public class GameImplementation implements Game {
 		return children;
 	}
 
-	public List<Game> calculateChildrenWithStack(){
-		List<Game> children = calculateChildren();
-		addStackToChildren(children);
-		return children;
-	}
-
-	private void addStackToChildren(List<Game> children) {
-		if(children.isEmpty())
-			return;
-
-		if(this.gameStack == null)
-			this.gameStack = new Stack<>();
-
-		for (Game child : children) {
-			child.setEstimatedCost(this.estimatedCost + 1);
-			child.getGameStack().addAll(this.gameStack);
-			child.getGameStack().add(this);
-		}
-
-	}
-
-	public Stack<Game> getGameStack() {
-		return gameStack;
-	}
-
-	public void setGameStack(Stack<Game> gameStack) {
-		this.gameStack = gameStack;
-	}
-
 	@Override
 	public int[] getPlayerPosition(){
 		return this.playerPosition;
@@ -107,6 +78,12 @@ public class GameImplementation implements Game {
 		return this.goalsPositions;
 	}
 
+	@Override
+	public Game getParent(){
+		return this.parent;
+	}
+
+	@Override
 	public boolean gameFinished() {
 		for(int[] boxPosition: this.boxesPositions) {
 			if(map[boxPosition[0]][boxPosition[1]] != CellTypeEnum.GOAL)
@@ -114,19 +91,34 @@ public class GameImplementation implements Game {
 		}
 		return true;
 	}
-	
+
+	@Override
 	public void setEstimatedCost(int estimatedCost) {
 		this.estimatedCost = estimatedCost;
 	}
-	
-	public int getAccumulatedCost() {
-		return accumulatedCost;
+
+	@Override
+	public int getDepth() {
+		return this.depth;
 	}
 
+	@Override
 	public int getEstimatedCost() {
 		return estimatedCost;
 	}
-	
+
+	@Override
+	public List<Game> getPathToRoot(){
+		List<Game> path = new LinkedList<>();
+		path.add(this);
+		Game current = this.parent;
+		while(current != null){
+			path.add(current);
+			current = current.getParent();
+		}
+		return path;
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -221,7 +213,7 @@ public class GameImplementation implements Game {
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, shallowCopyBoxes(), this.goalsPositions);
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, shallowCopyBoxes(), this.goalsPositions, this, this.depth+1);
 			}else {
 				if(subtract) {
 					if(pos[posComponent] -2 < 0)
@@ -236,7 +228,7 @@ public class GameImplementation implements Game {
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
 						
-						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions);
+						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions, this, this.depth+1);
 					}
 				}
 			}
