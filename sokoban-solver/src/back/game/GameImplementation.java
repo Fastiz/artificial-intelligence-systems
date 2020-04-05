@@ -183,50 +183,15 @@ public class GameImplementation implements Game {
 	}
 	
 	// ** private
-	
-	private void gatherMapInformation() throws InvalidMapException{
-		int boxCount=0, goalCount=0;
-		boolean playerFound = false;
-		
-		List<int[]> boxesPositions = new ArrayList<>();
-		for(int i=0; i<map.length; i++) {
-			for(int j=0; j<map[0].length; j++) {
-				switch(this.map[i][j]) {
-					case BOX:
-						boxesPositions.add(new int[] {i, j});
-						boxCount++;
-					break;
-					case PLAYER:
-						if(playerFound)
-							throw new InvalidMapException();
-					
-						this.playerPosition = new int[] {i, j};
-						playerFound = true;
-						break;
-					case GOAL:
-						goalCount++;
-						break;
-					default:
-						
-				}
-			}
-		}
-		
-		if(boxCount != goalCount || boxCount == 0 || !playerFound) {
-			throw new InvalidMapException();
-		}
-		
-		this.boxesPositions =  boxesPositions.toArray(new int[0][]);
-	}
 
 	
 	private Game createChild(char direction) {
 		int[] pos = this.playerPosition;
 		
 		int posComponent = direction == 't' || direction == 'b' ? 0 : 1;
-		boolean substract = direction == 't' || direction == 'l' ? true : false;
+		boolean subtract = direction == 't' || direction == 'l';
 		
-		if(substract) {
+		if(subtract) {
 			if(pos[posComponent] -1 < 0)
 				return null;
 		}else {
@@ -234,13 +199,13 @@ public class GameImplementation implements Game {
 				return null;
 		}
 				
-		int iDir = (posComponent == 0 ? (substract ? -1 : 1) : 0), jDir = (posComponent == 1 ? (substract ? -1 : 1) : 0);
+		int iDir = (posComponent == 0 ? (subtract ? -1 : 1) : 0), jDir = (posComponent == 1 ? (subtract ? -1 : 1) : 0);
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, deepCopyBoxes(), this.goalsPositions);
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, shallowCopyBoxes(), this.goalsPositions);
 			}else {
-				if(substract) {
+				if(subtract) {
 					if(pos[posComponent] -2 < 0)
 						return null;
 				}else {
@@ -263,16 +228,14 @@ public class GameImplementation implements Game {
 		
 	}
 	
-	private int[][] deepCopyBoxes(){
+	private int[][] shallowCopyBoxes(){
 		int[][] copiedBoxes = new int[this.boxesPositions.length][];
-		for(int i=0; i<this.boxesPositions.length; i++) {
-			copiedBoxes[i] = (int[]) boxesPositions[i].clone();
-		}
+		System.arraycopy(boxesPositions, 0, copiedBoxes, 0, this.boxesPositions.length);
 		return copiedBoxes;
 	}
 	
 	private int[][] moveBoxAndCopyBoxes(int index, int[] newPos){
-		int[][] copiedBoxes = deepCopyBoxes();
+		int[][] copiedBoxes = shallowCopyBoxes();
 		
 		copiedBoxes[index] = newPos;
 		
