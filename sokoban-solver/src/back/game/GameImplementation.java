@@ -78,7 +78,6 @@ public class GameImplementation implements Game {
 			child.getGameStack().addAll(this.gameStack);
 		}
 
-		this.gameStack = null;
 	}
 
 	public Stack<Game> getGameStack() {
