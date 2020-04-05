@@ -1,5 +1,7 @@
 package back.interfaces;
 
+import back.game.CellTypeEnum;
+
 import java.util.List;
 import java.util.Stack;
 
@@ -16,6 +18,8 @@ public interface Game {
 	public int getAccumulatedCost();
 
 	public int getEstimatedCost();
+
+	public CellTypeEnum[][] getMap();
 
 	public Stack<Game> getGameStack();
 

@@ -1,10 +1,12 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.game.GameImplementation;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class QueueSearch {
@@ -48,17 +50,22 @@ public class QueueSearch {
                 return true;
             }
 
+            System.out.println(expandedNodes);
             hashSet.add(game);
 
             for (Game gameChild : game.calculateChildrenWithStack()) {
-                if(this.heuristic != null)
-                    gameChild.setEstimatedCost(heuristic.evaluate(gameChild));
+                int estimatedCost = 0;
+                if(this.heuristic != null) {
+                    estimatedCost = heuristic.evaluate(gameChild);
+                    gameChild.setEstimatedCost(estimatedCost);
+                }
 
-                if(!hashSet.contains(gameChild))
+                if(!hashSet.contains(gameChild) && estimatedCost != Integer.MAX_VALUE)
                     queue.add(gameChild);
             }
 
             this.expandedNodes++;
+
         }
 
         return false;
