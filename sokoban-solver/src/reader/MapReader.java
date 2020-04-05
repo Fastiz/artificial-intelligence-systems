@@ -13,6 +13,7 @@ public class MapReader {
 	private CellTypeEnum[][] map;
 	private int[] playerPosition;
 	private int[][] boxesPositions;
+	private int[][] goalsPositions;
 	
 	public MapReader(String file) throws IOException, FileNotFoundException {
 		try(BufferedReader br = new BufferedReader(new FileReader(file))){
@@ -25,6 +26,7 @@ public class MapReader {
 			
 			int[] playerPosition;
 			List<int[]> boxesPositions = new ArrayList<>();
+			List<int[]> goalsPositions = new ArrayList<>();
 			//Read map content
 			for(int i = 0; i<height; i++) {
 				char[] lineArray = br.readLine().toCharArray();
@@ -42,6 +44,7 @@ public class MapReader {
 							break;
 						case '.':
 							this.map[i][j] = CellTypeEnum.GOAL;
+							goalsPositions.add(new int[]{i, j});
 							break;
 						case '@':
 							this.map[i][j] = CellTypeEnum.EMPTY;
@@ -50,7 +53,7 @@ public class MapReader {
 					}
 				}
 			}
-			
+			this.goalsPositions = goalsPositions.toArray(new int[0][]);
 			this.boxesPositions = boxesPositions.toArray(new int[0][]);
 		}
 	}
@@ -65,5 +68,9 @@ public class MapReader {
 	
 	public int[][] getBoxesPositions(){
 		return this.boxesPositions;
+	}
+
+	public int[][] getGoalsPositions(){
+		return this.goalsPositions;
 	}
 }

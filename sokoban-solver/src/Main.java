@@ -1,6 +1,7 @@
 import back.AlgorithmSolution;
 import back.algorithms.BFS;
 import back.algorithms.DFS;
+import back.algorithms.IDDFS;
 import back.game.GameImplementation;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
@@ -18,19 +19,25 @@ public class Main {
 			return;
 		}
 
-		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions());
+		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions(), mapReader.getGoalsPositions());
 
 		AlgorithmSolution solution;
-		
-		System.out.println("DFS ---\n");
+
+		/*System.out.println("IDDFS ---\n");
+		Algorithm iddfs = new IDDFS();
+		((IDDFS) iddfs).setMaxDepth(75);
+		solution = iddfs.run(game);
+		System.out.print(solution);*/
+
+		/*System.out.println("DFS ---\n");
 		Algorithm dfs = new DFS();
 		solution = dfs.run(game);
-		System.out.print(solution);
+		System.out.print(solution);*/
 		
-		System.out.println("BFS ---\n");
+		/*System.out.println("BFS ---\n");
 		Algorithm bfs = new BFS();
 		solution = bfs.run(game);
-		System.out.print(solution);
+		System.out.print(solution);*/
 		
 
 

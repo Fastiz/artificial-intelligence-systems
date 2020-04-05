@@ -21,4 +21,7 @@ public interface Game {
 
 	public void setGameStack(Stack<Game> gameStack);
 
+	public int[][] getBoxesPositions();
+
+	public int[][] getGoalsPositions();
 }

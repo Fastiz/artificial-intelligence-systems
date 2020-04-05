@@ -9,6 +9,7 @@ public class GameImplementation implements Game {
 	
 	private CellTypeEnum[][] map;
 	private int[][] boxesPositions;
+	private int[][] goalsPositions;
 	private int[] playerPosition;
 	private Stack<Game> gameStack;
 
@@ -17,10 +18,11 @@ public class GameImplementation implements Game {
 	private int estimatedCost;
 
 	
-	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions) {
+	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions) {
 		this.map = map;
 		this.playerPosition = playerPosition;
 		this.boxesPositions = boxesPositions;
+		this.goalsPositions = goalsPositions;
 		this.gameStack = new Stack<>();
 	}
 	
@@ -86,7 +88,17 @@ public class GameImplementation implements Game {
 	public void setGameStack(Stack<Game> gameStack) {
 		this.gameStack = gameStack;
 	}
-	
+
+	@Override
+	public int[][] getBoxesPositions() {
+		return this.boxesPositions;
+	}
+
+	@Override
+	public int[][] getGoalsPositions() {
+		return this.goalsPositions;
+	}
+
 	public boolean gameFinished() {
 		for(int[] boxPosition: this.boxesPositions) {
 			if(map[boxPosition[0]][boxPosition[1]] != CellTypeEnum.GOAL)
@@ -221,7 +233,7 @@ public class GameImplementation implements Game {
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, deepCopyBoxes());
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, deepCopyBoxes(), this.boxesPositions);
 			}else {
 				if(substract) {
 					if(pos[posComponent] -2 < 0)
@@ -236,7 +248,7 @@ public class GameImplementation implements Game {
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
 						
-						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes);
+						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.boxesPositions);
 					}
 				}
 			}
