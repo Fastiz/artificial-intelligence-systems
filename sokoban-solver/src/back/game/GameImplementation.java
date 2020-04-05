@@ -238,7 +238,7 @@ public class GameImplementation implements Game {
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, deepCopyBoxes(), this.boxesPositions);
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, deepCopyBoxes(), this.goalsPositions);
 			}else {
 				if(substract) {
 					if(pos[posComponent] -2 < 0)
@@ -253,7 +253,7 @@ public class GameImplementation implements Game {
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
 						
-						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.boxesPositions);
+						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions);
 					}
 				}
 			}
