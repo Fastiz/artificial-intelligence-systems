@@ -21,6 +21,7 @@ public class GameImplementation implements Game {
 		this.map = map;
 		this.playerPosition = playerPosition;
 		this.boxesPositions = boxesPositions;
+		this.gameStack = new Stack<>();
 	}
 	
 	// ** public
@@ -72,15 +73,9 @@ public class GameImplementation implements Game {
 
 		this.gameStack.push(this);
 
-		for(int i = 0; i < children.size(); i++) {
-			Stack<Game> newStack;
-			if(i == 0) {
-				newStack = this.gameStack;
-			} else {
-				newStack = new Stack<>();
-				newStack.addAll(this.gameStack);
-			}
-			children.get(i).setGameStack(newStack);
+		for (Game child : children) {
+			child.setEstimatedCost(this.estimatedCost + 1);
+			child.getGameStack().addAll(this.gameStack);
 		}
 
 		this.gameStack = null;

@@ -12,7 +12,7 @@ public class AStar implements Algorithm {
 
     private Heuristic heuristic;
 
-    AStar(Heuristic heuristic) {
+    public AStar(Heuristic heuristic) {
         this.heuristic = heuristic;
     }
 

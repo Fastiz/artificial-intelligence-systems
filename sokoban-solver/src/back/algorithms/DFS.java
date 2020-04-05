@@ -29,9 +29,9 @@ public class DFS implements Algorithm {
         expandedNodes = 0;
         visitedNodes = 0;
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         boolean result = recursiveDFS(game);
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
                 
         long processingTime = endTime - startTime;
         

@@ -12,13 +12,14 @@ public class IDAStar implements Algorithm {
     private int expandedNodes;
     private Game gameSolved;
     private Heuristic heuristic;
+    private HashSet<Game> hashSet;
     private Comparator<Game> gameComparator = (g1, g2) -> {
         int f1 = g1.getEstimatedCost() + g1.getAccumulatedCost();
         int f2 = g2.getEstimatedCost() + g2.getAccumulatedCost();
         return f1 - f2;
     };
 
-    IDAStar(Heuristic heuristic) {
+    public IDAStar(Heuristic heuristic) {
         this.heuristic = heuristic;
     }
 
@@ -31,6 +32,7 @@ public class IDAStar implements Algorithm {
     }
 
     public AlgorithmSolution run(Game game) {
+        this.hashSet = new HashSet<>();
         this.gameSolved = null;
         this.expandedNodes = 0;
         boolean result = false;
@@ -39,7 +41,7 @@ public class IDAStar implements Algorithm {
         gamesToAnalize.add(game);
         PriorityQueue<Game> nextIterationGames = new PriorityQueue<>(gameComparator);
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         int limit = heuristic.evaluate(game);
 
@@ -55,7 +57,7 @@ public class IDAStar implements Algorithm {
             }
         }
 
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
         if(result)
@@ -68,7 +70,7 @@ public class IDAStar implements Algorithm {
 
     private boolean recursiveAStarSearch(Game game, PriorityQueue<Game> nextIterationGames, int limit) {
 
-        if (limit < getFunctionValue(game)) {
+        if (limit < getFunctionValue(game) - game.getEstimatedCost()) {
             nextIterationGames.add(game);
             return false;
         }
@@ -78,13 +80,17 @@ public class IDAStar implements Algorithm {
             return true;
         }
 
+        hashSet.add(game);
+
         List<Game> children = game.calculateChildrenWithStack();
         for(int i = 0; i < children.size(); i++) {
             Game gameChild = children.get(i);
-            if(recursiveAStarSearch(gameChild, nextIterationGames, limit)) {
-                if(i + 1 == children.size())
-                    this.expandedNodes++;
-                return true;
+            if(!hashSet.contains(gameChild)) {
+                if (recursiveAStarSearch(gameChild, nextIterationGames, limit)) {
+                    if (i + 1 == children.size())
+                        this.expandedNodes++;
+                    return true;
+                }
             }
         }
 

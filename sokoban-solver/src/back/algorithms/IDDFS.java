@@ -41,7 +41,7 @@ public class IDDFS implements Algorithm {
         boolean result = false;
 
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         /* En gameToAnalize pongo los que voy a analizar, en nextIterationGames pongo los que se pasan de depth cuando hago dfs,
         entonces cuando me retorna, en la proxima iteracion, los que van a analizar son los que se pasaron.
@@ -53,7 +53,7 @@ public class IDDFS implements Algorithm {
             hashSet.clear();
         }
 
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
         if (result)

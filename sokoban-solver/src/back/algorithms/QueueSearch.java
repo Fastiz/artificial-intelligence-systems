@@ -20,9 +20,9 @@ public class QueueSearch {
         gameSolved = null;
         this.queue = queue;
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         boolean result = queueSearch();
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
         if(result)
