@@ -1,4 +1,4 @@
-package back.algorithms;
+package back.algorithms.util;
 
 import back.interfaces.Game;
 

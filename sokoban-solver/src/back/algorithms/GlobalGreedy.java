@@ -1,13 +1,13 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.algorithms.util.QueueSearch;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.Stack;
 
 public class GlobalGreedy implements Algorithm {
 

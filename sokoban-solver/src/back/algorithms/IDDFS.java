@@ -1,6 +1,7 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.algorithms.util.Utils;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
 

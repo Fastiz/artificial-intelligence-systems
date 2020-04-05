@@ -1,6 +1,7 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.algorithms.util.QueueSearch;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
