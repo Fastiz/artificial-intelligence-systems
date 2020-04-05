@@ -90,6 +90,11 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
+	public int[] getPlayerPosition(){
+		return this.playerPosition;
+	}
+
+	@Override
 	public int[][] getBoxesPositions() {
 		return this.boxesPositions;
 	}
