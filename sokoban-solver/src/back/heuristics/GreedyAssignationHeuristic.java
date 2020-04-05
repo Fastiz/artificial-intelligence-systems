@@ -2,12 +2,12 @@ package back.heuristics;
 
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
-import back.heuristics.Edge;
+import back.heuristics.util.Edge;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class GreedyAssignation implements Heuristic {
+public class GreedyAssignationHeuristic implements Heuristic {
 
     @Override
     public int evaluate(Game game) {

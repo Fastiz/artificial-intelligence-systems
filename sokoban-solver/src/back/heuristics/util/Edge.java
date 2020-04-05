@@ -1,7 +1,7 @@
-package back.heuristics;
+package back.heuristics.util;
 
 
-class Edge implements Comparable<Edge> {
+public class Edge implements Comparable<Edge> {
     int[] box;
     int[] goal;
     int distance;

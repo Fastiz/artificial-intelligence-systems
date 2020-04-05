@@ -1,12 +1,13 @@
 package back.heuristics;
 
+import back.heuristics.util.Edge;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class BruteforceAssignation implements Heuristic {
+public class BruteforceAssignationHeuristic implements Heuristic {
     @Override
     public int evaluate(Game game) {
         int[][] boxes = game.getBoxesPositions(), goals = game.getGoalsPositions();
