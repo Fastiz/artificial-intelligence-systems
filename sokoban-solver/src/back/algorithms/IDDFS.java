@@ -12,7 +12,7 @@ public class IDDFS implements Algorithm {
     private Game gameSolved;
     private int maxDepth;
 
-    IDDFS(int maxDepth) {
+    public IDDFS(int maxDepth) {
         if (maxDepth < 0)
             maxDepth = 1;
         this.maxDepth = maxDepth;
@@ -37,7 +37,7 @@ public class IDDFS implements Algorithm {
         gamesToAnalize.add(game);
         Queue<Game> nextIterationGames = new LinkedList<>();
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         /* En gameToAnalize pongo los que voy a analizar, en nextIterationGames pongo los que se pasan de depth cuando hago dfs,
         entonces cuando me retorna, en la proxima iteracion, los que van a analizar son los que se pasaron.
@@ -51,7 +51,7 @@ public class IDDFS implements Algorithm {
             nextIterationGames.clear();
         }
 
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
         if (result)
