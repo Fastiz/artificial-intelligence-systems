@@ -147,9 +147,9 @@ public class AlgorithmSolution {
 
 		sb.append("Time: ").append(solution.getProcessingTime()).append("\n\n");
 
-		/*for(int i = allGames.size() - 1; i >= 0; i--) {
+		for(int i = allGames.size() - 1; i >= 0; i--) {
 			sb.append(allGames.get(i).toString()).append("\n\n");
-		}*/
+		}
 
 		return sb.toString();
 	}

@@ -127,12 +127,12 @@ public class GameImplementation implements Game {
 				CellTypeEnum cell = this.map[i][j];
 				
 				if(cell == CellTypeEnum.WALL) {
-					sb.append("X");
+					sb.append("#");
 				}else if(cell == CellTypeEnum.EMPTY) {
 					if(playerPosition[0] == i && playerPosition[1] == j) {
 						sb.append("@");
 					}else if(checkForBox(new int[] {i, j}) != -1) {
-						sb.append("*");
+						sb.append("$");
 					}else {
 						sb.append(" ");
 					}

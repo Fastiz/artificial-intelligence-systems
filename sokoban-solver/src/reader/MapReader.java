@@ -35,10 +35,10 @@ public class MapReader {
 						case ' ':
 							this.map[i][j] = CellTypeEnum.EMPTY;
 							break;
-						case 'X':
+						case '#':
 							this.map[i][j] = CellTypeEnum.WALL;
 							break;
-						case '*':
+						case '$':
 							this.map[i][j] = CellTypeEnum.EMPTY;
 							boxesPositions.add(new int[] {i, j});
 							break;
