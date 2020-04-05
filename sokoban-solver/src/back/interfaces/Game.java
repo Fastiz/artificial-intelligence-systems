@@ -28,4 +28,6 @@ public interface Game {
 	public int[][] getBoxesPositions();
 
 	public int[][] getGoalsPositions();
+
+	public int[] getPlayerPosition();
 }

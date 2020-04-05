@@ -1,9 +1,7 @@
 import back.AlgorithmSolution;
-import back.algorithms.BFS;
-import back.algorithms.DFS;
-import back.algorithms.IDDFS;
+import back.algorithms.AStar;
 import back.game.GameImplementation;
-import back.interfaces.Algorithm;
+import back.heuristics.GreedyAssignation;
 import back.interfaces.Game;
 import reader.MapReader;
 
@@ -13,7 +11,7 @@ public class Main {
 	public static void main(String[] args){
 		MapReader mapReader;
 		try {
-			mapReader = new MapReader("sokoban-solver/map2.txt");
+			mapReader = new MapReader("sokoban-solver/level3");
 		}catch(IOException e) {
 			System.err.println(e);
 			return;
@@ -39,7 +37,10 @@ public class Main {
 		solution = bfs.run(game);
 		System.out.print(solution);*/
 		
-
+		System.out.println("A* ---\n");
+		AStar bfs = new AStar(new GreedyAssignation());
+		solution = bfs.run(game);
+		System.out.print(solution);
 
 	}
 }
