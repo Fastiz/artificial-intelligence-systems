@@ -29,7 +29,7 @@ public class SearchAlgorithm {
 
     public AlgorithmSolution run(Game game, Comparator<Game> comparator, Heuristic heuristic) {
         this.heuristic = heuristic;
-        game.setEstimatedCost(heuristic.evaluate(game));
+        game.setHeuristicValue(heuristic.evaluate(game));
         this.limit = -1;
         return run(game, comparator);
     }
