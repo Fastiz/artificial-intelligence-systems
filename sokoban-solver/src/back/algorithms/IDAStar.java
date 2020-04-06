@@ -92,7 +92,7 @@ public class IDAStar implements InformedAlgorithm {
             game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
                 child.setHeuristicValue(heuristic.evaluate(child));
                 stack.add(child);
-                hashMap.put(child, child.getHeuristicValue());
+                hashMap.put(child, child.getDepth());
             });
 
             System.out.println(expandedNodes);
