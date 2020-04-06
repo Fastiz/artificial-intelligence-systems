@@ -28,7 +28,7 @@ public class AlgorithmSolution {
 		this.algorithmName = algorithmName;
 		this.goalFound = true;
 		this.solutionDepth = solution.getDepth();
-		this.solutionCost = solution.getDepth();
+		this.solutionCost = solution.getCostValue();
 		this.numberOfExpandedNodes = numberOfExpandedNodes;
 		this.numberOfBorderNodes = numberOfBorderNodes;
 		this.solutionStates = solution.getPathFromRoot();

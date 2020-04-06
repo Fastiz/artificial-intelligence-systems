@@ -1,12 +1,10 @@
 package back.algorithms.util;
 
 import back.AlgorithmSolution;
-import back.game.GameImplementation;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class QueueSearch {
@@ -61,7 +59,7 @@ public class QueueSearch {
                 int estimatedCost = 0;
                 if(this.heuristic != null) {
                     estimatedCost = heuristic.evaluate(gameChild);
-                    gameChild.setEstimatedCost(estimatedCost);
+                    gameChild.setHeuristicValue(estimatedCost);
                 }
 
                 if(!hashSet.contains(gameChild) && estimatedCost != Integer.MAX_VALUE)
