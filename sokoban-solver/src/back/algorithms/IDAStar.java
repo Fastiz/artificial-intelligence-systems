@@ -17,11 +17,6 @@ public class IDAStar implements InformedAlgorithm {
     private int newLimit;
     private HashMap<Game, Integer> hashMap;
     private Stack<Game> stack;
-    private Comparator<Game> gameComparator = (g1, g2) -> {
-        int f1 = g1.getHeuristicValue() + g1.getCostValue();
-        int f2 = g2.getHeuristicValue() + g2.getCostValue();
-        return f1 - f2;
-    };
 
     public IDAStar(Heuristic heuristic) {
         this.heuristic = heuristic;
@@ -57,7 +52,7 @@ public class IDAStar implements InformedAlgorithm {
             newLimit = -1;
             expandedNodes = 0;
             stack.push(game);
-            result = recursiveIDAStarSearch(limit);
+            result = searchIDAStar(limit);
             limit = newLimit;
         }
 
@@ -66,14 +61,14 @@ public class IDAStar implements InformedAlgorithm {
         AlgorithmSolution solution;
         //TODO: numberOfBorderNodes
         if(result)
-            solution = new AlgorithmSolution(this.getName() , this.expandedNodes, 1, this.gameSolved, endTime - startTime);
+            solution = new AlgorithmSolution(this.getName() , this.expandedNodes, stack.size(), this.gameSolved, endTime - startTime);
         else
             solution = new AlgorithmSolution(this.getName() , false, this.expandedNodes, endTime - startTime);
 
         return solution;
     }
 
-    private boolean recursiveIDAStarSearch(int limit) {
+    private boolean searchIDAStar(int limit) {
         while (!stack.isEmpty()) {
             Game game = stack.pop();
 
@@ -95,7 +90,6 @@ public class IDAStar implements InformedAlgorithm {
                 hashMap.put(child, child.getDepth());
             });
 
-            System.out.println(expandedNodes);
             this.expandedNodes++;
         }
 

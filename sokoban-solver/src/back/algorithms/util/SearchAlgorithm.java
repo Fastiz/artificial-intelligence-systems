@@ -40,12 +40,6 @@ public class SearchAlgorithm {
         return runAux(game);
     }
 
-    public AlgorithmSolution run(Game game, int limit) {
-        this.collection = new SearchCollection<>(true);
-        this.limit = limit;
-        return runAux(game);
-    }
-
     private AlgorithmSolution runAux(Game game) {
         hashSet = new HashSet<>();
         expandedNodes = 0;
@@ -71,9 +65,6 @@ public class SearchAlgorithm {
     public boolean search() {
         while (!collection.isEmpty()) {
             Game game = collection.pop();
-
-            if(limit != -1 && limit <= game.getDepth())
-                return false;
 
             if(game.gameFinished()){
                 this.gameSolved = game;
