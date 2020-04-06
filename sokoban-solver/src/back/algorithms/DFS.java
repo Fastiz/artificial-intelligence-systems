@@ -23,7 +23,7 @@ public class DFS implements Algorithm {
         onlyCachePathStates = false;
     }
 
-    public void setCachePathStates(boolean val){
+    public void setOnlyCachePathStates(boolean val){
         this.onlyCachePathStates = val;
     }
 

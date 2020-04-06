@@ -16,6 +16,8 @@ public class GameImplementation implements Game {
 	private int depth;
 	private int estimatedCost;
 
+	private boolean deadlock;
+
 	
 	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth) {
 		this.map = map;
@@ -31,7 +33,7 @@ public class GameImplementation implements Game {
 		int i=playerPosition[0], j=playerPosition[1];
 		List<Game> children = new LinkedList<>();
 
-		if(deadlockState())
+		if(this.deadlock)
 			return children;
 
 		Game newChild;
@@ -178,6 +180,10 @@ public class GameImplementation implements Game {
 			return false;
 		return true;
 	}
+
+	public void checkDeadlock(){
+		this.deadlock = deadlockState();
+	}
 	
 	// ** private
 	private boolean deadlockState(){
@@ -215,7 +221,7 @@ public class GameImplementation implements Game {
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, shallowCopyBoxes(), this.goalsPositions, this, this.depth+1);
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, this.boxesPositions, this.goalsPositions, this, this.depth+1);
 			}else {
 				if(subtract) {
 					if(pos[posComponent] -2 < 0)
@@ -229,8 +235,9 @@ public class GameImplementation implements Game {
 					int[] targetPosition = new int[] {pos[0] + iDir*2, pos[1] + jDir*2};
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
-						
-						return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions, this, this.depth+1);
+						GameImplementation newGame = new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions, this, this.depth+1);
+						newGame.checkDeadlock();
+						return newGame;
 					}
 				}
 			}

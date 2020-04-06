@@ -9,7 +9,6 @@ import reader.ConfigurationReader;
 import reader.MapReader;
 import reader.exceptions.InvalidFormat;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class Main {
 				break;
 			case DFS:
 				DFS dfs = new DFS();
-				dfs.setCachePathStates(configReader.getCacheVisitedStates());
+				dfs.setOnlyCachePathStates(!configReader.getCacheVisitedStates());
 				algorithm = dfs;
 				break;
 			case IDDFS:
