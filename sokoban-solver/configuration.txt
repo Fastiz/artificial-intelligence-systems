@@ -1,13 +1,12 @@
 # Map number
 #>>>
-4
-# Algorithm number (A*: 0, BFS: 1, DFS: 2, GLOBAL GREEDY: 3, IDA*: 4, IDDFS: 5)
-#>>>
-0
-#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 0,
-#	GREEDY ASSIGNATION: 1, TRIVIAL: 2, WALKABLE DISTANCE: 3, MANHATTAN: 4)
+2
+# Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
 #>>>
 1
+#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
+#	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5)
+#>>>
 #Following line is reserved for the parameters of IDA*, IDDFS or DFS. If you are using another algorithm remove line.
 #If your algorithm is IDA* or IDDFS enter max depth or leave the line with -1 if no limit. If your algorithm is DFS, then
 #enter true if you want the algorithm to cache all the visited nodes to ignore them in other branches, else enter false.

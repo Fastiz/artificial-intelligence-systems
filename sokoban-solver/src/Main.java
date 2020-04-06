@@ -55,7 +55,7 @@ public class Main {
 					heuristic = new WalkableDistanceHeuristic();
 					break;
 				case MANHATTAN:
-					heuristic = new ManhattanHeuristic();
+					heuristic = new SimpleAssignationHeuristic();
 					break;
 				default:
 					return;

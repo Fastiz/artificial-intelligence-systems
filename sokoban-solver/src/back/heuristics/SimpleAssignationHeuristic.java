@@ -5,7 +5,7 @@ import back.interfaces.Game;
 import back.interfaces.Heuristic;
 import javafx.scene.control.Cell;
 
-public class ManhattanHeuristic implements Heuristic {
+public class SimpleAssignationHeuristic implements Heuristic {
     @Override
     public String getName(){
         return "Manhattan distance to closest goal";
