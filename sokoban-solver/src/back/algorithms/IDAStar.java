@@ -46,7 +46,6 @@ public class IDAStar implements InformedAlgorithm {
         long startTime = System.currentTimeMillis();
 
         int limit = heuristic.evaluate(game);
-        boolean quit = false;
 
         while(!result) {
             newLimit = -1;
@@ -73,26 +72,26 @@ public class IDAStar implements InformedAlgorithm {
             Game game = stack.pop();
 
             int f = getFunctionValue(game);
-            if (limit < f ) {
-                if(f < newLimit || newLimit == -1)
+            if (limit < f) {
+                if (f < newLimit || newLimit == -1) {
                     newLimit = f;
-                return false;
+                }
+            } else {
+
+                if (game.gameFinished()) {
+                    this.gameSolved = game;
+                    return true;
+                }
+
+                game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
+                    child.setHeuristicValue(heuristic.evaluate(child));
+                    stack.add(child);
+                    hashMap.put(child, child.getDepth());
+                });
+
+                this.expandedNodes++;
             }
-
-            if(game.gameFinished()){
-                this.gameSolved = game;
-                return true;
-            }
-
-            game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
-                child.setHeuristicValue(heuristic.evaluate(child));
-                stack.add(child);
-                hashMap.put(child, child.getDepth());
-            });
-
-            this.expandedNodes++;
         }
-
         return false;
     }
 
