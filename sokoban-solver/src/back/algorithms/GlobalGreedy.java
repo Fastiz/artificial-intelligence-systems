@@ -1,7 +1,8 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
-import back.algorithms.util.QueueSearch;
+import back.algorithms.util.SearchAlgorithm;
+import back.algorithms.util.SearchCollection;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
@@ -34,13 +35,9 @@ public class GlobalGreedy implements InformedAlgorithm {
     @Override
     public AlgorithmSolution run(Game game) {
         Comparator<Game> gameComparator = Comparator.comparingInt(Game::getEstimatedCost);
-        PriorityQueue<Game> gamesPriorityQueue = new PriorityQueue<>(gameComparator);
 
-        game.setEstimatedCost(heuristic.evaluate(game));
-        gamesPriorityQueue.add(game);
-
-        QueueSearch queueSearch = new QueueSearch(this.getName());
-        return queueSearch.run(gamesPriorityQueue, heuristic);
+        SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
+        return searchAlgorithm.run(game, gameComparator, heuristic);
     }
 
     @Override

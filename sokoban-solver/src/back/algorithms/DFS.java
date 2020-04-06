@@ -1,73 +1,19 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.algorithms.util.SearchAlgorithm;
+import back.algorithms.util.SearchCollection;
 import back.interfaces.Game;
 import back.interfaces.Algorithm;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 
 public class DFS implements Algorithm {
-    private HashSet<Game> hashSet;
-
-    private int expandedNodes;
-    private int borderNodes;
-
-    private boolean onlyCachePathStates;
-
-    public DFS() {
-        hashSet = new HashSet<>();
-
-        onlyCachePathStates = false;
-    }
-
-    public void setOnlyCachePathStates(boolean val){
-        this.onlyCachePathStates = val;
-    }
 
     public AlgorithmSolution run(Game game) {
-        expandedNodes = 0;
-
-        long startTime = System.currentTimeMillis();
-        Game result = searchDFS(game);
-        long endTime = System.currentTimeMillis();
-
-        long processingTime = endTime - startTime;
-
-        List<Game> path = result.getPathFromRoot();
-
-        return new AlgorithmSolution(this.getName(), null, result != null, result.getDepth(), result.getDepth(), this.expandedNodes, this.borderNodes, path, processingTime);
-
-    }
-
-    private Game searchDFS(Game initialGame) {
-        Stack<Game> stack = new Stack<>();
-        stack.push(initialGame);
-
-        while (!stack.isEmpty()) {
-
-            Game game = stack.pop();
-            if (!hashSet.contains(game)) {
-                hashSet.add(game);
-
-                if (game.gameFinished()) {
-                    this.borderNodes = stack.size();
-                    return game;
-                }
-
-                List<Game> children = game.calculateChildren();
-
-                children.forEach(stack::push);
-
-                if (this.onlyCachePathStates)
-                    hashSet.remove(game);
-
-                this.expandedNodes++;
-            }
-        }
-        return null;
+        SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
+        return searchAlgorithm.run(game, false);
     }
 
     @Override
