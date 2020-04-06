@@ -1,6 +1,7 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
+import back.algorithms.util.SearchAlgorithm;
 import back.algorithms.util.Utils;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
@@ -40,57 +41,21 @@ public class IDDFS implements Algorithm {
         this.gameSolved = null;
         expandedNodes = 0;
         boolean result = false;
+        AlgorithmSolution solution = null;
 
-
+        SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
         long startTime = System.currentTimeMillis();
-
-        for (int i = 0; i < maxDepth && this.remainingToSearch && !result; i++) {
+        for (int i = 0; i < maxDepth && !result; i++) {
             this.expandedNodes = 0;
-            this.remainingToSearch = false;
-            result = recursiveIDDFS(game, i);
+            solution = searchAlgorithm.run(game, i);
+            result = solution.isGoalFound();
         }
 
         long endTime = System.currentTimeMillis();
 
-        AlgorithmSolution solution;
-        if (result)
-            solution = new AlgorithmSolution(this.getName(), this.expandedNodes, 1, this.gameSolved, endTime - startTime);
-        else
-            solution = new AlgorithmSolution(this.getName(), false, this.expandedNodes, endTime - startTime);
-
+        if(result)
+            solution.setProcessingTime(endTime - startTime);
         return solution;
-    }
-
-    private boolean recursiveIDDFS(Game game, int depthLeft) {
-        this.visitedNodes++;
-        this.hashMap.put(game, game.getDepth());
-
-        List<Game> children = game.calculateChildren();
-
-        if (depthLeft < 0) {
-            this.remainingToSearch = this.remainingToSearch || !children.isEmpty();
-            return false;
-        }
-
-        if (game.gameFinished()) {
-            this.gameSolved = game;
-            return true;
-        }
-
-        for (int i = 0; i < children.size(); i++) {
-            Game gameChild = children.get(i);
-
-            if(Utils.checkIfHashMapContainsElementAndReplace(this.hashMap, gameChild)){
-                if (recursiveIDDFS(gameChild, depthLeft - 1)) {
-                    if (i + 1 == children.size())
-                        this.expandedNodes++;
-                    return true;
-                }
-            }
-        }
-
-        this.expandedNodes++;
-        return false;
     }
 
     @Override

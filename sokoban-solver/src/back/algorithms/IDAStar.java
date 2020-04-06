@@ -6,6 +6,7 @@ import back.interfaces.Game;
 import back.interfaces.Heuristic;
 import back.interfaces.InformedAlgorithm;
 
+import javax.rmi.CORBA.Util;
 import java.util.*;
 
 public class IDAStar implements InformedAlgorithm {
@@ -15,6 +16,7 @@ public class IDAStar implements InformedAlgorithm {
     private Heuristic heuristic;
     private int newLimit;
     private HashMap<Game, Integer> hashMap;
+    private Stack<Game> stack;
     private Comparator<Game> gameComparator = (g1, g2) -> {
         int f1 = g1.getHeuristicValue() + g1.getCostValue();
         int f2 = g2.getHeuristicValue() + g2.getCostValue();
@@ -43,22 +45,19 @@ public class IDAStar implements InformedAlgorithm {
     public AlgorithmSolution run(Game game) {
         this.newLimit = -1;
         this.gameSolved = null;
-        this.expandedNodes = 0;
         boolean result = false;
+        this.stack = new Stack<>();
 
         long startTime = System.currentTimeMillis();
 
         int limit = heuristic.evaluate(game);
         boolean quit = false;
 
-        while(!result & !quit) {
+        while(!result) {
             newLimit = -1;
-            result = recursiveAStarSearch(game, limit);
-
-            if(newLimit < limit) {
-                quit = true;
-            }
-
+            expandedNodes = 0;
+            stack.push(game);
+            result = recursiveIDAStarSearch(limit);
             limit = newLimit;
         }
 
@@ -74,40 +73,37 @@ public class IDAStar implements InformedAlgorithm {
         return solution;
     }
 
-    private boolean recursiveAStarSearch(Game game, int limit) {
-        this.hashMap.put(game, game.getDepth());
+    private boolean recursiveIDAStarSearch(int limit) {
+        while (!stack.isEmpty()) {
+            Game game = stack.pop();
 
-        int f = getFunctionValue(game);
-        if (limit < f ) {
-            if(f < newLimit || newLimit == -1)
-                newLimit = f;
-            return false;
-        }
-
-        if(game.gameFinished()){
-            this.gameSolved = game;
-            return true;
-        }
-
-
-        List<Game> children = game.calculateChildren();
-        for(int i = 0; i < children.size(); i++) {
-            Game gameChild = children.get(i);
-            if(Utils.checkIfHashMapContainsElementAndReplace(this.hashMap, gameChild)) {
-                if (recursiveAStarSearch(gameChild, limit)) {
-                    if (i + 1 == children.size())
-                        this.expandedNodes++;
-                    return true;
-                }
+            int f = getFunctionValue(game);
+            if (limit < f ) {
+                if(f < newLimit || newLimit == -1)
+                    newLimit = f;
+                return false;
             }
+
+            if(game.gameFinished()){
+                this.gameSolved = game;
+                return true;
+            }
+
+            game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
+                child.setHeuristicValue(heuristic.evaluate(child));
+                stack.add(child);
+                hashMap.put(child, child.getDepth());
+            });
+
+            System.out.println(expandedNodes);
+            this.expandedNodes++;
         }
 
-        this.expandedNodes++;
         return false;
     }
 
     private int getFunctionValue(Game game) {
-        return heuristic.evaluate(game) + game.getDepth();
+        return game.getHeuristicValue() + game.getDepth();
     }
 
     @Override

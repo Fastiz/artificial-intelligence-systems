@@ -1,7 +1,8 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
-import back.algorithms.util.QueueSearch;
+import back.algorithms.util.SearchAlgorithm;
+import back.algorithms.util.SearchCollection;
 import back.interfaces.Algorithm;
 import back.interfaces.Game;
 
@@ -11,11 +12,8 @@ import java.util.Queue;
 public class BFS implements Algorithm {
 
     public AlgorithmSolution run(Game game) {
-        Queue<Game> gamesQueue = new LinkedList<>();
-        gamesQueue.add(game);
-
-        QueueSearch queueSearch = new QueueSearch(this.getName());
-        return queueSearch.run(gamesQueue);
+        SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
+        return searchAlgorithm.run(game, true);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package back.algorithms;
 
 import back.AlgorithmSolution;
-import back.algorithms.util.QueueSearch;
+import back.algorithms.util.SearchAlgorithm;
+import back.algorithms.util.SearchCollection;
+import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 import back.interfaces.InformedAlgorithm;
@@ -43,11 +45,7 @@ public class AStar implements InformedAlgorithm {
             return f1 - f2;
         };
 
-        PriorityQueue<Game> gamesPriorityQueue = new PriorityQueue<>(gameComparator);
-        game.setHeuristicValue(heuristic.evaluate(game));
-        gamesPriorityQueue.add(game);
-
-        QueueSearch queueSearch = new QueueSearch(this.getName());
-        return queueSearch.run(gamesPriorityQueue, heuristic);
+        SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
+        return searchAlgorithm.run(game, gameComparator, heuristic);
     }
 }
