@@ -2,7 +2,7 @@ package back.game;
 
 import java.util.*;
 
-import back.game.exceptions.InvalidMapException;
+import back.interfaces.CostFunction;
 import back.interfaces.Game;
 
 public class GameImplementation implements Game {
@@ -14,18 +14,24 @@ public class GameImplementation implements Game {
 
 	private Game parent;
 	private int depth;
-	private int estimatedCost;
+
+	private CostFunction costFunction;
+
+	private int heuristicValue;
+	private int costValue;
 
 	private boolean deadlock;
 
 	
-	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth) {
+	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction) {
 		this.map = map;
 		this.playerPosition = playerPosition;
 		this.boxesPositions = boxesPositions;
 		this.goalsPositions = goalsPositions;
 		this.parent = parent;
 		this.depth = depth;
+		this.costFunction = costFunction;
+		this.costValue = costValue + costFunction.evaluate(parent, this);
 	}
 	
 	// ** public
@@ -66,6 +72,11 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
+	public int getCostValue(){
+		return this.costValue;
+	}
+
+	@Override
 	public int[] getPlayerPosition(){
 		return this.playerPosition;
 	}
@@ -95,8 +106,8 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
-	public void setEstimatedCost(int estimatedCost) {
-		this.estimatedCost = estimatedCost;
+	public void setHeuristicValue(int heuristicValue) {
+		this.heuristicValue = heuristicValue;
 	}
 
 	@Override
@@ -105,8 +116,8 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
-	public int getEstimatedCost() {
-		return estimatedCost;
+	public int getHeuristicValue() {
+		return heuristicValue;
 	}
 
 	@Override
@@ -221,7 +232,8 @@ public class GameImplementation implements Game {
 		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
 			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
 			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, this.boxesPositions, this.goalsPositions, this, this.depth+1);
+				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, this.boxesPositions,
+						this.goalsPositions, this, this.depth+1, this.costValue, this.costFunction);
 			}else {
 				if(subtract) {
 					if(pos[posComponent] -2 < 0)
@@ -235,7 +247,10 @@ public class GameImplementation implements Game {
 					int[] targetPosition = new int[] {pos[0] + iDir*2, pos[1] + jDir*2};
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
-						GameImplementation newGame = new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, newBoxes, this.goalsPositions, this, this.depth+1);
+
+						GameImplementation newGame = new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir},
+								newBoxes, this.goalsPositions, this, this.depth+1, this.costValue, this.costFunction);
+
 						newGame.checkDeadlock();
 						return newGame;
 					}

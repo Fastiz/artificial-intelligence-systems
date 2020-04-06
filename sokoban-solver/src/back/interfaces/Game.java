@@ -9,13 +9,13 @@ public interface Game {
 		
 	public boolean gameFinished();
 	
-	public void setEstimatedCost(int estimatedCost);
+	public void setHeuristicValue(int heuristicValue);
 
 	public List<Game> calculateChildren();
 
 	public int getDepth();
 
-	public int getEstimatedCost();
+	public int getHeuristicValue();
 
 	public int[][] getBoxesPositions();
 
@@ -26,4 +26,6 @@ public interface Game {
 	public Game getParent();
 
 	public List<Game> getPathFromRoot();
+
+	public int getCostValue();
 }

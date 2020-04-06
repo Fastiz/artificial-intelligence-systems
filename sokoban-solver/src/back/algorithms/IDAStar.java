@@ -2,7 +2,6 @@ package back.algorithms;
 
 import back.AlgorithmSolution;
 import back.algorithms.util.Utils;
-import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 import back.interfaces.InformedAlgorithm;
@@ -17,8 +16,8 @@ public class IDAStar implements InformedAlgorithm {
     private int newLimit;
     private HashMap<Game, Integer> hashMap;
     private Comparator<Game> gameComparator = (g1, g2) -> {
-        int f1 = g1.getEstimatedCost() + g1.getDepth();
-        int f2 = g2.getEstimatedCost() + g2.getDepth();
+        int f1 = g1.getHeuristicValue() + g1.getDepth();
+        int f2 = g2.getHeuristicValue() + g2.getDepth();
         return f1 - f2;
     };
 

@@ -1,5 +1,6 @@
 import back.AlgorithmSolution;
 import back.algorithms.*;
+import back.cost_functions.TrivialCostFunction;
 import back.game.GameImplementation;
 import back.heuristics.*;
 import back.interfaces.Algorithm;
@@ -34,7 +35,7 @@ public class Main {
 			return;
 		}
 
-		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions(), mapReader.getGoalsPositions(), null, 0);
+		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions(), mapReader.getGoalsPositions(), null, 0, 0, new TrivialCostFunction());
 
 		Heuristic heuristic = null;
 		Algorithm algorithm;

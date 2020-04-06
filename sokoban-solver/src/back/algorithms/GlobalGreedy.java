@@ -34,7 +34,7 @@ public class GlobalGreedy implements InformedAlgorithm {
 
     @Override
     public AlgorithmSolution run(Game game) {
-        Comparator<Game> gameComparator = Comparator.comparingInt(Game::getEstimatedCost);
+        Comparator<Game> gameComparator = Comparator.comparingInt(Game::getHeuristicValue);
 
         SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
         return searchAlgorithm.run(game, gameComparator, heuristic);
