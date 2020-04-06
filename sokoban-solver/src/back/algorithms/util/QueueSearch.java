@@ -15,6 +15,11 @@ public class QueueSearch {
     private HashSet<Game> hashSet;
     private Queue<Game> queue;
     private Heuristic heuristic = null;
+    private String name;
+
+    public QueueSearch(String name){
+        this.name = name;
+    }
 
     public AlgorithmSolution run(Queue<Game> queue) {
         hashSet = new HashSet<>();
@@ -28,9 +33,9 @@ public class QueueSearch {
 
         AlgorithmSolution solution;
         if(result)
-            solution = new AlgorithmSolution(this.expandedNodes, queue.size(), this.gameSolved, endTime - startTime);
+            solution = new AlgorithmSolution(this.name, this.expandedNodes, queue.size(), this.gameSolved, endTime - startTime);
         else
-            solution = new AlgorithmSolution(false, this.expandedNodes, endTime - startTime);
+            solution = new AlgorithmSolution(this.name, false, this.expandedNodes, endTime - startTime);
 
         this.heuristic = null;
         return solution;

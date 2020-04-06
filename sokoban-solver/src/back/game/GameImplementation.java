@@ -108,15 +108,17 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
-	public List<Game> getPathToRoot(){
+	public List<Game> getPathFromRoot(){
 		List<Game> path = new LinkedList<>();
-		path.add(this);
-		Game current = this.parent;
-		while(current != null){
-			path.add(current);
-			current = current.getParent();
-		}
+		getPathFromRootR(this, path);
 		return path;
+	}
+
+	private void getPathFromRootR(Game current, List<Game> list){
+		if(current.getParent()!=null){
+			getPathFromRootR(current.getParent(), list);
+		}
+		list.add(current);
 	}
 
 	@Override

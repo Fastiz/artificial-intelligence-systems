@@ -54,9 +54,9 @@ public class IDDFS implements Algorithm {
 
         AlgorithmSolution solution;
         if (result)
-            solution = new AlgorithmSolution(this.expandedNodes, 1, this.gameSolved, endTime - startTime);
+            solution = new AlgorithmSolution(this.getName(), this.expandedNodes, 1, this.gameSolved, endTime - startTime);
         else
-            solution = new AlgorithmSolution(false, this.expandedNodes, endTime - startTime);
+            solution = new AlgorithmSolution(this.getName(), false, this.expandedNodes, endTime - startTime);
 
         return solution;
     }
@@ -91,6 +91,11 @@ public class IDDFS implements Algorithm {
 
         this.expandedNodes++;
         return false;
+    }
+
+    @Override
+    public String getName(){
+        return "IDDFS";
     }
 
 }

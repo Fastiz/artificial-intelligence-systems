@@ -9,6 +9,10 @@ import java.util.List;
 
 public class WalkableDistanceHeuristic implements Heuristic {
     @Override
+    public String getName(){
+        return "Walkable distance";
+    }
+    @Override
     public int evaluate(Game game) {
         int[][] goals = game.getGoalsPositions();
         int[] player = game.getPlayerPosition();

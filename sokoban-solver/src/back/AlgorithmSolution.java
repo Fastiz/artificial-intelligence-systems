@@ -14,26 +14,31 @@ public class AlgorithmSolution {
 	private int numberOfBorderNodes;
 	private List<Game> solutionStates;
 	private long processingTime;
+	private String algorithmName;
+	private String heuristicName;
 
-	public AlgorithmSolution (boolean goalFound, int numberOfExpandedNodes, long processingTime) {
+	public AlgorithmSolution (String algorithmName, boolean goalFound, int numberOfExpandedNodes, long processingTime) {
+		this.algorithmName = algorithmName;
 		this.goalFound = goalFound;
 		this.numberOfExpandedNodes = numberOfExpandedNodes;
 		this.processingTime = processingTime;
 	}
 
-	public AlgorithmSolution (int numberOfExpandedNodes, int numberOfBorderNodes, Game solution, long processingTime) {
+	public AlgorithmSolution (String algorithmName, int numberOfExpandedNodes, int numberOfBorderNodes, Game solution, long processingTime) {
+		this.algorithmName = algorithmName;
 		this.goalFound = true;
 		this.solutionDepth = solution.getDepth();
 		this.solutionCost = solution.getDepth();
 		this.numberOfExpandedNodes = numberOfExpandedNodes;
 		this.numberOfBorderNodes = numberOfBorderNodes;
-		this.solutionStates = solution.getPathToRoot();
+		this.solutionStates = solution.getPathFromRoot();
 		this.solutionStates.add(solution);
 		this.processingTime = processingTime;
 	}
 	
-	public AlgorithmSolution (String parameters, boolean goalFound, int solutionDepth, int solutionCost, 
+	public AlgorithmSolution (String algorithmName, String parameters, boolean goalFound, int solutionDepth, int solutionCost,
 			int numberOfExpandedNodes, int numberOfBorderNodes, List<Game> visitedStates, long processingTime) {
+		this.algorithmName = algorithmName;
 		this.parameters = parameters;
 		this.goalFound = goalFound;
 		this.solutionDepth = solutionDepth;
@@ -42,6 +47,10 @@ public class AlgorithmSolution {
 		this.numberOfBorderNodes = numberOfBorderNodes;
 		this.solutionStates = visitedStates;
 		this.processingTime = processingTime;
+	}
+
+	public void setHeuristicName(String name){
+		this.heuristicName = name;
 	}
 	
 	public String getParameters() {
@@ -134,23 +143,26 @@ public class AlgorithmSolution {
 	private String printSolution(AlgorithmSolution solution) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("Solution found!" + "\n\n");
+		sb.append("Algorithm: ").append(this.algorithmName).append('\n');
 
-		List<Game> allGames = new ArrayList<>(solution.getSolutionStates());
-		sb.append("Solution depth: ").append(solution.getSolutionDepth()).append("\n\n");
+		if(this.heuristicName != null)
+			sb.append("Heuristic: ").append(this.heuristicName).append('\n');
 
-		sb.append("Solution cost: ").append(solution.getSolutionCost()).append("\n\n");
+		sb.append("Solution found!" + "\n");
 
-		sb.append("Expanded nodes: ").append(solution.getNumberOfExpandedNodes()).append("\n\n");
+		sb.append("Solution depth: ").append(solution.getSolutionDepth()).append("\n");
 
-		sb.append("Border nodes: ").append(solution.getNumberOfBorderNodes()).append("\n\n");
+		sb.append("Solution cost: ").append(solution.getSolutionCost()).append("\n");
 
-		sb.append("Time: ").append(solution.getProcessingTime()).append("\n\n");
+		sb.append("Expanded nodes: ").append(solution.getNumberOfExpandedNodes()).append("\n");
 
-		/*for(int i = allGames.size() - 1; i >= 0; i--) {
-			sb.append(allGames.get(i).toString()).append("\n\n");
-		}*/
+		sb.append("Border nodes: ").append(solution.getNumberOfBorderNodes()).append("\n");
 
+		sb.append("Time: ").append(solution.getProcessingTime()).append(" ms \n\n");
+
+		for(Game game : this.solutionStates){
+			sb.append(game).append("\n");
+		}
 		return sb.toString();
 	}
 

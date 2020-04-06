@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class GreedyAssignationHeuristic implements Heuristic {
-
+    @Override
+    public String getName(){
+        return "Greedy assignation";
+    }
     @Override
     public int evaluate(Game game) {
         int[][] boxes = game.getBoxesPositions(), goals = game.getGoalsPositions();

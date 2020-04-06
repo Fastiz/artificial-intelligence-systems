@@ -25,5 +25,5 @@ public interface Game {
 
 	public Game getParent();
 
-	public List<Game> getPathToRoot();
+	public List<Game> getPathFromRoot();
 }

@@ -5,7 +5,6 @@ import back.interfaces.Game;
 import back.interfaces.Algorithm;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -24,6 +23,10 @@ public class DFS implements Algorithm {
         onlyCachePathStates = false;
     }
 
+    public void setCachePathStates(boolean val){
+        this.onlyCachePathStates = val;
+    }
+
     public AlgorithmSolution run(Game game) {
         expandedNodes = 0;
 
@@ -33,9 +36,9 @@ public class DFS implements Algorithm {
 
         long processingTime = endTime - startTime;
 
-        List<Game> path = result.getPathToRoot();
+        List<Game> path = result.getPathFromRoot();
 
-        return new AlgorithmSolution(null, result != null, result.getDepth(), result.getDepth(), this.expandedNodes, this.borderNodes, path, processingTime);
+        return new AlgorithmSolution(this.getName(), null, result != null, result.getDepth(), result.getDepth(), this.expandedNodes, this.borderNodes, path, processingTime);
 
     }
 
@@ -65,5 +68,10 @@ public class DFS implements Algorithm {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getName(){
+        return "DFS";
     }
 }

@@ -7,6 +7,11 @@ import javafx.scene.control.Cell;
 
 public class ManhattanHeuristic implements Heuristic {
     @Override
+    public String getName(){
+        return "Manhattan distance to closest goal";
+    }
+
+    @Override
     public int evaluate(Game game) {
         int[][] goals = game.getGoalsPositions();
         int[][] boxes = game.getBoxesPositions();

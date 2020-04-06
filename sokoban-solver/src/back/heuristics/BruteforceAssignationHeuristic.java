@@ -9,6 +9,11 @@ import java.util.List;
 
 public class BruteforceAssignationHeuristic implements Heuristic {
     @Override
+    public String getName(){
+        return "Bruteforce assignation";
+    }
+
+    @Override
     public int evaluate(Game game) {
         int[][] boxes = game.getBoxesPositions(), goals = game.getGoalsPositions();
 

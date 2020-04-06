@@ -14,8 +14,13 @@ public class BFS implements Algorithm {
         Queue<Game> gamesQueue = new LinkedList<>();
         gamesQueue.add(game);
 
-        QueueSearch queueSearch = new QueueSearch();
+        QueueSearch queueSearch = new QueueSearch(this.getName());
         return queueSearch.run(gamesQueue);
+    }
+
+    @Override
+    public String getName(){
+        return "BFS";
     }
 
 }
