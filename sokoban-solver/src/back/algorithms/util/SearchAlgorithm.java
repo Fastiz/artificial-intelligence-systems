@@ -52,6 +52,7 @@ public class SearchAlgorithm {
         gameSolved = null;
 
         this.collection.add(game);
+        this.hashSet.add(game);
 
         long startTime = System.currentTimeMillis();
         boolean result = search();
@@ -79,16 +80,14 @@ public class SearchAlgorithm {
                 return true;
             }
 
-            hashSet.add(game);
-
             game.calculateChildren().stream().filter(child -> !hashSet.contains(child)).forEach(child -> {
                 if(heuristic != null)
                     child.setHeuristicValue(heuristic.evaluate(child));
                 collection.add(child);
+                hashSet.add(child);
             });
 
             this.expandedNodes++;
-            System.out.println(expandedNodes);
         }
 
         return false;
