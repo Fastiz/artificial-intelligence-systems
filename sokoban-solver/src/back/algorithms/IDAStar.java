@@ -16,8 +16,8 @@ public class IDAStar implements InformedAlgorithm {
     private int newLimit;
     private HashMap<Game, Integer> hashMap;
     private Comparator<Game> gameComparator = (g1, g2) -> {
-        int f1 = g1.getHeuristicValue() + g1.getDepth();
-        int f2 = g2.getHeuristicValue() + g2.getDepth();
+        int f1 = g1.getHeuristicValue() + g1.getCostValue();
+        int f2 = g2.getHeuristicValue() + g2.getCostValue();
         return f1 - f2;
     };
 
