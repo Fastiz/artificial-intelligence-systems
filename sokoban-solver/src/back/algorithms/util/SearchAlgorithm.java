@@ -83,7 +83,7 @@ public class SearchAlgorithm {
 
             game.calculateChildren().stream().filter(child -> !hashSet.contains(child)).forEach(child -> {
                 if(heuristic != null)
-                    child.setEstimatedCost(heuristic.evaluate(child));
+                    child.setHeuristicValue(heuristic.evaluate(child));
                 collection.add(child);
             });
 
