@@ -53,6 +53,8 @@ public class IDDFS implements Algorithm {
 
         long endTime = System.currentTimeMillis();
 
+        if(result)
+            solution.setProcessingTime(endTime - startTime);
         return solution;
     }
 
