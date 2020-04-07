@@ -100,19 +100,10 @@ public class ConfigurationReader {
 				}
 			}
 
-			switch (this.algorithm){
-				case IDA_STAR:
-				case IDDFS:
-					newLine = readLineIgnoringComment(br);
+			if(this.algorithm == Algorithms.IDDFS){
+				newLine = readLineIgnoringComment(br);
 
-					this.maxDepth = Integer.parseInt(newLine);
-
-					break;
-				case DFS:
-					newLine = readLineIgnoringComment(br);
-					this.cacheVisitedStates = newLine.equals("true");
-					break;
-
+				this.maxDepth = Integer.parseInt(newLine);
 			}
 
 		}
