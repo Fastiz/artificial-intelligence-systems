@@ -17,10 +17,10 @@ Assigns the best fit for each box and goal according to manhattan distance. This
 Assigns a good-enough fit for goals and boxes. Could happen that multiple boxes are assigned to the same goal.
 ### Simple assignation
 Sums of the distance of the closest goal to each box. Totally ignores if the goal is already assigned for another box.
-### Walkable heuristic
+### Walkable distance
 The length of the path the player would have to travel to each goal.
-### Trivial
-The trivial heuristic. Always returns 1.
+### Simple assignation considering walls
+The same as simple assignation but instead of finding the manhattan distance, uses the closest path without going over walls.
 ## Executing the program
 
 ## Configuration file
@@ -43,7 +43,7 @@ If the algorithms chosen is informed then the third line is reserved for the id 
 4. Walkable distance
 5. Simple assignation
 ### Additional parameter
-The last line in reserved for additional parameter that some algorithms require. If your algorithm is IDA* or IDDFS enter max depth or leave the line with -1 if no limit. If your algorithm is DFS, then enter true if you want the algorithm to cache all the visited nodes to ignore them in other branches, else enter false.
+The last line in reserved for additional parameter that some algorithms require. If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
 If your algorithm is not mentioned before then remove the line.
 ## Output file
 In the file output.txt is saved the result of the execution. If the algorithm found a solution then it will print information of the execution and then display the solution for the puzzle.
