@@ -99,9 +99,9 @@ public class Main {
 				return;
 		}
 
-		System.out.print("Started running '"+algorithm.getName()+"'");
+		System.out.print("Started running '"+algorithm.getName()+"' for map "+configReader.getMapNumber()+'.');
 		if(heuristic != null)
-			System.out.print(" with '"+heuristic.getName() +"' heuristic");
+			System.out.print(" Using '"+heuristic.getName() +"' heuristic.");
 		System.out.print('\n');
 		AlgorithmSolution solution = algorithm.run(game);
 
