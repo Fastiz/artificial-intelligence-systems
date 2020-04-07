@@ -18,7 +18,7 @@ public class ConfigurationReader {
 
 	public enum Heuristics {
 		BRUTEFORCE_ASSIGNATION, GREEDY_ASSIGNATION, TRIVIAL, WALKABLE_DISTANCE,
-		MANHATTAN;
+		SIMPLE_ASSIGNATION, SIMPLE_ASSIGNATION_WITH_WALLS;
 	}
 
 	private Algorithms algorithm;
@@ -93,7 +93,10 @@ public class ConfigurationReader {
 						this.heuristic = Heuristics.WALKABLE_DISTANCE;
 						break;
 					case 5:
-						this.heuristic = Heuristics.MANHATTAN;
+						this.heuristic = Heuristics.SIMPLE_ASSIGNATION;
+						break;
+					case 6:
+						this.heuristic = Heuristics.SIMPLE_ASSIGNATION_WITH_WALLS;
 						break;
 					default:
 						throw new InvalidFormat();
