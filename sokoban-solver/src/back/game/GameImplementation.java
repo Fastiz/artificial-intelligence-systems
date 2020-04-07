@@ -6,198 +6,209 @@ import back.interfaces.CostFunction;
 import back.interfaces.Game;
 
 public class GameImplementation implements Game {
-	
-	private CellTypeEnum[][] map;
-	private int[][] boxesPositions;
-	private int[][] goalsPositions;
-	private int[] playerPosition;
 
-	private Game parent;
-	private int depth;
+    private CellTypeEnum[][] map;
+    private int[][] boxesPositions;
+    private int[][] goalsPositions;
+    private int[] playerPosition;
 
-	private CostFunction costFunction;
+    private Game parent;
+    private int depth;
 
-	private int heuristicValue;
-	private int costValue;
+    private CostFunction costFunction;
 
-	private boolean deadlock;
+    private int heuristicValue;
+    private int costValue;
 
-	
-	public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction) {
-		this.map = map;
-		this.playerPosition = playerPosition;
-		this.boxesPositions = boxesPositions;
-		this.goalsPositions = goalsPositions;
-		this.parent = parent;
-		this.depth = depth;
-		this.costFunction = costFunction;
-		this.costValue = costValue + costFunction.evaluate(parent, this);
-	}
-	
-	// ** public
-	public List<Game> calculateChildren(){
-		int i=playerPosition[0], j=playerPosition[1];
-		List<Game> children = new LinkedList<>();
+    private boolean visited;
 
-		if(this.deadlock)
-			return children;
+    private boolean deadlock;
 
-		Game newChild;
 
-		//consider top
-		newChild = createChild('t');
-		if(newChild != null) {
-			children.add(newChild);
-		}
+    public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction) {
+        this.map = map;
+        this.playerPosition = playerPosition;
+        this.boxesPositions = boxesPositions;
+        this.goalsPositions = goalsPositions;
+        this.parent = parent;
+        this.depth = depth;
+        this.costFunction = costFunction;
+        this.costValue = costValue + costFunction.evaluate(parent, this);
+        this.visited = false;
+    }
 
-		//consider bottom
-		newChild = createChild('b');
-		if(newChild != null) {
-			children.add(newChild);
-		}
+    public boolean isVisited() {
+        return visited;
+    }
 
-		//consider left
-		newChild = createChild('l');
-		if(newChild != null) {
-			children.add(newChild);
-		}
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
 
-		//consider right
-		newChild = createChild('r');
-		if(newChild != null) {
-			children.add(newChild);
-		}
+    // ** public
+    public List<Game> calculateChildren() {
+        int i = playerPosition[0], j = playerPosition[1];
+        List<Game> children = new LinkedList<>();
 
-		return children;
-	}
+        if (this.deadlock)
+            return children;
 
-	@Override
-	public int getCostValue(){
-		return this.costValue;
-	}
+        Game newChild;
 
-	@Override
-	public int[] getPlayerPosition(){
-		return this.playerPosition;
-	}
+        //consider top
+        newChild = createChild('t');
+        if (newChild != null) {
+            children.add(newChild);
+        }
 
-	@Override
-	public int[][] getBoxesPositions() {
-		return this.boxesPositions;
-	}
+        //consider bottom
+        newChild = createChild('b');
+        if (newChild != null) {
+            children.add(newChild);
+        }
 
-	@Override
-	public int[][] getGoalsPositions() {
-		return this.goalsPositions;
-	}
+        //consider left
+        newChild = createChild('l');
+        if (newChild != null) {
+            children.add(newChild);
+        }
 
-	@Override
-	public Game getParent(){
-		return this.parent;
-	}
+        //consider right
+        newChild = createChild('r');
+        if (newChild != null) {
+            children.add(newChild);
+        }
 
-	@Override
-	public boolean gameFinished() {
-		for(int[] boxPosition: this.boxesPositions) {
-			if(map[boxPosition[0]][boxPosition[1]] != CellTypeEnum.GOAL)
-				return false;
-		}
-		return true;
-	}
+        return children;
+    }
 
-	@Override
-	public void setHeuristicValue(int heuristicValue) {
-		this.heuristicValue = heuristicValue;
-	}
+    @Override
+    public int getCostValue() {
+        return this.costValue;
+    }
 
-	@Override
-	public int getDepth() {
-		return this.depth;
-	}
+    @Override
+    public int[] getPlayerPosition() {
+        return this.playerPosition;
+    }
 
-	@Override
-	public int getHeuristicValue() {
-		return heuristicValue;
-	}
+    @Override
+    public int[][] getBoxesPositions() {
+        return this.boxesPositions;
+    }
 
-	@Override
-	public List<Game> getPathFromRoot(){
-		List<Game> path = new LinkedList<>();
-		getPathFromRootR(this, path);
-		return path;
-	}
+    @Override
+    public int[][] getGoalsPositions() {
+        return this.goalsPositions;
+    }
 
-	private void getPathFromRootR(Game current, List<Game> list){
-		if(current.getParent()!=null){
-			getPathFromRootR(current.getParent(), list);
-		}
-		list.add(current);
-	}
+    @Override
+    public Game getParent() {
+        return this.parent;
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < this.map.length; i++) {
-			for (int j = 0; j < this.map[0].length; j++) {
-				CellTypeEnum cell = this.map[i][j];
-				
-				if(cell == CellTypeEnum.WALL) {
-					sb.append("#");
-				}else if(cell == CellTypeEnum.EMPTY) {
-					if(playerPosition[0] == i && playerPosition[1] == j) {
-						sb.append("@");
-					}else if(checkForBox(new int[] {i, j}) != -1) {
-						sb.append("$");
-					}else {
-						sb.append(" ");
-					}
-				}else if(cell == CellTypeEnum.GOAL) {
-					if(playerPosition[0] == i && playerPosition[1] == j) {
-						sb.append("@");
-					}else if(checkForBox(new int[] {i, j}) != -1) {
-						sb.append("G");
-					}else {
-						sb.append(".");
-					}
-				}
-			}
-			sb.append('\n');
-		}
+    @Override
+    public boolean gameFinished() {
+        for (int[] boxPosition : this.boxesPositions) {
+            if (map[boxPosition[0]][boxPosition[1]] != CellTypeEnum.GOAL)
+                return false;
+        }
+        return true;
+    }
 
-		return sb.toString();
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.deepHashCode(boxesPositions);
-		result = prime * result + Arrays.hashCode(playerPosition);
-		return result;
-	}
+    @Override
+    public void setHeuristicValue(int heuristicValue) {
+        this.heuristicValue = heuristicValue;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GameImplementation other = (GameImplementation) obj;
-		if (!Arrays.deepEquals(boxesPositions, other.boxesPositions))
-			return false;
-		if (!Arrays.equals(playerPosition, other.playerPosition))
-			return false;
-		return true;
-	}
+    @Override
+    public int getDepth() {
+        return this.depth;
+    }
 
-	public void checkDeadlock(){
-		this.deadlock = deadlockState();
-	}
-	
-	// ** private
-	private boolean deadlockState(){
+    @Override
+    public int getHeuristicValue() {
+        return heuristicValue;
+    }
+
+    @Override
+    public List<Game> getPathFromRoot() {
+        List<Game> path = new LinkedList<>();
+        getPathFromRootR(this, path);
+        return path;
+    }
+
+    private void getPathFromRootR(Game current, List<Game> list) {
+        if (current.getParent() != null) {
+            getPathFromRootR(current.getParent(), list);
+        }
+        list.add(current);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < this.map.length; i++) {
+            for (int j = 0; j < this.map[0].length; j++) {
+                CellTypeEnum cell = this.map[i][j];
+
+                if (cell == CellTypeEnum.WALL) {
+                    sb.append("#");
+                } else if (cell == CellTypeEnum.EMPTY) {
+                    if (playerPosition[0] == i && playerPosition[1] == j) {
+                        sb.append("@");
+                    } else if (checkForBox(new int[]{i, j}) != -1) {
+                        sb.append("$");
+                    } else {
+                        sb.append(" ");
+                    }
+                } else if (cell == CellTypeEnum.GOAL) {
+                    if (playerPosition[0] == i && playerPosition[1] == j) {
+                        sb.append("@");
+                    } else if (checkForBox(new int[]{i, j}) != -1) {
+                        sb.append("G");
+                    } else {
+                        sb.append(".");
+                    }
+                }
+            }
+            sb.append('\n');
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.deepHashCode(boxesPositions);
+        result = prime * result + Arrays.hashCode(playerPosition);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GameImplementation other = (GameImplementation) obj;
+        if (!Arrays.deepEquals(boxesPositions, other.boxesPositions))
+            return false;
+        if (!Arrays.equals(playerPosition, other.playerPosition))
+            return false;
+        return true;
+    }
+
+    public void checkDeadlock() {
+        this.deadlock = deadlockState();
+    }
+
+    // ** private
+    private boolean deadlockState() {
 
 		for(int x = -1; x < 2; x ++) {
 			for(int i = 0; i < this.boxesPositions.length && x != 0; i++) {
@@ -248,41 +259,41 @@ public class GameImplementation implements Game {
 					if(checkForBox(targetPosition) == -1){
 						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
 
-						GameImplementation newGame = new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir},
-								newBoxes, this.goalsPositions, this, this.depth+1, this.costValue, this.costFunction);
+                        GameImplementation newGame = new GameImplementation(this.map, new int[]{pos[0] + iDir, pos[1] + jDir},
+                                newBoxes, this.goalsPositions, this, this.depth + 1, this.costValue, this.costFunction);
 
-						newGame.checkDeadlock();
-						return newGame;
-					}
-				}
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	private int[][] shallowCopyBoxes(){
-		int[][] copiedBoxes = new int[this.boxesPositions.length][];
-		System.arraycopy(boxesPositions, 0, copiedBoxes, 0, this.boxesPositions.length);
-		return copiedBoxes;
-	}
-	
-	private int[][] moveBoxAndCopyBoxes(int index, int[] newPos){
-		int[][] copiedBoxes = shallowCopyBoxes();
-		
-		copiedBoxes[index] = newPos;
-		
-		return copiedBoxes;
-	}
-	
-	private int checkForBox(int[] pos) {
-		for(int i=0; i<this.boxesPositions.length; i++) {
-			if(this.boxesPositions[i][0] == pos[0] && this.boxesPositions[i][1] == pos[1])
-				return i;
-		}
-		return -1;
-	}
+                        newGame.checkDeadlock();
+                        return newGame;
+                    }
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    private int[][] shallowCopyBoxes() {
+        int[][] copiedBoxes = new int[this.boxesPositions.length][];
+        System.arraycopy(boxesPositions, 0, copiedBoxes, 0, this.boxesPositions.length);
+        return copiedBoxes;
+    }
+
+    private int[][] moveBoxAndCopyBoxes(int index, int[] newPos) {
+        int[][] copiedBoxes = shallowCopyBoxes();
+
+        copiedBoxes[index] = newPos;
+
+        return copiedBoxes;
+    }
+
+    private int checkForBox(int[] pos) {
+        for (int i = 0; i < this.boxesPositions.length; i++) {
+            if (this.boxesPositions[i][0] == pos[0] && this.boxesPositions[i][1] == pos[1])
+                return i;
+        }
+        return -1;
+    }
 
 
 }
