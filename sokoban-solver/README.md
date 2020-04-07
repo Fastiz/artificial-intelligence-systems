@@ -22,7 +22,12 @@ The length of the path the player would have to travel to each goal.
 ### Simple assignation considering walls
 The same as simple assignation but instead of finding the manhattan distance, uses the closest path without going over walls.
 ## Executing the program
-
+To execute the program download the [artificial-intelligence-systems.jar](https://github.com/Fastiz/artificial-intelligence-systems/releases) from releases and place it inside the directory that includes the maps, configuration.txt and output.txt.
+Then open a shell in the same directory and run the following script:
+```
+java -jar artificial-intelligence-systems.jar
+```
+Then the program should run and save the output inside output.txt.
 ## Configuration file
 The configuration file reads different inputs depending on the algorithm used. The format for each line is the following:
 ### Map number
@@ -45,6 +50,38 @@ If the algorithms chosen is informed then the third line is reserved for the id 
 ### Additional parameter
 The last line in reserved for additional parameter that some algorithms require. If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
 If your algorithm is not mentioned before then remove the line.
+### Examples
+Copy and paste into the configuration.txt file to run map 1 with 'A*' as algorithm and 'simple assignation cosidering walls' heuristic.
+```
+# Map number
+#>>>
+1
+# Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
+#>>>
+1
+#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
+#	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5, SIMPLE ASSIGNATION CONSIDERING WALLS: 6)
+#>>>
+6
+#Following line is reserved for the parameter of IDDFS. If you are using another algorithm remove line.
+#If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
+#>>>
+```
+The following one is to run DFS on map 3.
+```
+# Map number
+#>>>
+3
+# Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
+#>>>
+3
+#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
+#	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5, SIMPLE ASSIGNATION CONSIDERING WALLS: 6)
+#>>>
+#Following line is reserved for the parameter of IDDFS. If you are using another algorithm remove line.
+#If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
+#>>>
+```
 ## Output file
 In the file output.txt is saved the result of the execution. If the algorithm found a solution then it will print information of the execution and then display the solution for the puzzle.
 In the solution the characters used for displaying the map are the following:
