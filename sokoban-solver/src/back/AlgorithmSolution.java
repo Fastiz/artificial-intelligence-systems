@@ -9,7 +9,7 @@ public class AlgorithmSolution {
 	private String parameters;
 	private boolean goalFound;
 	private int solutionDepth;
-	private int solutionCost;
+	private float solutionCost;
 	private int numberOfExpandedNodes;
 	private int numberOfBorderNodes;
 	private List<Game> solutionStates;
@@ -73,7 +73,7 @@ public class AlgorithmSolution {
 		this.solutionDepth = solutionDepth;
 	}
 
-	public int getSolutionCost() {
+	public float getSolutionCost() {
 		return solutionCost;
 	}
 
@@ -161,7 +161,7 @@ public class AlgorithmSolution {
 		sb.append("Time: ").append(solution.getProcessingTime()).append(" ms \n\n");
 
 		for(Game game : this.solutionStates){
-			sb.append(game).append("\n");
+			//sb.append(game).append("\n");
 		}
 		return sb.toString();
 	}

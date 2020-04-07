@@ -7,6 +7,7 @@ import back.interfaces.Algorithm;
 import back.interfaces.Game;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IDDFS implements Algorithm {
 
@@ -74,12 +75,15 @@ public class IDDFS implements Algorithm {
                     return true;
                 }
 
+                AtomicBoolean childAdded = new AtomicBoolean(false);
                 game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
+                    childAdded.set(true);
                     stack.add(child);
                     hashMap.put(child, child.getDepth());
                 });
 
-                this.expandedNodes++;
+                if(childAdded.get())
+                    this.expandedNodes++;
             } else {
                 remainingToSearch = true;
             }

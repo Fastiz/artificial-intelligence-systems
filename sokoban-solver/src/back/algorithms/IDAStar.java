@@ -8,6 +8,7 @@ import back.interfaces.InformedAlgorithm;
 
 import javax.rmi.CORBA.Util;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IDAStar implements InformedAlgorithm {
 
@@ -85,15 +86,19 @@ public class IDAStar implements InformedAlgorithm {
                     return true;
                 }
 
+
+                AtomicBoolean childAdded = new AtomicBoolean(false);
                 game.calculateChildren().stream()
                         .filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child))
                         .forEach(child -> {
+                            childAdded.set(true);
                             child.setHeuristicValue(heuristic.evaluate(child));
                             stack.add(child);
                             hashMap.put(child, child.getDepth());
                         });
-
-                this.expandedNodes++;
+                
+                if(childAdded.get())
+                    this.expandedNodes++;
             }
         }
         return false;

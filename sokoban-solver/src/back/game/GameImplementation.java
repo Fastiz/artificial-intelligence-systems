@@ -20,14 +20,14 @@ public class GameImplementation implements Game {
     private int[] lastBoxMoved;
 
     private int heuristicValue;
-    private int costValue;
+    private float costValue;
 
     private boolean visited;
 
     private boolean deadlock;
 
 
-    public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction, int[] lastBoxMoved) {
+    public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, float costValue, CostFunction costFunction, int[] lastBoxMoved) {
         this.map = map;
         this.lastBoxMoved = lastBoxMoved;
         this.playerPosition = playerPosition;
@@ -86,7 +86,7 @@ public class GameImplementation implements Game {
     }
 
     @Override
-    public int getCostValue() {
+    public float getCostValue() {
         return this.costValue;
     }
 
