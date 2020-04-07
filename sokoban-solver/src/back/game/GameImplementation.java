@@ -77,6 +77,11 @@ public class GameImplementation implements Game {
 	}
 
 	@Override
+	public CellTypeEnum[][] getMap() {
+		return this.map;
+	}
+
+	@Override
 	public int[] getPlayerPosition(){
 		return this.playerPosition;
 	}
