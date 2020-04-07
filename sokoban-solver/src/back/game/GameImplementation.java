@@ -33,7 +33,7 @@ public class GameImplementation implements Game {
         this.parent = parent;
         this.depth = depth;
         this.costFunction = costFunction;
-        this.costValue = costValue + costFunction.evaluate(parent, this);
+        this.costValue = costValue + (depth != 0 ? costFunction.evaluate(parent, this) : 0);
         this.visited = false;
     }
 
