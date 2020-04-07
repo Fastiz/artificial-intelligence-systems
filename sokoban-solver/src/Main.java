@@ -104,6 +104,8 @@ public class Main {
 			System.out.print(" Using '"+heuristic.getName() +"' heuristic.");
 		System.out.print('\n');
 		AlgorithmSolution solution = algorithm.run(game);
+		if(heuristic != null)
+			solution.setHeuristicName(heuristic.getName());
 
 		try{
 			try(BufferedWriter bw = new BufferedWriter(new FileWriter("sokoban-solver/output.txt"))){
