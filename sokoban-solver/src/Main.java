@@ -16,6 +16,11 @@ import java.io.IOException;
 
 public class Main {
 	public static void main(String[] args){
+
+		run();
+	}
+
+	public static void run(){
 		ConfigurationReader configReader;
 		try{
 			configReader = new ConfigurationReader("sokoban-solver/configuration.txt");
@@ -54,8 +59,11 @@ public class Main {
 				case WALKABLE_DISTANCE:
 					heuristic = new WalkableDistanceHeuristic();
 					break;
-				case MANHATTAN:
+				case SIMPLE_ASSIGNATION:
 					heuristic = new SimpleAssignationHeuristic();
+					break;
+				case SIMPLE_ASSIGNATION_WITH_WALLS:
+					heuristic = new SimpleAssignationConsideringWalls();
 					break;
 				default:
 					return;
@@ -106,9 +114,7 @@ public class Main {
 		}
 
 		System.out.println("The algorithm result was saved in output file.");
-
 	}
-
 
 
 }
