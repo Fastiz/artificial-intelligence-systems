@@ -32,4 +32,6 @@ public interface Game {
 	public List<Game> getPathFromRoot();
 
 	public int getCostValue();
+
+	public CellTypeEnum[][] getMap();
 }

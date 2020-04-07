@@ -36,7 +36,7 @@ public class GameImplementation implements Game {
         this.parent = parent;
         this.depth = depth;
         this.costFunction = costFunction;
-        this.costValue = costValue + costFunction.evaluate(parent, this);
+        this.costValue = costValue + (depth != 0 ? costFunction.evaluate(parent, this) : 0);
         this.visited = false;
     }
 
@@ -89,6 +89,11 @@ public class GameImplementation implements Game {
     public int getCostValue() {
         return this.costValue;
     }
+
+	@Override
+	public CellTypeEnum[][] getMap() {
+		return this.map;
+	}
 
     @Override
     public int[] getPlayerPosition() {
