@@ -241,23 +241,19 @@ public class GameImplementation implements Game {
                     if (!map[xBox][yBox].equals(CellTypeEnum.GOAL) || !map[xBox + x][yBox].equals(CellTypeEnum.GOAL)) {
                         if (yBox - 1 >= 0 && yBox + 1 < map[0].length) {
                             if (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox - 1].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                             if (map[xBox + x][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox][yBox - 1].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
                         if (yBox - 1 >= 0) {
                             if (map[xBox][yBox - 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox - 1].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
                         if (yBox + 1 < map[0].length) {
                             if (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox + 1].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
@@ -270,23 +266,19 @@ public class GameImplementation implements Game {
                     if (!map[xBox][yBox].equals(CellTypeEnum.GOAL) || !map[xBox][yBox + y].equals(CellTypeEnum.GOAL)) {
                         if (xBox - 1 >= 0 && xBox + 1 < map.length) {
                             if (map[xBox + 1][yBox].equals(CellTypeEnum.WALL) && map[xBox - 1][yBox + y].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                             if (map[xBox - 1][yBox].equals(CellTypeEnum.WALL) && map[xBox + 1][yBox + y].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
                         if (xBox - 1 >= 0) {
                             if (map[xBox - 1][yBox].equals(CellTypeEnum.WALL) && map[xBox - 1][yBox + y].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
                         if (xBox + 1 < map.length) {
                             if (map[xBox + 1][yBox].equals(CellTypeEnum.WALL) && map[xBox + 1][yBox + y].equals(CellTypeEnum.WALL)) {
-                                System.out.println(this.toString());
                                 return true;
                             }
                         }
