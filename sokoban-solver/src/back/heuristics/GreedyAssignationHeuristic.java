@@ -29,12 +29,6 @@ public class GreedyAssignationHeuristic implements Heuristic {
                 matchedGoals.add(edge.getGoal());
             }
         }
-        for(int[] box : boxes){
-            if(!matchedBoxes.contains(box)){
-                Edge newEdge = getMinimumEdge(box, goals);
-                matching.add(newEdge);
-            }
-        }
 
         int totalDistance = 0;
         for(Edge edge : matching){
