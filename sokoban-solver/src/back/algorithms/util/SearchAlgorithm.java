@@ -1,13 +1,11 @@
 package back.algorithms.util;
 
 import back.AlgorithmSolution;
-import back.game.GameImplementation;
-import back.interfaces.Algorithm;
 import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SearchAlgorithm {
     private int expandedNodes;
@@ -69,16 +67,19 @@ public class SearchAlgorithm {
                 return true;
             }
 
+            AtomicBoolean childAdded = new AtomicBoolean(false);
             game.calculateChildren().stream()
                     .filter(child -> !hashSet.contains(child))
                     .forEach(child -> {
+                        childAdded.set(true);
                         if (heuristic != null)
                             child.setHeuristicValue(heuristic.evaluate(child));
                         collection.add(child);
                         hashSet.add(child);
                     });
 
-            this.expandedNodes++;
+            if(childAdded.get())
+                this.expandedNodes++;
         }
 
         return false;

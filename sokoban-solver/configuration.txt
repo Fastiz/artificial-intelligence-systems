@@ -1,12 +1,13 @@
 # Map number
 #>>>
-1
+15
 # Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
 #>>>
-6
+3
 #If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
 #	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5)
 #>>>
+2
 #Following line is reserved for the parameter of IDDFS. If you are using another algorithm remove line.
 #If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
 #>>>

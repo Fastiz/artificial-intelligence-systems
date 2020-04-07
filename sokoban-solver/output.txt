@@ -1,0 +1,8 @@
+Algorithm: DFS
+Solution found!
+Solution depth: 12538
+Solution cost: 12538
+Expanded nodes: 3392637
+Border nodes: 6220
+Time: 5079 ms 
+
