@@ -31,7 +31,7 @@ public interface Game {
 
 	public List<Game> getPathFromRoot();
 
-	public int getCostValue();
+	public float getCostValue();
 
 	public CellTypeEnum[][] getMap();
 }
