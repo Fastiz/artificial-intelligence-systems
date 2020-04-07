@@ -13,6 +13,10 @@ public interface Game {
 
 	public List<Game> calculateChildren();
 
+	public boolean isVisited();
+
+	public void setVisited(boolean visited);
+
 	public int getDepth();
 
 	public int getHeuristicValue();
