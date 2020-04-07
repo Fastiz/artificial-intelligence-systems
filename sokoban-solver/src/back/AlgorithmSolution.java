@@ -161,7 +161,7 @@ public class AlgorithmSolution {
 		sb.append("Time: ").append(solution.getProcessingTime()).append(" ms \n\n");
 
 		for(Game game : this.solutionStates){
-			//sb.append(game).append("\n");
+			sb.append(game).append("\n");
 		}
 		return sb.toString();
 	}
