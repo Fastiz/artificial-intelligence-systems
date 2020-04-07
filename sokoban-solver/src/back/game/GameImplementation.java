@@ -17,6 +17,8 @@ public class GameImplementation implements Game {
 
     private CostFunction costFunction;
 
+    private int[] lastBoxMoved;
+
     private int heuristicValue;
     private int costValue;
 
@@ -25,8 +27,9 @@ public class GameImplementation implements Game {
     private boolean deadlock;
 
 
-    public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction) {
+    public GameImplementation(CellTypeEnum[][] map, int[] playerPosition, int[][] boxesPositions, int[][] goalsPositions, Game parent, int depth, int costValue, CostFunction costFunction, int[] lastBoxMoved) {
         this.map = map;
+        this.lastBoxMoved = lastBoxMoved;
         this.playerPosition = playerPosition;
         this.boxesPositions = boxesPositions;
         this.goalsPositions = goalsPositions;
@@ -210,57 +213,130 @@ public class GameImplementation implements Game {
     // ** private
     private boolean deadlockState() {
 
-		for(int x = -1; x < 2; x ++) {
-			for(int i = 0; i < this.boxesPositions.length && x != 0; i++) {
-				int xBox = this.boxesPositions[i][0], yBox = this.boxesPositions[i][1];
-				if(xBox + x >= 0 && xBox + x < map.length) {
-					if(map[xBox][yBox] != CellTypeEnum.GOAL){
-						if(map[xBox + x][yBox].equals(CellTypeEnum.WALL) && (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) || map[xBox][yBox - 1].equals(CellTypeEnum.WALL))) {
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	private Game createChild(char direction) {
-		int[] pos = this.playerPosition;
-		
-		int posComponent = direction == 't' || direction == 'b' ? 0 : 1;
-		boolean subtract = direction == 't' || direction == 'l';
-		
-		if(subtract) {
-			if(pos[posComponent] -1 < 0)
-				return null;
-		}else {
-			if(pos[posComponent] +1 >= (posComponent == 0 ? map.length : map[0].length))
-				return null;
-		}
-				
-		int iDir = (posComponent == 0 ? (subtract ? -1 : 1) : 0), jDir = (posComponent == 1 ? (subtract ? -1 : 1) : 0);
-		if(map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
-			int index = checkForBox(new int[] {pos[0] + iDir, pos[1] + jDir});
-			if(index == -1) {
-				return new GameImplementation(this.map, new int[] {pos[0]+iDir, pos[1]+jDir}, this.boxesPositions,
-						this.goalsPositions, this, this.depth+1, this.costValue, this.costFunction);
-			}else {
-				if(subtract) {
-					if(pos[posComponent] -2 < 0)
-						return null;
-				}else {
-					if(pos[posComponent] +2 >= (posComponent == 0 ? map.length : map[0].length))
-						return null;
-				}
-				
-				if(map[pos[0] + iDir*2][pos[1] + jDir*2] != CellTypeEnum.WALL) {
-					int[] targetPosition = new int[] {pos[0] + iDir*2, pos[1] + jDir*2};
-					if(checkForBox(targetPosition) == -1){
-						int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
+        for (int x = -1; x < 2; x++) {
+            for (int i = 0; i < this.boxesPositions.length && x != 0; i++) {
+                int xBox = this.boxesPositions[i][0], yBox = this.boxesPositions[i][1];
+                if (xBox + x >= 0 && xBox + x < map.length) {
+                    if (map[xBox][yBox] != CellTypeEnum.GOAL) {
+                        for (int y = -1; y < 2; y++) {
+                            if (y != 0 && yBox + y >= 0 && yBox + y < map[0].length) {
+                                if (map[xBox + x][yBox].equals(CellTypeEnum.WALL) && map[xBox][yBox + y].equals(CellTypeEnum.WALL))
+                                    return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        if(lastBoxMoved != null) {
+            int xBox = lastBoxMoved[0], yBox = lastBoxMoved[1];
+            for (int x = -1; x < 2; x++) {
+                if (x != 0 && xBox + x >= 0 && xBox + x < map.length && hasBox(xBox + x, yBox)) {
+                    if (!map[xBox][yBox].equals(CellTypeEnum.GOAL) || !map[xBox + x][yBox].equals(CellTypeEnum.GOAL)) {
+                        if (yBox - 1 >= 0 && yBox + 1 < map[0].length) {
+                            if (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox - 1].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                            if (map[xBox + x][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox][yBox - 1].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                        if (yBox - 1 >= 0) {
+                            if (map[xBox][yBox - 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox - 1].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                        if (yBox + 1 < map[0].length) {
+                            if (map[xBox][yBox + 1].equals(CellTypeEnum.WALL) && map[xBox + x][yBox + 1].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int y = -1; y < 2; y++) {
+                if (y != 0 && yBox + y >= 0 && yBox + y < map[0].length && hasBox(xBox, yBox + y)) {
+                    if (!map[xBox][yBox].equals(CellTypeEnum.GOAL) || !map[xBox][yBox + y].equals(CellTypeEnum.GOAL)) {
+                        if (xBox - 1 >= 0 && xBox + 1 < map.length) {
+                            if (map[xBox + 1][yBox].equals(CellTypeEnum.WALL) && map[xBox - 1][yBox + y].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                            if (map[xBox - 1][yBox].equals(CellTypeEnum.WALL) && map[xBox + 1][yBox + y].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                        if (xBox - 1 >= 0) {
+                            if (map[xBox - 1][yBox].equals(CellTypeEnum.WALL) && map[xBox - 1][yBox + y].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                        if (xBox + 1 < map.length) {
+                            if (map[xBox + 1][yBox].equals(CellTypeEnum.WALL) && map[xBox + 1][yBox + y].equals(CellTypeEnum.WALL)) {
+                                System.out.println(this.toString());
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasBox(int x, int y) {
+        for (int[] boxesPosition : this.boxesPositions) {
+            return boxesPosition[0] == x && boxesPosition[1] == y;
+        }
+        return false;
+    }
+
+    private Game createChild(char direction) {
+        int[] pos = this.playerPosition;
+
+        int posComponent = direction == 't' || direction == 'b' ? 0 : 1;
+        boolean subtract = direction == 't' || direction == 'l';
+
+        if (subtract) {
+            if (pos[posComponent] - 1 < 0)
+                return null;
+        } else {
+            if (pos[posComponent] + 1 >= (posComponent == 0 ? map.length : map[0].length))
+                return null;
+        }
+
+        int iDir = (posComponent == 0 ? (subtract ? -1 : 1) : 0), jDir = (posComponent == 1 ? (subtract ? -1 : 1) : 0);
+        if (map[pos[0] + iDir][pos[1] + jDir] != CellTypeEnum.WALL) {
+            int index = checkForBox(new int[]{pos[0] + iDir, pos[1] + jDir});
+            if (index == -1) {
+                return new GameImplementation(this.map, new int[]{pos[0] + iDir, pos[1] + jDir}, this.boxesPositions,
+                        this.goalsPositions, this, this.depth + 1, this.costValue, this.costFunction, lastBoxMoved);
+            } else {
+                if (subtract) {
+                    if (pos[posComponent] - 2 < 0)
+                        return null;
+                } else {
+                    if (pos[posComponent] + 2 >= (posComponent == 0 ? map.length : map[0].length))
+                        return null;
+                }
+
+                if (map[pos[0] + iDir * 2][pos[1] + jDir * 2] != CellTypeEnum.WALL) {
+                    int[] targetPosition = new int[]{pos[0] + iDir * 2, pos[1] + jDir * 2};
+                    if (checkForBox(targetPosition) == -1) {
+                        int[][] newBoxes = moveBoxAndCopyBoxes(index, targetPosition);
+
+                        lastBoxMoved = targetPosition;
                         GameImplementation newGame = new GameImplementation(this.map, new int[]{pos[0] + iDir, pos[1] + jDir},
-                                newBoxes, this.goalsPositions, this, this.depth + 1, this.costValue, this.costFunction);
+                                newBoxes, this.goalsPositions, this, this.depth + 1, this.costValue, this.costFunction, lastBoxMoved);
 
                         newGame.checkDeadlock();
                         return newGame;

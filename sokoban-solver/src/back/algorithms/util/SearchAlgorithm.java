@@ -7,6 +7,7 @@ import back.interfaces.Game;
 import back.interfaces.Heuristic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchAlgorithm {
     private int expandedNodes;
@@ -59,6 +60,7 @@ public class SearchAlgorithm {
     }
 
     private boolean search() {
+
         while (!collection.isEmpty()) {
             Game game = collection.pop();
 
