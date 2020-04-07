@@ -17,13 +17,14 @@ public class IDAStar implements InformedAlgorithm {
     private int newLimit;
     private HashMap<Game, Integer> hashMap;
     private Stack<Game> stack;
+    private boolean remainingToSearch;
 
     public IDAStar(Heuristic heuristic) {
         this.heuristic = heuristic;
         this.hashMap = new HashMap<>();
     }
 
-    public IDAStar(){
+    public IDAStar() {
 
     }
 
@@ -40,14 +41,15 @@ public class IDAStar implements InformedAlgorithm {
     public AlgorithmSolution run(Game game) {
         this.newLimit = -1;
         this.gameSolved = null;
-        boolean result = false;
         this.stack = new Stack<>();
+        this.remainingToSearch = true;
 
         long startTime = System.currentTimeMillis();
 
         int limit = heuristic.evaluate(game);
-
-        while(!result) {
+        boolean result = false;
+        while (!result && remainingToSearch) {
+            remainingToSearch = false;
             newLimit = -1;
             expandedNodes = 0;
             stack.push(game);
@@ -58,11 +60,10 @@ public class IDAStar implements InformedAlgorithm {
         long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
-        //TODO: numberOfBorderNodes
-        if(result)
-            solution = new AlgorithmSolution(this.getName() , this.expandedNodes, stack.size(), this.gameSolved, endTime - startTime);
+        if (result)
+            solution = new AlgorithmSolution(this.getName(), this.expandedNodes, stack.size(), this.gameSolved, endTime - startTime);
         else
-            solution = new AlgorithmSolution(this.getName() , false, this.expandedNodes, endTime - startTime);
+            solution = new AlgorithmSolution(this.getName(), false, this.expandedNodes, endTime - startTime);
 
         return solution;
     }
@@ -73,6 +74,7 @@ public class IDAStar implements InformedAlgorithm {
 
             int f = getFunctionValue(game);
             if (limit < f) {
+                remainingToSearch = true;
                 if (f < newLimit || newLimit == -1) {
                     newLimit = f;
                 }
@@ -83,11 +85,13 @@ public class IDAStar implements InformedAlgorithm {
                     return true;
                 }
 
-                game.calculateChildren().stream().filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child)).forEach(child -> {
-                    child.setHeuristicValue(heuristic.evaluate(child));
-                    stack.add(child);
-                    hashMap.put(child, child.getDepth());
-                });
+                game.calculateChildren().stream()
+                        .filter(child -> Utils.checkIfHashMapContainsElementAndReplace(hashMap, child))
+                        .forEach(child -> {
+                            child.setHeuristicValue(heuristic.evaluate(child));
+                            stack.add(child);
+                            hashMap.put(child, child.getDepth());
+                        });
 
                 this.expandedNodes++;
             }
@@ -100,7 +104,7 @@ public class IDAStar implements InformedAlgorithm {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "IDA*";
     }
 

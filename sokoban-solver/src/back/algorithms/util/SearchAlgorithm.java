@@ -15,28 +15,24 @@ public class SearchAlgorithm {
     private SearchCollection<Game> collection;
     private Heuristic heuristic = null;
     private String name;
-    private int limit;
 
-    public SearchAlgorithm(String name){
+    public SearchAlgorithm(String name) {
         this.name = name;
     }
 
     public AlgorithmSolution run(Game game, Comparator<Game> comparator) {
         this.collection = new SearchCollection<>(comparator);
-        this.limit = -1;
         return runAux(game);
     }
 
     public AlgorithmSolution run(Game game, Comparator<Game> comparator, Heuristic heuristic) {
         this.heuristic = heuristic;
         game.setHeuristicValue(heuristic.evaluate(game));
-        this.limit = -1;
         return run(game, comparator);
     }
 
     public AlgorithmSolution run(Game game, boolean FIFO) {
         this.collection = new SearchCollection<>(FIFO);
-        this.limit = -1;
         return runAux(game);
     }
 
@@ -53,7 +49,7 @@ public class SearchAlgorithm {
         long endTime = System.currentTimeMillis();
 
         AlgorithmSolution solution;
-        if(result)
+        if (result)
             solution = new AlgorithmSolution(this.name, this.expandedNodes, collection.size(), this.gameSolved, endTime - startTime);
         else
             solution = new AlgorithmSolution(this.name, false, this.expandedNodes, endTime - startTime);
@@ -62,21 +58,23 @@ public class SearchAlgorithm {
         return solution;
     }
 
-    public boolean search() {
+    private boolean search() {
         while (!collection.isEmpty()) {
             Game game = collection.pop();
 
-            if(game.gameFinished()){
+            if (game.gameFinished()) {
                 this.gameSolved = game;
                 return true;
             }
 
-            game.calculateChildren().stream().filter(child -> !hashSet.contains(child)).forEach(child -> {
-                if(heuristic != null)
-                    child.setHeuristicValue(heuristic.evaluate(child));
-                collection.add(child);
-                hashSet.add(child);
-            });
+            game.calculateChildren().stream()
+                    .filter(child -> !hashSet.contains(child))
+                    .forEach(child -> {
+                        if (heuristic != null)
+                            child.setHeuristicValue(heuristic.evaluate(child));
+                        collection.add(child);
+                        hashSet.add(child);
+                    });
 
             this.expandedNodes++;
         }
