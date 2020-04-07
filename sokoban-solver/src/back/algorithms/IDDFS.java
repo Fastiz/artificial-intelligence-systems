@@ -47,8 +47,6 @@ public class IDDFS implements Algorithm {
         SearchAlgorithm searchAlgorithm = new SearchAlgorithm(this.getName());
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < maxDepth && remainingToSearch && !result; i++) {
-            if(i > 78)
-                System.out.println();
             stack.push(game);
             remainingToSearch = false;
             this.expandedNodes = 0;

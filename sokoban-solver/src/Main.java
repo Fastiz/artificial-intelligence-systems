@@ -40,7 +40,7 @@ public class Main {
 			return;
 		}
 
-		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions(), mapReader.getGoalsPositions(), null, 0, 0, new TrivialCostFunction());
+		Game game = new GameImplementation(mapReader.getMap(), mapReader.getPlayerPosition(), mapReader.getBoxesPositions(), mapReader.getGoalsPositions(), null, 0, 0, new TrivialCostFunction(), null);
 
 		Heuristic heuristic = null;
 		Algorithm algorithm;
