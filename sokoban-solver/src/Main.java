@@ -62,7 +62,7 @@ public class Main {
 			}
 		}
 
-
+		int maxDepth;
 		switch (configReader.getAlgorithm()){
 			case A_STAR:
 				algorithm = new AStar(heuristic);
@@ -72,12 +72,13 @@ public class Main {
 				break;
 			case DFS:
 				DFS dfs = new DFS();
-				dfs.setOnlyCachePathStates(!configReader.getCacheVisitedStates());
 				algorithm = dfs;
 				break;
 			case IDDFS:
 				IDDFS iddfs = new IDDFS();
-				iddfs.setMaxDepth(configReader.getMaxDepth());
+				maxDepth = configReader.getMaxDepth();
+				if(maxDepth!=-1)
+					iddfs.setMaxDepth(maxDepth);
 				algorithm = iddfs;
 				break;
 			case IDA_STAR:

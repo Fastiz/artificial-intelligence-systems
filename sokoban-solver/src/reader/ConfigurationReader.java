@@ -47,22 +47,22 @@ public class ConfigurationReader {
 			}
 
 			switch (algorithm){
-				case 0:
+				case 1:
 					this.algorithm = Algorithms.A_STAR;
 					break;
-				case 1:
+				case 2:
 					this.algorithm = Algorithms.BFS;
 					break;
-				case 2:
+				case 3:
 					this.algorithm = Algorithms.DFS;
 					break;
-				case 3:
+				case 4:
 					this.algorithm = Algorithms.GLOBAL_GREEDY;
 					break;
-				case 4:
+				case 5:
 					this.algorithm = Algorithms.IDA_STAR;
 					break;
-				case 5:
+				case 6:
 					this.algorithm = Algorithms.IDDFS;
 					break;
 				default:
@@ -80,19 +80,19 @@ public class ConfigurationReader {
 				}
 
 				switch (heuristic){
-					case 0:
+					case 1:
 						this.heuristic = Heuristics.BRUTEFORCE_ASSIGNATION;
 						break;
-					case 1:
+					case 2:
 						this.heuristic = Heuristics.GREEDY_ASSIGNATION;
 						break;
-					case 2:
+					case 3:
 						this.heuristic = Heuristics.TRIVIAL;
 						break;
-					case 3:
+					case 4:
 						this.heuristic = Heuristics.WALKABLE_DISTANCE;
 						break;
-					case 4:
+					case 5:
 						this.heuristic = Heuristics.MANHATTAN;
 						break;
 					default:
@@ -104,15 +104,9 @@ public class ConfigurationReader {
 				case IDA_STAR:
 				case IDDFS:
 					newLine = readLineIgnoringComment(br);
-					if(newLine.equals("-1")){
-						this.maxDepth = Integer.MAX_VALUE;
-					}else{
-						try{
-							this.maxDepth = Integer.parseInt(newLine);
-						}catch (NumberFormatException e){
-							throw new InvalidFormat();
-						}
-					}
+
+					this.maxDepth = Integer.parseInt(newLine);
+
 					break;
 				case DFS:
 					newLine = readLineIgnoringComment(br);
