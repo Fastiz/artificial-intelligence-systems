@@ -2,6 +2,8 @@ package src.pipeline.crossover;
 
 import src.models.Gen;
 
+import java.util.List;
+
 public interface CrossoverFunction {
-    public Gen cross(Gen gen1, Gen gen2);
+    public List<Gen> cross(Gen gen1, Gen gen2);
 }
