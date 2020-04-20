@@ -1,5 +1,6 @@
 package src.pipeline;
 
+import src.models.Alleles;
 import src.models.Gen;
 import src.pipeline.crossover.CrossoverFunction;
 
@@ -9,5 +10,5 @@ public interface Recombination {
 
     public void setCrossoverFunction(CrossoverFunction crossoverFunction);
 
-    public List<Gen> execute(List<Gen> genes);
+    public List<Gen> execute(List<Gen> genes, Alleles alleles);
 }
