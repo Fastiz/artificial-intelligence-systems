@@ -1,7 +1,7 @@
 package src.pipeline.selection;
 
-import src.models.Gen;
+import src.models.Individual;
 
 public interface FitnessFunction {
-    public double calculate(Gen gen);
+    public double calculate(Individual individual);
 }

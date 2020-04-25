@@ -1,7 +1,7 @@
 package src;
 
 import src.models.Alleles;
-import src.models.Gen;
+import src.models.Individual;
 import src.pipeline.Mutation;
 import src.pipeline.Recombination;
 import src.pipeline.Selection;
@@ -18,7 +18,7 @@ import java.util.List;
 public class PipelineAdministrator {
     private final int populationSize;
     private final Alleles alleles;
-    private List<Gen> population;
+    private List<Individual> population;
 
     private final Recombination recombination;
     private final Selection selection;
@@ -46,7 +46,7 @@ public class PipelineAdministrator {
     public void generateRandomPopulation(){
         for(int i=0; i<populationSize; i++){
             this.population.add(
-                    new Gen(
+                    new Individual(
                             Math.random()*(2 - 1.3) + 1.3,
                             alleles.getHelms().get((int)(Math.random()*alleles.getHelms().size())),
                             alleles.getBreastplates().get((int)(Math.random()*alleles.getBreastplates().size())),
@@ -59,14 +59,14 @@ public class PipelineAdministrator {
     }
 
     public void step(){
-        List<Gen> genes = this.population;
+        List<Individual> genes = this.population;
         genes = this.recombination.execute(genes, alleles);
         genes = this.mutation.execute(genes, alleles);
         genes = this.selection.execute(genes, populationSize);
         this.population = genes;
     }
 
-    public List<Gen> getPopulation() {
+    public List<Individual> getPopulation() {
         return population;
     }
 }

@@ -1,6 +1,6 @@
 package src.pipeline.selection;
 
-import src.models.Gen;
+import src.models.Individual;
 import src.pipeline.Selection;
 
 import java.util.ArrayList;
@@ -17,17 +17,17 @@ public class BestFitnessSelection implements Selection {
     }
 
     @Override
-    public List<Gen> execute(List<Gen> genes, int populationSize) {
-        PriorityQueue<Gen> pq = new PriorityQueue<>(genes.size(), new Comparator<Gen>() {
+    public List<Individual> execute(List<Individual> genes, int populationSize) {
+        PriorityQueue<Individual> pq = new PriorityQueue<>(genes.size(), new Comparator<Individual>() {
             @Override
-            public int compare(Gen o1, Gen o2) {
+            public int compare(Individual o1, Individual o2) {
                 double fit1 = fitnessFunction.calculate(o1), fit2 = fitnessFunction.calculate(o2);
                 return Double.compare(fit1, fit2);
             }
         });
         pq.addAll(genes);
 
-        List<Gen> bestGenes = new ArrayList<>();
+        List<Individual> bestGenes = new ArrayList<>();
         int aux=populationSize;
         while(aux != 0){
             bestGenes.add(pq.poll());

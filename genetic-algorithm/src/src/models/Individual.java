@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Gen {
+public class Individual {
     public static int maxLocus = 6;
 
     private double height;
     private Equipment helm, breastplate, weapon, gauntlet, boots;
 
-    public Gen(double height, Equipment helm, Equipment breastplate, Equipment weapon, Equipment gauntlet, Equipment boots){
+    public Individual(double height, Equipment helm, Equipment breastplate, Equipment weapon, Equipment gauntlet, Equipment boots){
         this.height = height;
         this.helm = helm;
         this.breastplate = breastplate;
@@ -20,7 +20,7 @@ public class Gen {
         this.boots = boots;
     }
 
-    public Gen(){
+    public Individual(){
 
     }
 

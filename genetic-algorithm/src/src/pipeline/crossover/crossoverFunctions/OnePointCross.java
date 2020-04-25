@@ -1,7 +1,7 @@
 package src.pipeline.crossover.crossoverFunctions;
 
 import src.models.Equipment;
-import src.models.Gen;
+import src.models.Individual;
 import src.pipeline.crossover.CrossoverFunction;
 
 import java.util.ArrayList;
@@ -9,25 +9,25 @@ import java.util.List;
 
 public class OnePointCross implements CrossoverFunction {
     @Override
-    public List<Gen> cross(Gen gen1, Gen gen2) {
-        int randomLocus = (int) (Math.random()*Gen.maxLocus);
-        List<Gen> children = new ArrayList<>();
+    public List<Individual> cross(Individual individual1, Individual individual2) {
+        int randomLocus = (int) (Math.random()* Individual.maxLocus);
+        List<Individual> children = new ArrayList<>();
 
-       Gen child1 = new Gen(), child2 = new Gen();
+       Individual child1 = new Individual(), child2 = new Individual();
 
        if(randomLocus == 0){
-           child1.setHeight(gen2.getHeight());
-           child2.setHeight(gen1.getHeight());
+           child1.setHeight(individual2.getHeight());
+           child2.setHeight(individual1.getHeight());
        }else{
-           child1.setHeight(gen1.getHeight());
-           child2.setHeight(gen2.getHeight());
+           child1.setHeight(individual1.getHeight());
+           child2.setHeight(individual2.getHeight());
        }
 
-       List<Equipment> equipment1 = gen1.getEquipmentLocus(), equipment2 = gen2.getEquipmentLocus();
+       List<Equipment> equipment1 = individual1.getEquipmentLocus(), equipment2 = individual2.getEquipmentLocus();
        List<Equipment> equipmentList1 = new ArrayList<>(), equipmentList2 = new ArrayList<>();
 
-       for(int i=0; i<Gen.maxLocus-1; i++){
-           if(i>=randomLocus){
+       for(int i = 0; i< Individual.maxLocus-1; i++){
+           if(i+1>=randomLocus){
                equipmentList1.add(equipment2.get(i));
                equipmentList2.add(equipment1.get(i));
            }else{

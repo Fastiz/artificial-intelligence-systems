@@ -1,6 +1,6 @@
 package src.pipeline;
 
-import src.models.Gen;
+import src.models.Individual;
 import src.pipeline.selection.FitnessFunction;
 
 import java.util.List;
@@ -8,5 +8,5 @@ import java.util.List;
 public interface Selection {
     public void setFitnessFunction(FitnessFunction fitnessFunction);
 
-    public List<Gen> execute(List<Gen> genes, int populationSize);
+    public List<Individual> execute(List<Individual> genes, int populationSize);
 }
