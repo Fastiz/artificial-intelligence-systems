@@ -1,7 +1,6 @@
 package src.pipeline.cutCriterion;
 
 import src.models.Individual;
-import src.pipeline.CutCriterion;
 
 import java.util.List;
 

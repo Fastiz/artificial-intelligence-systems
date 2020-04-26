@@ -1,4 +1,4 @@
-package src.pipeline;
+package src.pipeline.mutation;
 
 import src.models.Alleles;
 import src.models.Individual;

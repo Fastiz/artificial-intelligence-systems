@@ -1,4 +1,4 @@
-package src.pipeline;
+package src.pipeline.cutCriterion;
 
 import src.models.Individual;
 

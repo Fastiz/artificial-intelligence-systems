@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Individual implements Cloneable {
+    private int generation;
     public static int maxLocus = 6;
 
     private double height;
@@ -92,6 +93,14 @@ public class Individual implements Cloneable {
 
     public List<Equipment> getEquipmentLocus(){
         return new ArrayList<>(Arrays.asList(this.helm, this.breastplate, this.weapon, this.gauntlet, this.boots));
+    }
+
+    public void setGeneration(int generation) {
+        this.generation = generation;
+    }
+
+    public int getGeneration() {
+        return generation;
     }
 
     @Override

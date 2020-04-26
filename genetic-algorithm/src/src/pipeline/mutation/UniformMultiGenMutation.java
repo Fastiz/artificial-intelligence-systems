@@ -1,7 +1,7 @@
 package src.pipeline.mutation;
 import src.models.Alleles;
 import src.models.Individual;
-import src.pipeline.Mutation;
+
 import java.util.List;
 
 public class UniformMultiGenMutation implements Mutation {

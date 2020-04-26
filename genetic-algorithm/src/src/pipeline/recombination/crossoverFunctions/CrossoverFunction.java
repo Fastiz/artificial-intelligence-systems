@@ -1,4 +1,4 @@
-package src.pipeline.crossover.crossoverFunctions;
+package src.pipeline.recombination.crossoverFunctions;
 
 import src.models.Individual;
 
