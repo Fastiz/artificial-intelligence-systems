@@ -1,5 +1,8 @@
 package src;
 
+import src.pipeline.CutCriterion;
+import src.pipeline.cutCriterion.TimeCut;
+
 import java.io.IOException;
 
 public class Main {
@@ -12,7 +15,7 @@ public class Main {
             return;
         }
 
-        for(int i=0; i<1000; i++){
+        while(!pa.shouldEnd()){
             pa.step();
         }
 
