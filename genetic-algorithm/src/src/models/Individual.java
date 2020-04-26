@@ -4,8 +4,9 @@ package src.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-public class Individual {
+public class Individual implements Cloneable {
     public static int maxLocus = 6;
 
     private double height;
@@ -22,6 +23,15 @@ public class Individual {
 
     public Individual(){
 
+    }
+
+    public Individual(Individual individual) {
+        this.height = individual.height;
+        this.helm = new Equipment(individual.getHelm());
+        this.breastplate = new Equipment(individual.getBreastplate());
+        this.weapon = new Equipment(individual.getWeapon());
+        this.gauntlet = new Equipment(individual.getGauntlet());
+        this.boots = new Equipment(individual.getBoots());
     }
 
     public void setEquipmentLocus(List<Equipment> equipmentLocus){
@@ -82,5 +92,18 @@ public class Individual {
 
     public List<Equipment> getEquipmentLocus(){
         return new ArrayList<>(Arrays.asList(this.helm, this.breastplate, this.weapon, this.gauntlet, this.boots));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Individual that = (Individual) o;
+        return Double.compare(that.height, height) == 0 &&
+                Objects.equals(helm, that.helm) &&
+                Objects.equals(breastplate, that.breastplate) &&
+                Objects.equals(weapon, that.weapon) &&
+                Objects.equals(gauntlet, that.gauntlet) &&
+                Objects.equals(boots, that.boots);
     }
 }

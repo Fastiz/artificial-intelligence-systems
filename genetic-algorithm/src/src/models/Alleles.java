@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Alleles {
     private final List<Equipment> helms, breastplates, weapons, gauntlets, boots;
+    public static final double MIN_HEIGHT = 1.3;
+    public static final double MAX_HEIGHT = 2.0;
 
     public Alleles(String folder, String helmsFilename, String breastplatesFilename, String weaponsFilename,
                    String gauntletsFilename, String bootsFilename) throws IOException{
