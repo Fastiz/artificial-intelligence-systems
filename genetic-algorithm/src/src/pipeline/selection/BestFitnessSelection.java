@@ -2,6 +2,7 @@ package src.pipeline.selection;
 
 import src.models.Individual;
 import src.pipeline.Selection;
+import src.pipeline.selection.fitnessFunctions.FitnessFunction;
 
 import java.util.ArrayList;
 import java.util.Comparator;

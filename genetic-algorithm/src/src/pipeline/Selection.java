@@ -1,7 +1,7 @@
 package src.pipeline;
 
 import src.models.Individual;
-import src.pipeline.selection.FitnessFunction;
+import src.pipeline.selection.fitnessFunctions.FitnessFunction;
 
 import java.util.List;
 

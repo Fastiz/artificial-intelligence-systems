@@ -1,4 +1,4 @@
-package src.pipeline.selection;
+package src.pipeline.selection.fitnessFunctions;
 
 import src.models.Individual;
 

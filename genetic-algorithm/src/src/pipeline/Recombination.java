@@ -2,7 +2,7 @@ package src.pipeline;
 
 import src.models.Alleles;
 import src.models.Individual;
-import src.pipeline.crossover.CrossoverFunction;
+import src.pipeline.crossover.crossoverFunctions.CrossoverFunction;
 
 import java.util.List;
 

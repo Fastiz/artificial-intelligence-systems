@@ -2,7 +2,6 @@ package src.pipeline.crossover.crossoverFunctions;
 
 import src.models.Equipment;
 import src.models.Individual;
-import src.pipeline.crossover.CrossoverFunction;
 
 import java.util.ArrayList;
 import java.util.List;

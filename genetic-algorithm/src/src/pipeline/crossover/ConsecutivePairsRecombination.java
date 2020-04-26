@@ -3,6 +3,7 @@ package src.pipeline.crossover;
 import src.models.Alleles;
 import src.models.Individual;
 import src.pipeline.Recombination;
+import src.pipeline.crossover.crossoverFunctions.CrossoverFunction;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,6 @@
 package src.pipeline.selection.fitnessFunctions;
 
 import src.models.Individual;
-import src.pipeline.selection.FitnessFunction;
 
 public class Defender implements FitnessFunction {
     @Override
