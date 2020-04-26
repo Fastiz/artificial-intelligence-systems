@@ -1,5 +1,6 @@
 package src.pipeline.cutCriterion;
 
+import src.models.Individual;
 import src.pipeline.CutCriterion;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class NoFitnessChangeCut implements CutCriterion {
     }
 
     @Override
-    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial) {
+    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial, List<List<Individual>> generations) {
         if(fitnessHistorial.size() < generationsAmount)
             return false;
 

@@ -14,7 +14,7 @@ public class GenerationAmountCut implements CutCriterion {
     }
 
     @Override
-    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial) {
+    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial, List<List<Individual>> generations) {
         return generationNumber >= maxGenerationNumber;
     }
 }

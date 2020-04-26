@@ -19,6 +19,7 @@ import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PipelineAdministrator {
     private final int populationSize;
@@ -30,12 +31,17 @@ public class PipelineAdministrator {
     private final Mutation mutation;
     private final CutCriterion cutCriterion;
     private final FitnessFunction fitnessFunction;
+    private final boolean cloneEnabled;
 
     private int generationNumber;
     private List<Double> fitnessHistorial;
+    private List<List<Individual>> generations;
+
 
     public PipelineAdministrator(int populationSize, Mutation mutation, Selection selection, FitnessFunction fitnessFunction, Recombination recombination, CutCriterion cutCriterion) throws IOException {
         this.generationNumber = 0;
+        this.cloneEnabled = false;
+        this.generations = new ArrayList<>();
         this.fitnessHistorial = new ArrayList<>();
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
@@ -61,6 +67,8 @@ public class PipelineAdministrator {
 
     public PipelineAdministrator(int populationSize) throws IOException {
         this.generationNumber = 0;
+        this.cloneEnabled = false;
+        this.generations = new ArrayList<>();
         this.fitnessHistorial = new ArrayList<>();
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
@@ -100,7 +108,7 @@ public class PipelineAdministrator {
     }
 
     public boolean shouldEnd() {
-        return cutCriterion.shouldEnd(generationNumber, fitnessHistorial);
+        return cutCriterion.shouldEnd(generationNumber, fitnessHistorial, generations);
     }
 
     public void step(){
@@ -111,6 +119,9 @@ public class PipelineAdministrator {
         this.population = genes;
         this.fitnessHistorial.add(getBestFitnessIndividual());
         this.generationNumber++;
+        //Clonar elementos y agregar al historial
+        if(cloneEnabled)
+            generations.add(population.stream().map(Individual::new).collect(Collectors.toCollection(ArrayList::new)));
     }
 
     private double getBestFitnessIndividual() {

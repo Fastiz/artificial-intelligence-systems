@@ -15,7 +15,7 @@ public class TimeCut implements CutCriterion {
     }
 
     @Override
-    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial) {
+    public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial, List<List<Individual>> generations) {
         return duration < System.currentTimeMillis() - startTime;
     }
 }
