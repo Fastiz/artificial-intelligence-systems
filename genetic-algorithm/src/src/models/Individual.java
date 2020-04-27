@@ -115,4 +115,16 @@ public class Individual implements Cloneable {
                 Objects.equals(gauntlet, that.gauntlet) &&
                 Objects.equals(boots, that.boots);
     }
+
+    @Override
+    public String toString() {
+        return "Individual{" +
+                "height=" + height +
+                ", helm=" + helm.toString() +
+                ", breastplate=" + breastplate.toString() +
+                ", weapon=" + weapon.toString() +
+                ", gauntlet=" + gauntlet.toString() +
+                ", boots=" + boots.toString() +
+                '}';
+    }
 }
