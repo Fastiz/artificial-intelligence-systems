@@ -21,31 +21,37 @@ public class Utils {
             case HEIGHT: {
                 double height = random.nextDouble()*(Alleles.MAX_HEIGHT-Alleles.MIN_HEIGHT) + Alleles.MIN_HEIGHT;
                 individual.setHeight(height);
+                break;
             }
             case HELMET: {
                 List<Equipment> helmets = alleles.getHelms();
                 int randomIndex = random.nextInt(helmets.size());
                 individual.setHelm(helmets.get(randomIndex));
+                break;
             }
             case BREASTPLATE: {
                 List<Equipment> breastPlate = alleles.getBreastplates();
                 int randomIndex = random.nextInt(breastPlate.size());
                 individual.setBreastplate(breastPlate.get(randomIndex));
+                break;
             }
             case WEAPON: {
                 List<Equipment> weapons = alleles.getWeapons();
                 int randomIndex = random.nextInt(weapons.size());
                 individual.setWeapon(weapons.get(randomIndex));
+                break;
             }
             case GAUNTLET: {
                 List<Equipment> gauntlets = alleles.getGauntlets();
                 int randomIndex = random.nextInt(gauntlets.size());
                 individual.setGauntlet(gauntlets.get(randomIndex));
+                break;
             }
             case BOOTS: {
                 List<Equipment> boots = alleles.getBoots();
                 int randomIndex = random.nextInt(boots.size());
                 individual.setBoots(boots.get(randomIndex));
+                break;
             }
         }
     }
