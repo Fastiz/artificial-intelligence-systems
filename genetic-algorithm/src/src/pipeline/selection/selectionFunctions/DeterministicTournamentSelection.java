@@ -4,7 +4,10 @@ import src.models.Individual;
 import src.pipeline.selection.fitnessFunctions.FitnessFunction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DeterministicTournamentSelection implements SelectionFunction {
 
@@ -38,19 +41,7 @@ public class DeterministicTournamentSelection implements SelectionFunction {
     }
 
     private List<Individual> randomSubset(List<Individual> individuals, int M) {
-        List<Individual> r = new ArrayList<>(M);
-        int i = 0;
-        int j;
-        for (Individual individual : individuals) {
-            if (i < M) {
-                r.set(i++, individual);
-            }else {
-                j = (int)(Math.random()*(i++ - 1) + 1);
-                if (j <= M)
-                    r.set(j, individual);
-            }
-
-        }
-        return r;
+        Collections.shuffle(individuals);
+        return individuals.stream().limit(M).collect(Collectors.toList());
     }
 }

@@ -37,7 +37,7 @@ public class BoltzmannSelection implements SelectionFunction{
 
         values = values.stream().map(p->p/mean).collect(Collectors.toList());
 
-        values = Util.accValues(values);
+        values = Util.accValues(Util.relativeValues(values));
 
         return Util.roulette(individuals, values, resultSize);
     }

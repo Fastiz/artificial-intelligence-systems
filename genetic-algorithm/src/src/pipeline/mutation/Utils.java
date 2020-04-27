@@ -19,8 +19,7 @@ public class Utils {
         Random random = new Random();
         switch (index) {
             case HEIGHT: {
-                double height = random.nextInt((int)((Alleles.MAX_HEIGHT - Alleles.MIN_HEIGHT) * 1000) + 1) + Alleles.MIN_HEIGHT;
-                height /= 1000;
+                double height = random.nextDouble()*(Alleles.MAX_HEIGHT-Alleles.MIN_HEIGHT) + Alleles.MIN_HEIGHT;
                 individual.setHeight(height);
             }
             case HELMET: {

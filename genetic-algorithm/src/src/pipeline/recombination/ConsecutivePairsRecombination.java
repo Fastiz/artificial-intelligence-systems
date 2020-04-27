@@ -53,10 +53,10 @@ public class ConsecutivePairsRecombination implements Recombination {
     private List<Individual> generateChildren(List<Individual> individuals, CrossoverFunction crossoverFunction, int childrenNumber){
         List<Individual> children = new ArrayList<>(childrenNumber);
 
-        List<Integer> indexes = IntStream.range(0, individuals.size()-1).boxed().collect(Collectors.toList());
+        List<Integer> indexes = IntStream.range(0, individuals.size()).boxed().collect(Collectors.toList());
         Collections.shuffle(indexes);
 
-        for(int i=0; i<childrenNumber; i++){
+        for(int i=0; i<childrenNumber/2; i++){
             children.addAll(crossoverFunction.cross(individuals.get(indexes.get(i*2)), individuals.get(indexes.get(i*2+1))));
         }
 

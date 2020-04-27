@@ -14,9 +14,10 @@ public class RouletteSelection implements SelectionFunction {
     public List<Individual> select(List<Individual> individuals, FitnessFunction fitnessFunction, int resultSize) {
         List<Double> fitnessValues = individuals.stream().map(fitnessFunction::calculate).collect(Collectors.toList());
 
-        List<Double> accumValues = Util.accValues(fitnessValues);
+        List<Double> accumValues = Util.accValues(Util.relativeValues(fitnessValues));
 
-        return Util.roulette(individuals, accumValues, resultSize);
+        List<Individual> result = Util.roulette(individuals, accumValues, resultSize);
+        return result;
     }
 
 

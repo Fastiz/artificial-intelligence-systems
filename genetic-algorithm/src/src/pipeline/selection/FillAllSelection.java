@@ -12,6 +12,7 @@ public class FillAllSelection extends SelectionImpl {
 
     @Override
     public List<Individual> execute(List<Individual> individuals, int populationSize) {
-        return super.select(individuals, populationSize);
+        List<Individual> newPopulation = super.select(individuals, populationSize);
+        return newPopulation;
     }
 }

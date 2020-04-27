@@ -24,7 +24,7 @@ public class RankingSelection implements SelectionFunction{
                 .mapToObj(i -> newFitness(i+1, size))
                 .collect(Collectors.toList());
 
-        values = Util.accValues(values);
+        values = Util.accValues(Util.relativeValues(values));
 
         return Util.roulette(individuals, values, resultSize);
 

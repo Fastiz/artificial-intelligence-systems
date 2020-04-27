@@ -126,8 +126,8 @@ public class PipelineAdministrator {
             generations.add(population.stream().map(Individual::new).collect(Collectors.toCollection(ArrayList::new)));
     }
 
-    private double getBestFitnessIndividual() {
-        double bestFitness = Double.MIN_VALUE;
+    public double getBestFitnessIndividual() {
+        double bestFitness = -Double.MAX_VALUE;
         for(Individual individual : population) {
             double individualFitness = fitnessFunction.calculate(individual);
             if(individualFitness > bestFitness)
@@ -138,5 +138,9 @@ public class PipelineAdministrator {
 
     public List<Individual> getPopulation() {
         return population;
+    }
+
+    public List<Double> getFitnessHistorial() {
+        return fitnessHistorial;
     }
 }

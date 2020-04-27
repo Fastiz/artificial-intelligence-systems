@@ -21,11 +21,11 @@ public class FillParentSelection extends SelectionImpl{
         int size = filtered.size();
         if(size == populationSize){
             return filtered;
-        }else if(size < populationSize){
+        }else if(size > populationSize){
             return super.execute(filtered, populationSize);
         }else{
             List<Individual> lastGeneration = individuals.stream().filter(p->p.getGeneration()!=this.generation).collect(Collectors.toList());
-            filtered.addAll(super.execute(lastGeneration, populationSize-size));
+            filtered.addAll(super.select(lastGeneration, populationSize-size));
             return filtered;
         }
 
