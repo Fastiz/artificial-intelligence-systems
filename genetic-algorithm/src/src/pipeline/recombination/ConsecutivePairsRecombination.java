@@ -3,6 +3,8 @@ package src.pipeline.recombination;
 import src.models.Alleles;
 import src.models.Individual;
 import src.pipeline.recombination.crossoverFunctions.CrossoverFunction;
+import src.pipeline.selection.fitnessFunctions.FitnessFunction;
+import src.pipeline.selection.selectionFunctions.SelectionFunction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +14,9 @@ import java.util.stream.IntStream;
 
 public class ConsecutivePairsRecombination implements Recombination {
     private double a, b;
-    private CrossoverFunction crossoverFunction1, crossoverFunction2;
+    private FitnessFunction fitnessFunction;
+    private SelectionFunction selectionFunction1, selectionFunction2;
+    private CrossoverFunction crossoverFunction;
     private int generation;
 
     public ConsecutivePairsRecombination(double a, double b){
@@ -22,16 +26,26 @@ public class ConsecutivePairsRecombination implements Recombination {
     }
 
     @Override
-    public void setCrossoverFunctions(CrossoverFunction crossoverFunction1, CrossoverFunction crossoverFunction2) {
-        this.crossoverFunction1 = crossoverFunction1;
-        this.crossoverFunction2 = crossoverFunction2;
+    public void setCrossoverFunction(CrossoverFunction crossoverFunction) {
+        this.crossoverFunction = crossoverFunction;
+    }
 
-        if(this.crossoverFunction1 == null && this.crossoverFunction2 == null){
+    @Override
+    public void setSelectionFunctions(SelectionFunction s1, SelectionFunction s2){
+        this.selectionFunction1 = s1;
+        this.selectionFunction2 = s2;
+
+        if(selectionFunction1 == null && selectionFunction2 == null){
             throw new Error();
-        }else if(this.crossoverFunction1 == null){
-            this.crossoverFunction1 = this.crossoverFunction2;
-            this.crossoverFunction2 = null;
+        }else if(selectionFunction1 == null){
+            this.selectionFunction1 = selectionFunction2;
+            this.selectionFunction2 = null;
         }
+    }
+
+    @Override
+    public void setFitnessFunction(FitnessFunction fitnessFunction) {
+        this.fitnessFunction = fitnessFunction;
     }
 
     @Override
@@ -42,12 +56,21 @@ public class ConsecutivePairsRecombination implements Recombination {
         int population1 = (int)this.a*childrenSize;
         int population2 = childrenSize-population1;
 
-        newIndividuals.addAll(generateChildren(individuals, this.crossoverFunction1, population1));
+        newIndividuals.addAll(
+                this.selectionFunction1.select(individuals, this.fitnessFunction, population1)
+        );
 
-        if(crossoverFunction2!=null)
-            newIndividuals.addAll(generateChildren(individuals, this.crossoverFunction2, population2));
+        if(this.selectionFunction2 != null)
+            newIndividuals.addAll(
+                    this.selectionFunction2.select(individuals, this.fitnessFunction, population2)
+            );
+
+        newIndividuals = generateChildren(newIndividuals, this.crossoverFunction, childrenSize);
+
+        newIndividuals.addAll(individuals);
 
         return newIndividuals;
+
     }
 
     private List<Individual> generateChildren(List<Individual> individuals, CrossoverFunction crossoverFunction, int childrenNumber){

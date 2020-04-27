@@ -9,10 +9,13 @@ import src.pipeline.cutCriterion.CutCriterion;
 import src.pipeline.cutCriterion.GenerationAmountCut;
 import src.pipeline.mutation.Mutation;
 import src.pipeline.mutation.SingleGenMutation;
+import src.pipeline.mutation.UniformMultiGenMutation;
 import src.pipeline.recombination.ConsecutivePairsRecombination;
 import src.pipeline.recombination.Recombination;
 import src.pipeline.recombination.crossoverFunctions.OnePointCross;
+import src.pipeline.recombination.crossoverFunctions.RingCross;
 import src.pipeline.recombination.crossoverFunctions.TwoPointCross;
+import src.pipeline.recombination.crossoverFunctions.UniformCross;
 import src.pipeline.selection.FillAllSelection;
 import src.pipeline.selection.FillParentSelection;
 import src.pipeline.selection.Selection;
@@ -42,19 +45,21 @@ public class Main {
         }
 
         Recombination recombination = new ConsecutivePairsRecombination(1, 0);
-        recombination.setCrossoverFunctions(new TwoPointCross(), null);
+        recombination.setCrossoverFunction(new UniformCross());
+        recombination.setFitnessFunction(new Archer());
+        recombination.setSelectionFunctions(new StochasticTournamentSelection(), null);
 
         Mutation mutation = new SingleGenMutation(.1);
 
         Selection selection = new FillAllSelection(1, 0);
-        selection.setSelectionFunctions(new UniversalSelection(), null);
-        selection.setFitnessFunction(new Warrior());
+        selection.setSelectionFunctions(new StochasticTournamentSelection(), null);
+        selection.setFitnessFunction(new Archer());
 
         CutCriterion cutCriterion = new GenerationAmountCut(1000);
 
         PipelineAdministrator pa;
         try {
-            pa = new PipelineAdministrator(500, 500, mutation, selection, new Warrior(), recombination, cutCriterion);
+            pa = new PipelineAdministrator(500, 200, mutation, selection, new Warrior(), recombination, cutCriterion);
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -64,7 +69,7 @@ public class Main {
             pa.step();
         }
 
-        System.out.println(pa.getFitnessHistorial());
+        //System.out.println(pa.getFitnessHistorial());
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("./genetic-algorithm/output"))){
             for(double fitness : pa.getFitnessHistorial()){

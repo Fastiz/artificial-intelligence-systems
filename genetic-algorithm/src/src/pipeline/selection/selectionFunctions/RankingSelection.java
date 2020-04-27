@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 public class RankingSelection implements SelectionFunction{
     @Override
     public List<Individual> select(List<Individual> individuals, FitnessFunction fitnessFunction, int resultSize) {
-        PriorityQueue<Individual> pq = new PriorityQueue<>((o1, o2) -> Double.compare(fitnessFunction.calculate(o1), fitnessFunction.calculate(o2)));
+        PriorityQueue<Individual> pq = new PriorityQueue<>((o1, o2) -> -Double.compare(fitnessFunction.calculate(o1), fitnessFunction.calculate(o2)));
         pq.addAll(individuals);
 
         List<Double> values;

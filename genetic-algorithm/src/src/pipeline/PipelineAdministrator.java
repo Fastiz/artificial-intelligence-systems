@@ -47,49 +47,19 @@ public class PipelineAdministrator {
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
         this.childrenSize = childrenSize;
-        String folder = "genetic-algorithm/testdata/";
+        String folder = "genetic-algorithm/fulldata/";
         this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
                 "armas.tsv", "guantes.tsv", "botas.tsv");
 
         this.recombination = recombination;
-        this.recombination.setCrossoverFunctions(new OnePointCross(), null);
 
         this.fitnessFunction = fitnessFunction;
 
         this.selection = selection;
-        this.selection.setFitnessFunction(fitnessFunction);
 
         this.mutation = mutation;
 
         this.cutCriterion = cutCriterion;
-
-        generateRandomPopulation();
-    }
-
-    public PipelineAdministrator(int populationSize) throws IOException {
-        this.generationNumber = 0;
-        this.cloneEnabled = false;
-        this.generations = new ArrayList<>();
-        this.fitnessHistorial = new ArrayList<>();
-        this.populationSize = populationSize;
-        this.population = new ArrayList<>(populationSize);
-
-        String folder = "genetic-algorithm/testdata/";
-        this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
-                "armas.tsv", "guantes.tsv", "botas.tsv");
-
-        this.recombination = new ConsecutivePairsRecombination(1, 0);
-        this.recombination.setCrossoverFunctions(new OnePointCross(), null);
-
-        this.fitnessFunction = new Archer();
-
-        this.selection = new FillAllSelection(1, 0);
-        this.selection.setSelectionFunctions(new EliteSelection(), null);
-        this.selection.setFitnessFunction(this.fitnessFunction);
-
-        this.mutation = new NoMutation();
-
-        this.cutCriterion = new TimeCut(60);
 
         generateRandomPopulation();
     }
