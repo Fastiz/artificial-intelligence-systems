@@ -18,10 +18,10 @@ public class EstructureCut implements CutCriterion {
 
     @Override
     public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial, List<List<Individual>> generations) {
-        if(generationNumber + 1 < generationsAmount)
+        if(generationNumber - 1 < generationsAmount)
             return false;
 
-        return shouldEndCompareAll(generations);
+        return shouldEndCompareStartAndEnd(generations);
     }
 
     private boolean shouldEndCompareStartAndEnd(List<List<Individual>> generations) {
