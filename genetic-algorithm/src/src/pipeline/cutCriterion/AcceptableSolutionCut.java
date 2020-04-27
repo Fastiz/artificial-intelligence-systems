@@ -14,6 +14,8 @@ public class AcceptableSolutionCut implements CutCriterion {
 
     @Override
     public boolean shouldEnd(int generationNumber, List<Double> fitnessHistorial, List<List<Individual>> generations) {
+        if(fitnessHistorial.isEmpty())
+            return false;
         return fitnessHistorial.get(fitnessHistorial.size()-1) >= acceptableFitness;
     }
 }
