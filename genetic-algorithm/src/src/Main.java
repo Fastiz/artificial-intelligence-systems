@@ -17,14 +17,42 @@ public class Main {
     public static void main(String[] args) {
         run();
         //test();
-
     }
 
     private static void run() {
         ConfigReader configReader;
         try {
+            configReader = new ConfigReader("./config.properties");
+        } catch (Exception e) {
+            System.out.println("Error:");
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.println("Loading files...");
+        PipelineAdministrator pa;
+        try {
+            pa = new PipelineAdministrator(configReader.getPopulation(), configReader.getChildrenAmount(), configReader.getMutation(),
+                    configReader.getSelection(), configReader.getFitnessFunction(), configReader.getRecombination(), configReader.getCutCriterion());
+        } catch (IOException e) {
+            System.out.println("Error:");
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.println("Running...");
+        while (!pa.shouldEnd()) {
+            pa.step();
+        }
+        pa.printBestFitnessIndividual();
+    }
+
+    private static void runWithStats() {
+        ConfigReader configReader;
+        try {
             configReader = new ConfigReader("./genetic-algorithm/config.properties");
         } catch (Exception e) {
+            System.out.println("Error:");
             System.out.println(e.getMessage());
             return;
         }
@@ -34,13 +62,14 @@ public class Main {
             pa = new PipelineAdministrator(configReader.getPopulation(), configReader.getChildrenAmount(), configReader.getMutation(),
                     configReader.getSelection(), configReader.getFitnessFunction(), configReader.getRecombination(), configReader.getCutCriterion());
         } catch (IOException e) {
+            System.out.println("Error:");
             System.out.println(e.getMessage());
             return;
         }
 
-        try(BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/distinct"))){
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/distinct"))) {
             while (!pa.shouldEnd()) {
-                bf.write(String.valueOf(pa.getDistinctIndividuals().size())+'\n');
+                bf.write(String.valueOf(pa.getDistinctIndividuals().size()) + '\n');
                 pa.step();
             }
         } catch (IOException e) {
@@ -48,16 +77,16 @@ public class Main {
         }
 
         pa.printBestFitnessIndividual();
-        try(BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/fitness"))) {
-            for(double fitness: pa.getFitnessHistorial()){
-                bf.write(String.valueOf(fitness)+'\n');
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/fitness"))) {
+            for (double fitness : pa.getFitnessHistorial()) {
+                bf.write(String.valueOf(fitness) + '\n');
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void test(){
+    private static void test() {
         try {
             String folder = "genetic-algorithm/testdata/";
             Alleles alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",

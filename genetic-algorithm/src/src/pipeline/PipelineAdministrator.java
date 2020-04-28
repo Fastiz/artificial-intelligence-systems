@@ -43,7 +43,7 @@ public class PipelineAdministrator {
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
         this.childrenSize = childrenSize;
-        String folder = "genetic-algorithm/data/";
+        String folder = "./data/";
         this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
                 "armas.tsv", "guantes.tsv", "botas.tsv");
 
@@ -87,9 +87,7 @@ public class PipelineAdministrator {
         individuals = this.mutation.execute(individuals, alleles);
         individuals = this.selection.execute(individuals, populationSize);
         this.population = individuals;
-        double a = getBestFitness();
-        this.fitnessHistorial.add(a);
-        System.out.println(a);
+        this.fitnessHistorial.add(getBestFitness());
         this.generationNumber++;
         //Clonar elementos y agregar al historial
         if(cloneEnabled)

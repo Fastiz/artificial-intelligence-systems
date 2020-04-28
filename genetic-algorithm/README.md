@@ -149,6 +149,78 @@ crossover=1
 selection=1
 
 # Porcentaje de funcion de reemplazo de individuos numero uno.
+b = 1
+
+# Porcentaje de funcion de seleccion de padres numero uno.
+a = 1
+
+# Funcion de seleccion de padres
+# 1. Boltzmann / Parametros: selectionParamter = T0 | selectionParamter2 = TC | selectionParamter3 = k
+# 2. Torneo deterministico / Parametros: selectionParamter = M
+# 3. Elite
+# 4. Ranking
+# 5. Ruleta
+# 6. Torneo probabilistico
+# 7. Universal
+selectionFunction=3
+selectionParameter=1
+selectionParameter2=1
+selectionParameter3=1
+
+# Segunda funcion de seleccion de padres
+# Igual que el anterior, con distintos nombres en las variables.
+secondSelectionFunction=3
+secondSelectionParameter=1
+secondSelectionParameter2=1
+secondSelectionParameter3=1
+
+# Funcion de reemplazo de individuos
+# Igual que el anterior, con distintos nombres en las variables.
+replacementFunction=3
+replacementParameter=1
+replacementParameter2=1
+replacementParameter3=1
+
+# Segunda funcion de reemplazo de individuos
+# Igual que el anterior, con distintos nombres en las variables.
+secondReplacementFunction=3
+secondReplacementParameter=1
+secondReplacementParameter2=1
+secondReplacementParameter3=1
+
+# Mutacion // 1. Gen simple | 2. Multigen limitada | 3. Multigen uniforme | 4. Completa
+mutation=1
+mutationProbability=0.1
+
+# Cirterio de corte //
+# 1. Tiempo / Parametros: cutParameter = tiempo de corte.
+# 2. Cantidad de generaciones / Parametros: cutParameter = cantidad de generaciones
+# 3. Solucion aceptable / Paramtros: cutParameter = fitness aceptable
+# 4. Contenido / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = error
+# 5. Estructural / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = porcentaje de cambio
+cutMethod=2
+cutParameter=1000
+cutParameter2=0.05
+```
+
+
+```
+# Los parametros sin usar con valores seteados no se tendran en cuenta, se pueden dejar
+# sin cambios.
+#
+# Cantidad de individuos
+population=500
+# Cantidad de hijos
+childrenAmount=100
+# Funcion fitness // 1. Archer | 2. Defender | 3. Spy | 4. Warrior
+fitnessFunction=4
+# Cruces // 1. Un punto | 2. Dos puntos | 3. Anular | 4. Uniforme
+crossover=3
+
+# Seleccion // 1. Fill all | 2. Fill parent
+selection=1
+
+# Porcentaje de funcion de reemplazo de individuos numero uno.
 b = 0.5
 
 # Porcentaje de funcion de seleccion de padres numero uno.
@@ -169,15 +241,15 @@ selectionParameter3=1
 
 # Segunda funcion de seleccion de padres
 # Igual que el anterior, con distintos nombres en las variables.
-secondSelectionFunction=4
-secondSelectionParameter=1
+secondSelectionFunction=2
+secondSelectionParameter=40
 secondSelectionParameter2=1
 secondSelectionParameter3=1
 
 # Funcion de reemplazo de individuos
 # Igual que el anterior, con distintos nombres en las variables.
 replacementFunction=5
-replacementParameter=1
+replacementParameter=4
 replacementParameter2=1
 replacementParameter3=1
 
@@ -189,8 +261,8 @@ secondReplacementParameter2=1
 secondReplacementParameter3=1
 
 # Mutacion // 1. Gen simple | 2. Multigen limitada | 3. Multigen uniforme | 4. Completa
-mutation=1
-mutationProbability=1
+mutation=2
+mutationProbability=0.2
 
 # Cirterio de corte //
 # 1. Tiempo / Parametros: cutParameter = tiempo de corte.
@@ -198,7 +270,7 @@ mutationProbability=1
 # 3. Solucion aceptable / Paramtros: cutParameter = fitness aceptable
 # 4. Contenido / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = error
 # 5. Estructural / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = porcentaje de cambio
-cutMethod=4
-cutParameter=6
+cutMethod=2
+cutParameter=60
 cutParameter2=0.05
 ```
