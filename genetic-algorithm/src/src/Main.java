@@ -15,14 +15,14 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        run();
+        runWithStats();
         //test();
     }
 
     private static void run() {
         ConfigReader configReader;
         try {
-            configReader = new ConfigReader("./config.properties");
+            configReader = new ConfigReader("./genetic-algorithm/config.properties");
         } catch (Exception e) {
             System.out.println("Error:");
             System.out.println(e.getMessage());
