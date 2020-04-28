@@ -47,10 +47,17 @@ public class ConfigReader {
         selection = getSelectionFromFile();
         fitnessFunction = getFitnessFunctionFromFile();
 
-        recombination = new ConsecutivePairsRecombination(1, 0);
-        recombination.setCrossoverFunctions(getCrossoverFunctionFromFile(), null);
+        double a = getSelectionProbability();
+        SelectionFunction recombinationFunction = getSelectionFunctionFromFile("replacementFunction", "replacementParameter", "replacementParameter2", "replacementParameter3");
+        SelectionFunction secondRecombinationFunction = getSelectionFunctionFromFile("secondReplacementnFunction", "secondReplacementParameter", "secondReplacementParameter2", "secondReplacementParameter3");
+        recombination = new ConsecutivePairsRecombination(a, 1 - a);
+        recombination.setCrossoverFunction(getCrossoverFunctionFromFile());
+        recombination.setSelectionFunctions(recombinationFunction, secondRecombinationFunction);
+        recombination.setFitnessFunction(fitnessFunction);
 
-        selection.setSelectionFunctions(getSelectionFunctionFromFile(), null);
+        SelectionFunction selectionFunction = getSelectionFunctionFromFile("selectionFunction", "selectionParameter", "selectionParameter2", "selectionParameter3");
+        SelectionFunction secondSelectionFunction = getSelectionFunctionFromFile("secondSelectionFunction", "secondSelectionParameter", "secondSelectionParameter2", "secondSelectionParameter3");
+        selection.setSelectionFunctions(selectionFunction, secondSelectionFunction);
         selection.setFitnessFunction(fitnessFunction);
     }
 
@@ -73,40 +80,41 @@ public class ConfigReader {
         throw new NoValidInputException(key);
     }
 
+    private double getDoubleFromFile(String key) throws NoValidInputException {
+        if(properties.containsKey(key)) {
+            return Double.parseDouble(properties.get(key));
+        }
+        throw new NoValidInputException(key);
+    }
+
+    private double getSelectionProbability() throws  NoValidInputException{
+        return getDoubleFromFile("a");
+    }
+
     private Selection getSelectionFromFile() throws NoValidInputException, MissingParameterException {
         String key = "selection";
         if(properties.containsKey(key)) {
             int selection = Integer.parseInt(properties.get(key));
             switch (selection) {
                 case 1: {
-                    if (!properties.containsKey("a"))
-                        throw new MissingParameterException("a");
                     if (!properties.containsKey("b"))
-                        throw new MissingParameterException("b");
-                    double a = Integer.parseInt(properties.get("a"));
+                        throw new NoValidInputException("b");
                     double b = Integer.parseInt(properties.get("b"));
-                    return new FillAllSelection(a, b);
+                    return new FillAllSelection(b, 1-b);
                 }
                 case 2:
-                    if (!properties.containsKey("a"))
-                        throw new MissingParameterException("a");
                     if (!properties.containsKey("b"))
-                        throw new MissingParameterException("b");
-                    double a = Integer.parseInt(properties.get("a"));
+                        throw new NoValidInputException("b");
                     double b = Integer.parseInt(properties.get("b"));
-                    return new FillParentSelection(a, b);
+                    return new FillParentSelection(b, 1-b);
             }
         }
         throw new NoValidInputException(key);
     }
 
-    private SelectionFunction getSelectionFunctionFromFile() throws NoValidInputException, MissingParameterException {
-        String key = "selectionFunction";
+    private SelectionFunction getSelectionFunctionFromFile(String key, String parameter1, String parameter2, String parameter3) throws NoValidInputException, MissingParameterException {
         if(properties.containsKey(key)) {
         int selectionFunction = Integer.parseInt(properties.get(key));
-        String parameter1 = "selectionParameter";
-        String parameter2 = "selectionParameter2";
-        String parameter3 = "selectionParameter3";
         switch (selectionFunction) {
             case 1: {
                 if (!properties.containsKey(parameter1))

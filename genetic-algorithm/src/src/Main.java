@@ -19,7 +19,7 @@ public class Main {
     }
 
     private static void run() {
-        ConfigReader configReader = null;
+        ConfigReader configReader;
         try {
             configReader = new ConfigReader("./genetic-algorithm/config.properties");
         } catch (Exception e) {
@@ -27,7 +27,7 @@ public class Main {
             return;
         }
 
-        PipelineAdministrator pa = null;
+        PipelineAdministrator pa;
         try {
             pa = new PipelineAdministrator(500, 500, configReader.getMutation(),
                     configReader.getSelection(), configReader.getFitnessFunction(), configReader.getRecombination(), configReader.getCutCriterion());
@@ -39,6 +39,7 @@ public class Main {
             pa.step();
         }
 
+        pa.printBestFitnessIndividual();
     }
 
     private static void test(){

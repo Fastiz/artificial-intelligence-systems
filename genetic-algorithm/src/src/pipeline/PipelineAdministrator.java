@@ -41,7 +41,7 @@ public class PipelineAdministrator {
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
         this.childrenSize = childrenSize;
-        String folder = "genetic-algorithm/fulldata/";
+        String folder = "genetic-algorithm/testdata/";
         this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
                 "armas.tsv", "guantes.tsv", "botas.tsv");
 
@@ -85,14 +85,14 @@ public class PipelineAdministrator {
         individuals = this.mutation.execute(individuals, alleles);
         individuals = this.selection.execute(individuals, populationSize);
         this.population = individuals;
-        this.fitnessHistorial.add(getBestFitnessIndividual());
+        this.fitnessHistorial.add(getBestFitness());
         this.generationNumber++;
         //Clonar elementos y agregar al historial
         if(cloneEnabled)
             generations.add(population.stream().map(Individual::new).collect(Collectors.toCollection(ArrayList::new)));
     }
 
-    public double getBestFitnessIndividual() {
+    public double getBestFitness() {
         double bestFitness = -Double.MAX_VALUE;
         for(Individual individual : population) {
             double individualFitness = fitnessFunction.calculate(individual);
@@ -100,6 +100,23 @@ public class PipelineAdministrator {
                 bestFitness = individualFitness;
         }
         return bestFitness;
+    }
+
+    public void printBestFitnessIndividual() {
+        double bestFitness = -Double.MAX_VALUE;
+        Individual bestFitnessIndiviual = null;
+        for(Individual individual : population) {
+            double individualFitness = fitnessFunction.calculate(individual);
+            if(individualFitness > bestFitness) {
+                bestFitness = individualFitness;
+                bestFitnessIndiviual = individual;
+            }
+        }
+
+        if(bestFitnessIndiviual != null) {
+            System.out.println("Fitness: " + bestFitness);
+            System.out.println(bestFitnessIndiviual.toString());
+        }
     }
 
     public List<Individual> getPopulation() {
