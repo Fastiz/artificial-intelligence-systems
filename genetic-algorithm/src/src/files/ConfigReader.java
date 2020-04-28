@@ -99,13 +99,13 @@ public class ConfigReader {
                 case 1: {
                     if (!properties.containsKey("b"))
                         throw new NoValidInputException("b");
-                    double b = Integer.parseInt(properties.get("b"));
+                    double b = Double.parseDouble(properties.get("b"));
                     return new FillAllSelection(b, 1-b);
                 }
                 case 2:
                     if (!properties.containsKey("b"))
                         throw new NoValidInputException("b");
-                    double b = Integer.parseInt(properties.get("b"));
+                    double b = Double.parseDouble(properties.get("b"));
                     return new FillParentSelection(b, 1-b);
             }
         }
