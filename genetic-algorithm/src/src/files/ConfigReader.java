@@ -29,6 +29,8 @@ public class ConfigReader {
     private final Selection selection;
     private final CutCriterion cutCriterion;
     private final FitnessFunction fitnessFunction;
+    private final int population;
+    private final int childrenAmount;
 
     public ConfigReader(String path) throws IOException, NoValidInputException, MissingParameterException {
         this.properties = new HashMap<>();
@@ -59,6 +61,9 @@ public class ConfigReader {
         SelectionFunction secondSelectionFunction = getSelectionFunctionFromFile("secondSelectionFunction", "secondSelectionParameter", "secondSelectionParameter2", "secondSelectionParameter3");
         selection.setSelectionFunctions(selectionFunction, secondSelectionFunction);
         selection.setFitnessFunction(fitnessFunction);
+
+        population = getIntegerFromFile("population");
+        childrenAmount = getIntegerFromFile("childrenAmount");
     }
 
     private FitnessFunction getFitnessFunctionFromFile() throws NoValidInputException, MissingParameterException {
@@ -76,6 +81,13 @@ public class ConfigReader {
                 case 4:
                     return new Warrior();
             }
+        }
+        throw new NoValidInputException(key);
+    }
+
+    private int getIntegerFromFile(String key) throws  NoValidInputException{
+        if(properties.containsKey(key)) {
+            return Integer.parseInt(properties.get(key));
         }
         throw new NoValidInputException(key);
     }
@@ -245,6 +257,14 @@ public class ConfigReader {
 
     public CutCriterion getCutCriterion() {
         return cutCriterion;
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public int getChildrenAmount() {
+        return childrenAmount;
     }
 
     private String getValue(String key){

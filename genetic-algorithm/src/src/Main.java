@@ -31,7 +31,7 @@ public class Main {
 
         PipelineAdministrator pa;
         try {
-            pa = new PipelineAdministrator(500, 500, configReader.getMutation(),
+            pa = new PipelineAdministrator(configReader.getPopulation(), configReader.getChildrenAmount(), configReader.getMutation(),
                     configReader.getSelection(), configReader.getFitnessFunction(), configReader.getRecombination(), configReader.getCutCriterion());
         } catch (IOException e) {
             System.out.println(e.getMessage());
