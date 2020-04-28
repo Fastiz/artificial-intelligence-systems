@@ -3,12 +3,21 @@
 Algorithm to find the best configuration for each character of a specific rol game.
 ## Executing the program
 To execute the program download the [genetic-algorithm.jar](https://github.com/Fastiz/artificial-intelligence-systems/releases) from releases and place it inside the directory that includes the configuration file.
+In the same folder, create a data folder and paste the .tsv files inside.
 Then open a shell in the same directory and run the following script:
 ```
 java -jar genetic-algorithm.jar
 ```
 ## Configuration file
 The configuration file reads different inputs depending on the methods used.
+### Population
+Set the population size.
+
+Set population=X, where X is the population size.
+### Children amount
+Set the amount of children to generate on each iteration.
+
+Set childrenAmount=X, where X is amount of children to generate.
 ### Fitness function 
 Set the fitness function for the kind of character you want to optimize. The options are:
 1. Archer
@@ -18,7 +27,7 @@ Set the fitness function for the kind of character you want to optimize. The opt
 
 To set it just type fitnessFunction=X, where X is the option number.
 ### Crossover
-Select the type of crossover you want to use. The options are
+Select the type of crossover you want to use. The options are:
 1. One dot
 2. Two dots
 3. Ring (Anular in spanish)
@@ -35,7 +44,7 @@ Choose the selection function for the parents. The options are:
 1. Bolztmann
   Parameters:
      a) selectionParameter = T0
-     b) selectionParameter2 = TC
+     b) selectionParameter2 = Tc
      c) selectionParameter3 = k
 2. Deterministic tournament
   Parameters:
