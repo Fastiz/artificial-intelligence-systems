@@ -126,8 +126,8 @@ public class PipelineAdministrator {
         return fitnessHistorial;
     }
 
-    public List<Individual> getDistinctIndividuals(){
+    public Set<Individual> getDistinctIndividuals(){
         Set<Individual> set = new HashSet<>(this.population);
-        return Arrays.asList(set.toArray(new Individual[0]));
+        return set;
     }
 }
