@@ -40,7 +40,7 @@ public class Main {
 
         try(BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/distinct"))){
             while (!pa.shouldEnd()) {
-                bf.write(pa.getDistinctIndividuals().size()+'\n');
+                bf.write(String.valueOf(pa.getDistinctIndividuals().size())+'\n');
                 pa.step();
             }
         } catch (IOException e) {
