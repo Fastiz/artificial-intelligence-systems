@@ -136,7 +136,11 @@ Copy and paste into the configuration.txt file to run map 1 with 'A*' as algorit
 # Los parametros sin usar con valores seteados no se tendran en cuenta, se pueden dejar
 # sin cambios.
 #
-# Fitness function // 1. Archer | 2. Defender | 3. Spy | 4. Warrior
+# Cantidad de individuos
+population=500
+# Cantidad de hijos
+childrenAmount=500
+# Funcion fitness // 1. Archer | 2. Defender | 3. Spy | 4. Warrior
 fitnessFunction=4
 # Cruces // 1. Un punto | 2. Dos puntos | 3. Anular | 4. Uniforme
 crossover=1
@@ -159,7 +163,6 @@ a = 0.5
 # 6. Torneo probabilistico
 # 7. Universal
 selectionFunction=3
-#unused
 selectionParameter=1
 selectionParameter2=1
 selectionParameter3=1
@@ -167,7 +170,6 @@ selectionParameter3=1
 # Segunda funcion de seleccion de padres
 # Igual que el anterior, con distintos nombres en las variables.
 secondSelectionFunction=4
-#unused
 secondSelectionParameter=1
 secondSelectionParameter2=1
 secondSelectionParameter3=1
@@ -175,7 +177,6 @@ secondSelectionParameter3=1
 # Funcion de reemplazo de individuos
 # Igual que el anterior, con distintos nombres en las variables.
 replacementFunction=5
-#unused
 replacementParameter=1
 replacementParameter2=1
 replacementParameter3=1
@@ -183,14 +184,13 @@ replacementParameter3=1
 # Segunda funcion de reemplazo de individuos
 # Igual que el anterior, con distintos nombres en las variables.
 secondReplacementFunction=6
-#unused
 secondReplacementParameter=1
 secondReplacementParameter2=1
 secondReplacementParameter3=1
 
 # Mutacion // 1. Gen simple | 2. Multigen limitada | 3. Multigen uniforme | 4. Completa
-mutation=3
-mutationProbability=0.6
+mutation=1
+mutationProbability=1
 
 # Cirterio de corte //
 # 1. Tiempo / Parametros: cutParameter = tiempo de corte.
@@ -198,8 +198,7 @@ mutationProbability=0.6
 # 3. Solucion aceptable / Paramtros: cutParameter = fitness aceptable
 # 4. Contenido / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = error
 # 5. Estructural / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = porcentaje de cambio
-cutMethod=1
-cutParameter=10
-#unused
-cutParameter2=0.005
+cutMethod=4
+cutParameter=6
+cutParameter2=0.05
 ```
