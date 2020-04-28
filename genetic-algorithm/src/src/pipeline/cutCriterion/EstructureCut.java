@@ -21,7 +21,7 @@ public class EstructureCut implements CutCriterion {
         if(generationNumber - 1 < generationsAmount)
             return false;
 
-        return shouldEndCompareStartAndEnd(generations);
+        return shouldEndCompareAll(generations);
     }
 
     private boolean shouldEndCompareStartAndEnd(List<List<Individual>> generations) {
@@ -32,7 +32,7 @@ public class EstructureCut implements CutCriterion {
     }
 
     private boolean shouldEndCompareAll(List<List<Individual>> generations) {
-        for(int i = 0; i < generations.size() - 1; i++) {
+        for(int i = generations.size() - generationsAmount - 1; i < generations.size() - 1; i++) {
             for(int j = i; j < generations.size(); j++) {
                 double coincidencesPercentage = coincidencesBetweenGenerations(generations.get(i), generations.get(j));
                 if(coincidencesPercentage < changePercentage)
