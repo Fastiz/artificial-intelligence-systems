@@ -117,6 +117,11 @@ public class Individual implements Cloneable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(generation, height, helm, breastplate, weapon, gauntlet, boots);
+    }
+
+    @Override
     public String toString() {
         return "Individual{" +
                 "height=" + height +

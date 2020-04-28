@@ -11,8 +11,7 @@ import src.pipeline.selection.fitnessFunctions.FitnessFunction;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PipelineAdministrator {
@@ -125,5 +124,10 @@ public class PipelineAdministrator {
 
     public List<Double> getFitnessHistorial() {
         return fitnessHistorial;
+    }
+
+    public List<Individual> getDistinctIndividuals(){
+        Set<Individual> set = new HashSet<>(this.population);
+        return Arrays.asList(set.toArray(new Individual[0]));
     }
 }
