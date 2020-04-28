@@ -32,9 +32,12 @@ public class PipelineAdministrator {
     private List<Double> fitnessHistorial;
     private List<List<Individual>> generations;
 
+    private double bestIndividualFitness;
+    private Individual bestIndividual;
 
     public PipelineAdministrator(int populationSize, int childrenSize, Mutation mutation, Selection selection, FitnessFunction fitnessFunction, Recombination recombination, CutCriterion cutCriterion) throws IOException {
         this.generationNumber = 0;
+        this.bestIndividualFitness = -Double.MAX_VALUE;
         this.generations = new ArrayList<>();
         this.fitnessHistorial = new ArrayList<>();
         this.populationSize = populationSize;
@@ -84,7 +87,9 @@ public class PipelineAdministrator {
         individuals = this.mutation.execute(individuals, alleles);
         individuals = this.selection.execute(individuals, populationSize);
         this.population = individuals;
-        this.fitnessHistorial.add(getBestFitness());
+        double a = getBestFitness();
+        this.fitnessHistorial.add(a);
+        System.out.println(a);
         this.generationNumber++;
         //Clonar elementos y agregar al historial
         if(cloneEnabled)
@@ -93,10 +98,17 @@ public class PipelineAdministrator {
 
     public double getBestFitness() {
         double bestFitness = -Double.MAX_VALUE;
+        Individual bestIndividual = null;
         for(Individual individual : population) {
             double individualFitness = fitnessFunction.calculate(individual);
-            if(individualFitness > bestFitness)
+            if(individualFitness > bestFitness) {
                 bestFitness = individualFitness;
+                bestIndividual = individual;
+            }
+        }
+        if(bestFitness > this.bestIndividualFitness) {
+            this.bestIndividual = bestIndividual;
+            this.bestIndividualFitness = bestFitness;
         }
         return bestFitness;
     }
@@ -113,9 +125,21 @@ public class PipelineAdministrator {
         }
 
         if(bestFitnessIndiviual != null) {
-            System.out.println("Fitness: " + bestFitness);
-            System.out.println(bestFitnessIndiviual.toString());
+            System.out.println("Best individual of last iteration");
+            printIndividualWithFitness(bestFitnessIndiviual, bestFitness);
         }
+        System.out.println();
+
+        if(this.bestIndividual != null) {
+            System.out.println("Best individual of all times");
+            System.out.println("Fitness: " + this.bestIndividualFitness);
+            System.out.println(this.bestIndividual.toString());
+        }
+    }
+
+    private void printIndividualWithFitness(Individual individual, double fitness) {
+        System.out.println("Fitness: " + fitness);
+        System.out.println(individual.toString());
     }
 
     public List<Individual> getPopulation() {
