@@ -43,7 +43,7 @@ public class SelectionImpl implements Selection {
     }
 
     protected List<Individual> select(List<Individual> individuals, int populationSize) {
-        int population1 = (int)this.a*populationSize;
+        int population1 = (int)(this.a*populationSize);
         int population2 = populationSize - population1;
 
         List<Individual> newPopulation = new ArrayList<>(populationSize);

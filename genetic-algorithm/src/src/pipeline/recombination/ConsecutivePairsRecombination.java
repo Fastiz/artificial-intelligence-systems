@@ -53,7 +53,7 @@ public class ConsecutivePairsRecombination implements Recombination {
         this.generation++;
         List<Individual> newIndividuals = new ArrayList<>(individuals);
 
-        int population1 = (int)this.a*childrenSize;
+        int population1 = (int)(this.a*childrenSize);
         int population2 = childrenSize-population1;
 
         newIndividuals.addAll(
