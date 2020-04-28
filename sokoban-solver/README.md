@@ -22,10 +22,9 @@ The length of the path the player would have to travel to each goal.
 ### Simple assignation considering walls
 The same as simple assignation but instead of finding the manhattan distance, uses the closest path without going over walls.
 ## Executing the program
-To execute the program download the [artificial-intelligence-systems.jar](https://github.com/Fastiz/artificial-intelligence-systems/releases) from releases and place it inside the directory that includes the maps, configuration.txt and output.txt.
-Then open a shell in the same directory and run the following script:
+To execute the program open a shell inside sokovan-solver directory and run the following script:
 ```
-java -jar artificial-intelligence-systems.jar
+java -jar sokovan-solver.jar
 ```
 Then the program should run and save the output inside output.txt.
 ## Configuration file
