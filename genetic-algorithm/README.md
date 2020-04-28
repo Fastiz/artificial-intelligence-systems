@@ -21,7 +21,7 @@ To set it just type fitnessFunction=X, where X is the option number.
 Select the type of crossover you want to use. The options are
 1. One dot
 2. Two dots
-3. Anular
+3. Ring (Anular in spanish)
 4. Uniform
 
 To set it type crossover=X, where X is the option number.
