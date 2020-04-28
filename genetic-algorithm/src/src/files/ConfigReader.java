@@ -48,7 +48,8 @@ public class ConfigReader {
         fitnessFunction = getFitnessFunctionFromFile();
 
         recombination = new ConsecutivePairsRecombination(1, 0);
-        recombination.setCrossoverFunctions(getCrossoverFunctionFromFile(), null);
+        recombination.setSelectionFunctions(getSelectionFunctionFromFile(), null);
+        recombination.setCrossoverFunction(getCrossoverFunctionFromFile());
 
         selection.setSelectionFunctions(getSelectionFunctionFromFile(), null);
         selection.setFitnessFunction(fitnessFunction);

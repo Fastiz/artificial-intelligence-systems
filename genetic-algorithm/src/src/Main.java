@@ -8,6 +8,8 @@ import src.pipeline.PipelineAdministrator;
 
 import src.pipeline.selection.fitnessFunctions.Warrior;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -35,10 +37,23 @@ public class Main {
             System.out.println(e.getMessage());
             return;
         }
-        while (!pa.shouldEnd()) {
-            pa.step();
+
+        try(BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/distinct"))){
+            while (!pa.shouldEnd()) {
+                bf.write(pa.getDistinctIndividuals().size()+'\n');
+                pa.step();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        try(BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/fitness"))) {
+            for(double fitness: pa.getFitnessHistorial()){
+                bf.write(String.valueOf(fitness)+'\n');
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void test(){
