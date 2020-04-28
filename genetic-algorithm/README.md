@@ -94,15 +94,6 @@ Choose the type of mutation. The options are:
 
 To set the mutation type mutation=X, where X is the option number.
 You also must set the mutation probabiliy by typing mutationProbability=Y, where Y is the probability.
-### Mutation
-Choose the type of mutation. The options are:
-1. Single gen
-2. Limite multigen
-3. Uniform multigen
-4. Complete
-
-To set the mutation type mutation=X, where X is the option number.
-You also must set the mutation probabiliy by typing mutationProbability=Y, where Y is the probability.
 ### Cutting method
 Choose the cirterion to decide if the algorithm should finish. The options are:
 1. Time
@@ -126,49 +117,80 @@ Choose the cirterion to decide if the algorithm should finish. The options are:
 
 To set the mutation type mutation=X, where X is the option number.
 You also must set the mutation probabiliy by typing mutationProbability=Y, where Y is the probability.
+
+### Important
+Unused parameter are ignored, there is no need to delete them, just keep them in the file to save the variable names in case you need to use them later.
+
 ### Examples
 Copy and paste into the configuration.txt file to run map 1 with 'A*' as algorithm and 'simple assignation cosidering walls' heuristic.
 ```
-# Map number
-#>>>
-1
-# Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
-#>>>
-1
-#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
-#	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5, SIMPLE ASSIGNATION CONSIDERING WALLS: 6)
-#>>>
-6
-#Following line is reserved for the parameter of IDDFS. If you are using another algorithm remove line.
-#If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
-#>>>
+# Los parametros sin usar con valores seteados no se tendran en cuenta, se pueden dejar
+# sin cambios.
+#
+# Fitness function // 1. Archer | 2. Defender | 3. Spy | 4. Warrior
+fitnessFunction=4
+# Cruces // 1. Un punto | 2. Dos puntos | 3. Anular | 4. Uniforme
+crossover=1
+
+# Seleccion // 1. Fill all | 2. Fill parent
+selection=1
+
+# Porcentaje de funcion de reemplazo de individuos numero uno.
+b = 0.5
+
+# Porcentaje de funcion de seleccion de padres numero uno.
+a = 0.5
+
+# Funcion de seleccion de padres
+# 1. Boltzmann / Parametros: selectionParamter = T0 | selectionParamter2 = TC | selectionParamter3 = k
+# 2. Torneo deterministico / Parametros: selectionParamter = M
+# 3. Elite
+# 4. Ranking
+# 5. Ruleta
+# 6. Torneo probabilistico
+# 7. Universal
+selectionFunction=3
+#unused
+selectionParameter=1
+selectionParameter2=1
+selectionParameter3=1
+
+# Segunda funcion de seleccion de padres
+# Igual que el anterior, con distintos nombres en las variables.
+secondSelectionFunction=4
+#unused
+secondSelectionParameter=1
+secondSelectionParameter2=1
+secondSelectionParameter3=1
+
+# Funcion de reemplazo de individuos
+# Igual que el anterior, con distintos nombres en las variables.
+replacementFunction=5
+#unused
+replacementParameter=1
+replacementParameter2=1
+replacementParameter3=1
+
+# Segunda funcion de reemplazo de individuos
+# Igual que el anterior, con distintos nombres en las variables.
+secondReplacementFunction=6
+#unused
+secondReplacementParameter=1
+secondReplacementParameter2=1
+secondReplacementParameter3=1
+
+# Mutacion // 1. Gen simple | 2. Multigen limitada | 3. Multigen uniforme | 4. Completa
+mutation=3
+mutationProbability=0.6
+
+# Cirterio de corte //
+# 1. Tiempo / Parametros: cutParameter = tiempo de corte.
+# 2. Cantidad de generaciones / Parametros: cutParameter = cantidad de generaciones
+# 3. Solucion aceptable / Paramtros: cutParameter = fitness aceptable
+# 4. Contenido / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = error
+# 5. Estructural / Paramtros: cutParameter = cantidad de generaciones | cutParamter2 = porcentaje de cambio
+cutMethod=1
+cutParameter=10
+#unused
+cutParameter2=0.005
 ```
-The following one is to run DFS on map 3.
-```
-# Map number
-#>>>
-3
-# Algorithm number (A*: 1, BFS: 2, DFS: 3, GLOBAL GREEDY: 4, IDA*: 5, IDDFS: 6)
-#>>>
-3
-#If uninformed algorithm remove next line. Else pick a Heuristic (BRUTEFORCE ASSIGNATION: 1,
-#	GREEDY ASSIGNATION: 2, TRIVIAL: 3, WALKABLE DISTANCE: 4, SIMPLE ASSIGNATION: 5, SIMPLE ASSIGNATION CONSIDERING WALLS: 6)
-#>>>
-#Following line is reserved for the parameter of IDDFS. If you are using another algorithm remove line.
-#If your algorithm is IDDFS enter max depth or leave the line with -1 if no limit.
-#>>>
-```
-## Output file
-In the file output.txt is saved the result of the execution. If the algorithm found a solution then it will print information of the execution and then display the solution for the puzzle.
-In the solution the characters used for displaying the map are the following:
-* \# : wall
-* @ : player
-* $ : box
-* . : goal
-* blank-space : empty
-## Map files
-We included map files inside the maps folder. If you want to add another map then place it inside the folder and name it as 'map' followed with an unused number. Then reference the map in the configuration file.
-The format of the file is the following:
-In the first line there should be information about the map dimensions, and it should be written as 'height width' (separated with a blank space).
-The following lines are reserved for the map content with the format specified in 'Output file' section.
-***The map content should be coherent with the dimensions specified in the first line. Also, if the walls are placed before the end of the map, then fill with spaces.***
