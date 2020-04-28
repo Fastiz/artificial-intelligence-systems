@@ -118,7 +118,7 @@ Choose the cirterion to decide if the algorithm should finish. The options are:
   Parameters:
     a) cutParameter = Amount of generations
     b) cutParameter2 = Error (The minimum difference two fitness values must have to be considered different, for example, if you     set it to 0 but the fitness change a minimum values during the amount of generations setted, the program will not end, because     if the error is 0 the value must be exactly the same).
-5. Estructure. (A percentage of individuals does not change after an amount of generationss)
+5. Estructure. (A percentage of individuals does not change after an amount of generations)
   Parameters:
     a) cutParameter = Amount of generations
     b) cutParameter2 = Percentage (This is the minimum percentage of coincidences that the generations must have between them in       order to finish the execution).
