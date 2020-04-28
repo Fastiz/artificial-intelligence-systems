@@ -4,16 +4,11 @@ import src.models.Alleles;
 import src.models.Individual;
 import src.pipeline.cutCriterion.*;
 import src.pipeline.mutation.Mutation;
-import src.pipeline.mutation.UniformMultiGenMutation;
 import src.pipeline.recombination.Recombination;
-import src.pipeline.selection.FillAllSelection;
 import src.pipeline.selection.Selection;
-import src.pipeline.recombination.ConsecutivePairsRecombination;
-import src.pipeline.recombination.crossoverFunctions.OnePointCross;
-import src.pipeline.mutation.NoMutation;
+
 import src.pipeline.selection.fitnessFunctions.FitnessFunction;
-import src.pipeline.selection.fitnessFunctions.Archer;
-import src.pipeline.selection.selectionFunctions.EliteSelection;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,33 +59,6 @@ public class PipelineAdministrator {
         generateRandomPopulation();
     }
 
-    public PipelineAdministrator(int populationSize) throws IOException {
-        this.generationNumber = 0;
-        this.generations = new ArrayList<>();
-        this.fitnessHistorial = new ArrayList<>();
-        this.populationSize = populationSize;
-        this.population = new ArrayList<>(populationSize);
-
-        String folder = "genetic-algorithm/testdata/";
-        this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
-                "armas.tsv", "guantes.tsv", "botas.tsv");
-
-        this.recombination = new ConsecutivePairsRecombination(1, 0);
-        this.recombination.setCrossoverFunctions(new OnePointCross(), null);
-
-        this.fitnessFunction = new Archer();
-
-        this.selection = new FillAllSelection(1, 0);
-        this.selection.setSelectionFunctions(new EliteSelection(), null);
-        this.selection.setFitnessFunction(this.fitnessFunction);
-
-        this.mutation = new UniformMultiGenMutation(0.7);
-
-        this.cutCriterion = new EstructureCut(1, 0.999);
-        this.cloneEnabled = true;
-
-        generateRandomPopulation();
-    }
 
     public void generateRandomPopulation(){
         for(int i=0; i<populationSize; i++){
