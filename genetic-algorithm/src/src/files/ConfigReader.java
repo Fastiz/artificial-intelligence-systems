@@ -49,7 +49,7 @@ public class ConfigReader {
 
         double a = getSelectionProbability();
         SelectionFunction recombinationFunction = getSelectionFunctionFromFile("replacementFunction", "replacementParameter", "replacementParameter2", "replacementParameter3");
-        SelectionFunction secondRecombinationFunction = getSelectionFunctionFromFile("secondReplacementnFunction", "secondReplacementParameter", "secondReplacementParameter2", "secondReplacementParameter3");
+        SelectionFunction secondRecombinationFunction = getSelectionFunctionFromFile("secondReplacementFunction", "secondReplacementParameter", "secondReplacementParameter2", "secondReplacementParameter3");
         recombination = new ConsecutivePairsRecombination(a, 1 - a);
         recombination.setCrossoverFunction(getCrossoverFunctionFromFile());
         recombination.setSelectionFunctions(recombinationFunction, secondRecombinationFunction);
