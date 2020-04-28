@@ -23,7 +23,7 @@ public class NoFitnessChangeCut implements CutCriterion {
         if(fitnessHistorial.size() < generationsAmount)
             return false;
 
-       List<Double> lastestFitness = fitnessHistorial.subList(fitnessHistorial.size() - generationsAmount - 1, fitnessHistorial.size());
+       List<Double> lastestFitness = fitnessHistorial.subList(fitnessHistorial.size() - generationsAmount, fitnessHistorial.size());
 
 //        Compara si evoluciono con una diferencia mayor al error
 //        for(int i = 0; i <lastestFitness.size() - 1; i++) {

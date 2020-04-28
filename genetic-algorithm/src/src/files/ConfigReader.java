@@ -4,10 +4,13 @@ import src.files.Exceptions.MissingParameterException;
 import src.files.Exceptions.NoValidInputException;
 import src.pipeline.cutCriterion.*;
 import src.pipeline.mutation.*;
+import src.pipeline.recombination.ConsecutivePairsRecombination;
+import src.pipeline.recombination.Recombination;
 import src.pipeline.recombination.crossoverFunctions.*;
 import src.pipeline.selection.FillAllSelection;
 import src.pipeline.selection.FillParentSelection;
 import src.pipeline.selection.Selection;
+import src.pipeline.selection.fitnessFunctions.*;
 import src.pipeline.selection.selectionFunctions.*;
 
 import java.io.BufferedReader;
@@ -22,10 +25,10 @@ public class ConfigReader {
     private final Map<String, String> properties;
 
     private final Mutation mutation;
-    private final CrossoverFunction crossoverFunction;
-    private final SelectionFunction selectionFunction;
+    private final Recombination recombination;
     private final Selection selection;
     private final CutCriterion cutCriterion;
+    private final FitnessFunction fitnessFunction;
 
     public ConfigReader(String path) throws IOException, NoValidInputException, MissingParameterException {
         this.properties = new HashMap<>();
@@ -40,58 +43,88 @@ public class ConfigReader {
         }
 
         cutCriterion = getCutCriterionFromFile();
-        selectionFunction = getSelectionFunctionFromFile();
-        selection = getSelectionFromFile();
-        crossoverFunction = getCrossoverFunctionFromFile();
         mutation = getMutationFromFile();
+        selection = getSelectionFromFile();
+        fitnessFunction = getFitnessFunctionFromFile();
+
+        recombination = new ConsecutivePairsRecombination(1, 0);
+        recombination.setCrossoverFunctions(getCrossoverFunctionFromFile(), null);
+
+        selection.setSelectionFunctions(getSelectionFunctionFromFile(), null);
+        selection.setFitnessFunction(fitnessFunction);
+    }
+
+    private FitnessFunction getFitnessFunctionFromFile() throws NoValidInputException, MissingParameterException {
+        String key = "fitnessFunction";
+        if(properties.containsKey(key)) {
+            int fitnessFunction = Integer.parseInt(properties.get(key));
+
+            switch (fitnessFunction) {
+                case 1:
+                    return new Archer();
+                case 2:
+                    return new Defender();
+                case 3:
+                    return new Spy();
+                case 4:
+                    return new Warrior();
+            }
+        }
+        throw new NoValidInputException(key);
     }
 
     private Selection getSelectionFromFile() throws NoValidInputException, MissingParameterException {
-        int selection = Integer.parseInt(properties.get("selection"));
-
-        switch (selection) {
-            case 1: {
-                if(!properties.containsKey("a"))
-                    throw new MissingParameterException("a");
-                if(!properties.containsKey("b"))
-                    throw new MissingParameterException("b");
-                double a = Integer.parseInt(properties.get("a"));
-                double b = Integer.parseInt(properties.get("b"));
-                return new FillAllSelection(a ,b);
+        String key = "selection";
+        if(properties.containsKey(key)) {
+            int selection = Integer.parseInt(properties.get(key));
+            switch (selection) {
+                case 1: {
+                    if (!properties.containsKey("a"))
+                        throw new MissingParameterException("a");
+                    if (!properties.containsKey("b"))
+                        throw new MissingParameterException("b");
+                    double a = Integer.parseInt(properties.get("a"));
+                    double b = Integer.parseInt(properties.get("b"));
+                    return new FillAllSelection(a, b);
+                }
+                case 2:
+                    if (!properties.containsKey("a"))
+                        throw new MissingParameterException("a");
+                    if (!properties.containsKey("b"))
+                        throw new MissingParameterException("b");
+                    double a = Integer.parseInt(properties.get("a"));
+                    double b = Integer.parseInt(properties.get("b"));
+                    return new FillParentSelection(a, b);
             }
-            case 2:
-                if(!properties.containsKey("a"))
-                    throw new MissingParameterException("a");
-                if(!properties.containsKey("b"))
-                    throw new MissingParameterException("b");
-                double a = Integer.parseInt(properties.get("a"));
-                double b = Integer.parseInt(properties.get("b"));
-                return new FillParentSelection(a ,b);
         }
-        throw new NoValidInputException("selection function");
+        throw new NoValidInputException(key);
     }
 
     private SelectionFunction getSelectionFunctionFromFile() throws NoValidInputException, MissingParameterException {
-        int selectionFunction = Integer.parseInt(properties.get("selectionFunction"));
-
+        String key = "selectionFunction";
+        if(properties.containsKey(key)) {
+        int selectionFunction = Integer.parseInt(properties.get(key));
+        String parameter1 = "selectionParameter";
+        String parameter2 = "selectionParameter2";
+        String parameter3 = "selectionParameter3";
         switch (selectionFunction) {
             case 1: {
-                if(!properties.containsKey("selectionParameter"))
-                    throw new MissingParameterException("selectionParameter");
-                if(!properties.containsKey("selectionParameter2"))
-                    throw new MissingParameterException("selectionParameter2");
-                if(!properties.containsKey("selectionParameter3"))
-                    throw new MissingParameterException("selectionParameter3");
+                if (!properties.containsKey(parameter1))
+                    throw new MissingParameterException(parameter1);
+                if (!properties.containsKey(parameter2))
+                    throw new MissingParameterException(parameter2);
+                if (!properties.containsKey(parameter3))
+                    throw new MissingParameterException(parameter3);
 
-                double T0 = Double.parseDouble(properties.get("selectionParameter"));
-                double TC = Double.parseDouble(properties.get("selectionParameter2"));
-                double k = Double.parseDouble(properties.get("selectionParameter3"));
+                double T0 = Double.parseDouble(properties.get(parameter1));
+                double TC = Double.parseDouble(properties.get(parameter2));
+                double k = Double.parseDouble(properties.get(parameter3));
                 return new BoltzmannSelection(T0, TC, k);
             }
             case 2:
-                if(!properties.containsKey("selectionParameter"))
-                    throw new MissingParameterException("selectionParameter");
-                int M = Integer.parseInt(properties.get("selectionParameter"));
+                if (!properties.containsKey(parameter1))
+                    throw new MissingParameterException(parameter1);
+                int M = Integer.parseInt(properties.get(parameter1));
                 return new DeterministicTournamentSelection(M);
             case 3:
                 return new EliteSelection();
@@ -104,46 +137,51 @@ public class ConfigReader {
             case 7:
                 return new UniversalSelection();
         }
-        throw new NoValidInputException("selection function");
+    }
+        throw new NoValidInputException(key);
     }
 
     private CutCriterion getCutCriterionFromFile() throws NoValidInputException, MissingParameterException {
-        int criterion = Integer.parseInt(properties.get("cutMethod"));
+        String key = "cutMethod";
+        if(properties.containsKey(key)) {
+            int criterion = Integer.parseInt(properties.get(key));
 
-        switch (criterion) {
-            case 1: {
-                if(!properties.containsKey("cutParameter"))
-                    throw new MissingParameterException("cutParameter");
-                int time = Integer.parseInt(properties.get("cutParameter"));
-                return new TimeCut(time);
+            String parameter1 = "cutParameter";
+            String parameter2 = "cutParameter2";
+            switch (criterion) {
+                case 1: {
+                    if (!properties.containsKey(parameter1))
+                        throw new MissingParameterException(parameter1);
+                    int time = Integer.parseInt(properties.get(parameter1));
+                    return new TimeCut(time);
+                }
+                case 2:
+                    if (!properties.containsKey(parameter1))
+                        throw new MissingParameterException(parameter1);
+                    int generationAmount = Integer.parseInt(properties.get(parameter1));
+                    return new GenerationAmountCut(generationAmount);
+                case 3:
+                    if (!properties.containsKey(parameter1))
+                        throw new MissingParameterException(parameter1);
+                    int acceptableFitness = Integer.parseInt(properties.get(parameter1));
+                    return new AcceptableSolutionCut(acceptableFitness);
+                case 4:
+                    if (!properties.containsKey(parameter1))
+                        throw new MissingParameterException(parameter1);
+                    if (!properties.containsKey(parameter2))
+                        throw new MissingParameterException(parameter2);
+                    int generationToAnalize = Integer.parseInt(properties.get(parameter1));
+                    double error = Double.parseDouble(properties.get(parameter2));
+                    return new NoFitnessChangeCut(generationToAnalize, error);
+                case 5:
+                    if (!properties.containsKey(parameter1))
+                        throw new MissingParameterException(parameter1);
+                    if (!properties.containsKey(parameter2))
+                        throw new MissingParameterException(parameter2);
+                    int generationNumber = Integer.parseInt(properties.get(parameter1));
+                    double percentageChange = Double.parseDouble(properties.get(parameter2));
+                    return new EstructureCut(generationNumber, percentageChange);
             }
-            case 2:
-                if(!properties.containsKey("cutParameter"))
-                    throw new MissingParameterException("cutParameter");
-                int generationAmount = Integer.parseInt(properties.get("cutParameter"));
-                return new GenerationAmountCut(generationAmount);
-            case 3:
-                if(!properties.containsKey("cutParameter"))
-                    throw new MissingParameterException("cutParameter");
-                int acceptableFitness = Integer.parseInt(properties.get("cutParameter"));
-                return new AcceptableSolutionCut(acceptableFitness);
-            case 4:
-                if(!properties.containsKey("cutParameter"))
-                    throw new MissingParameterException("cutParameter");
-                if(!properties.containsKey("cutParameter2"))
-                    throw new MissingParameterException("cutParameter2");
-                int generationToAnalize = Integer.parseInt(properties.get("cutParameter"));
-                double error = Double.parseDouble(properties.get("cutParameter2"));
-                return new NoFitnessChangeCut(generationToAnalize, error);
-
-            case 5:
-                if(!properties.containsKey("cutParameter"))
-                    throw new MissingParameterException("cutParameter");
-                if(!properties.containsKey("cutParameter2"))
-                    throw new MissingParameterException("cutParameter2");
-                int generationNumber = Integer.parseInt(properties.get("cutParameter"));
-                double percentageChange = Double.parseDouble(properties.get("cutParameter2"));
-                return new EstructureCut(generationNumber, percentageChange);
         }
         throw new NoValidInputException("cut criterion");
     }
@@ -185,16 +223,16 @@ public class ConfigReader {
         return mutation;
     }
 
-    public CrossoverFunction getCrossoverFunction() {
-        return crossoverFunction;
-    }
-
-    public SelectionFunction getSelectionFunction() {
-        return selectionFunction;
+    public Recombination getRecombination() {
+        return recombination;
     }
 
     public Selection getSelection() {
         return selection;
+    }
+
+    public FitnessFunction getFitnessFunction() {
+        return fitnessFunction;
     }
 
     public CutCriterion getCutCriterion() {
