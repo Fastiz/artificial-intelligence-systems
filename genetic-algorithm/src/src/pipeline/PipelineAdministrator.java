@@ -43,7 +43,7 @@ public class PipelineAdministrator {
         this.populationSize = populationSize;
         this.population = new ArrayList<>(populationSize);
         this.childrenSize = childrenSize;
-        String folder = "./genetic-algorithm/data/";
+        String folder = "./data/";
         this.alleles = new Alleles(folder, "cascos.tsv", "pecheras.tsv",
                 "armas.tsv", "guantes.tsv", "botas.tsv");
 

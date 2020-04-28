@@ -22,7 +22,7 @@ public class Main {
     private static void run() {
         ConfigReader configReader;
         try {
-            configReader = new ConfigReader("./genetic-algorithm/config.properties");
+            configReader = new ConfigReader("./config.properties");
         } catch (Exception e) {
             System.out.println("Error:");
             System.out.println(e.getMessage());
@@ -50,7 +50,7 @@ public class Main {
     private static void runWithStats() {
         ConfigReader configReader;
         try {
-            configReader = new ConfigReader("./genetic-algorithm/config.properties");
+            configReader = new ConfigReader("./config.properties");
         } catch (Exception e) {
             System.out.println("Error:");
             System.out.println(e.getMessage());
@@ -67,7 +67,7 @@ public class Main {
             return;
         }
 
-        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/distinct"))) {
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./distinct"))) {
             while (!pa.shouldEnd()) {
                 bf.write(String.valueOf(pa.getDistinctIndividuals().size()) + '\n');
                 pa.step();
@@ -77,7 +77,7 @@ public class Main {
         }
 
         pa.printBestFitnessIndividual();
-        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./genetic-algorithm/fitness"))) {
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./fitness"))) {
             for (double fitness : pa.getFitnessHistorial()) {
                 bf.write(String.valueOf(fitness) + '\n');
             }
