@@ -1,26 +1,36 @@
 from perceptron.perceptron import Perceptron
-from perceptron.no_linear_perceptron import NoLinearPerceptron
-import training.andLogic
-import training.exclusiveOr
-import matplotlib.pyplot as plt
+
 import pandas as pd
-import xlrd
 import numpy as np
 
 
 def run():
-    data = pd.read_excel('../data/TP3-ej2-Conjunto_entrenamiento.xlsx')
+    data = pd.read_csv('./perceptron/ex2_training.csv')
     output = data['y'].to_list()
     del data['y']
     data = data.values
-    run_training(data, output)
 
-def run_training(data, output):
+    norm = max(output)
+    output = np.array(output) / max(output)
+
+    run_training(data, output, norm)
+
+
+def run_training(data, output, norm):
     b = 1
-    perceptron = NoLinearPerceptron(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output, 0.001)
+    perceptron = Perceptron(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output, 0.8)
 
-    while perceptron.get_current_step() <= 10000:
+    error = perceptron.get_error()
+    min_error = error
+
+    loop = True
+    while (loop and error < 20) or (not loop and perceptron.get_error() > 0.485):
         perceptron.step()
+        error = perceptron.get_error()
+        if error < min_error:
+            min_error = error
+            print(error)
 
+    print(" ".join(["Finished with error:", str(perceptron.get_error())]))
     for elem, out in zip(data, output):
-        print(" ".join([str(elem), str(out), "RESULT:", str(perceptron.classify(elem))]))
+        print(" ".join([str(elem), str(out * norm), "RESULT:", str(perceptron.classify(elem) * norm)]))

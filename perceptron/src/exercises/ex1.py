@@ -14,8 +14,7 @@ def run():
 def run_training(data):
 
     data, output = data
-    plot_data(data, output)
-    perceptron = Perceptron(lambda p: 1 if p >= 0 else -1, data, output, 0.001)
+    perceptron = Perceptron(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, 0.001, 1)
 
     weights = []
     while perceptron.get_current_step() <= 10000:
@@ -26,6 +25,9 @@ def run_training(data):
 
     for elem, out in zip(data, output):
         print(" ".join([str(elem), str(out), "RESULT:", str(perceptron.classify(elem))]))
+
+    plot_data(data, output)
+
 
 def plot_data(data, output):
     plt.figure()
@@ -44,7 +46,6 @@ def plot_data(data, output):
         cols.append(colors[out])
 
     plt.scatter([point[0] for point in points], [point[1] for point in points], c=cols)
-
     plt.show()
 
 
