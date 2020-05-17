@@ -12,8 +12,12 @@ def run():
     norm = max(output)
     output = np.array(output) / max(output)
 
+    output = output.tolist()
+    data = data.tolist()
+
     b = 1
-    pnw = PerceptronNetwork(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output, [8, 8], 0.2, 1)
+    pnw = PerceptronNetwork(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output,
+                            [8, 8], 0.2, 1)
 
     for i in range(100000):
         pnw.step()

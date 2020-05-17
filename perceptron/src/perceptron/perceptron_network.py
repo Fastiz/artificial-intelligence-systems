@@ -25,17 +25,18 @@ def generate_weights(layer_dims):
 
 class PerceptronNetwork:
     def __init__(self, activation_function, activation_function_derivative, data_in, data_out, dim_inner_layers, alpha,
-                 out_dim):
+                 out_dim, bias=0):
+        self.bias = bias
         self.alpha = alpha
-        self.layer_dims = ([len(data_in[0])] + dim_inner_layers + [out_dim])
+        self.layer_dims = ([len(data_in[0])+1] + dim_inner_layers + [out_dim])
         self.weights = generate_weights(self.layer_dims)
-        self.data_in = np.array(data_in)
+        self.data_in = np.array([data + [-bias] for data in data_in])
         self.data_out = np.array(data_out)
         self.activation_function = activation_function
         self.activation_function_derivative = activation_function_derivative
 
     def classify(self, inp):
-        vs, hs = self.propagate(inp)
+        vs, hs = self.propagate(inp + [-self.bias])
         return vs[-1]
 
     def propagate(self, in_val):

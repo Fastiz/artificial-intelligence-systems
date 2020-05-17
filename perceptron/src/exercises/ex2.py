@@ -13,7 +13,7 @@ def run():
     norm = max(output)
     output = np.array(output) / max(output)
 
-    run_training(data, output, norm)
+    run_training(data.tolist(), output.tolist(), norm)
 
 
 def run_training(data, output, norm):

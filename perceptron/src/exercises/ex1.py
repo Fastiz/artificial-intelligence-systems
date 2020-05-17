@@ -15,7 +15,7 @@ def run():
 def run_training(data):
 
     data, output = data
-    perceptron = PerceptronNetwork(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, [], 0.01, 1)
+    perceptron = PerceptronNetwork(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, [], 0.01, 1, bias=1)
 
     for i in range(100000):
         perceptron.step()
