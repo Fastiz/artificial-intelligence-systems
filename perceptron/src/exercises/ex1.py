@@ -1,7 +1,8 @@
-from perceptron.perceptron import Perceptron
 import training.andLogic
 import training.exclusiveOr
 import matplotlib.pyplot as plt
+
+from perceptron.perceptron_network import PerceptronNetwork
 
 
 def run():
@@ -14,14 +15,10 @@ def run():
 def run_training(data):
 
     data, output = data
-    perceptron = Perceptron(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, 0.001, 1)
+    perceptron = PerceptronNetwork(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, [], 0.01, 1)
 
-    weights = []
-    while perceptron.get_current_step() <= 10000:
+    for i in range(100000):
         perceptron.step()
-        weights.append(perceptron.get_weights())
-
-    plot_weights(weights)
 
     for elem, out in zip(data, output):
         print(" ".join([str(elem), str(out), "RESULT:", str(perceptron.classify(elem))]))
@@ -46,14 +43,4 @@ def plot_data(data, output):
         cols.append(colors[out])
 
     plt.scatter([point[0] for point in points], [point[1] for point in points], c=cols)
-    plt.show()
-
-
-def plot_weights(weights):
-    plt.figure()
-    plt1, = plt.plot([weight[0] for weight in weights], label="w1")
-    plt2, = plt.plot([weight[1] for weight in weights], label="w2")
-
-    plt.legend(handles=[plt1, plt2])
-
     plt.show()

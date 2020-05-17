@@ -1,7 +1,7 @@
-from perceptron.perceptron import Perceptron
-
 import pandas as pd
 import numpy as np
+
+from perceptron.perceptron_network import PerceptronNetwork
 
 
 def run():
@@ -18,19 +18,10 @@ def run():
 
 def run_training(data, output, norm):
     b = 1
-    perceptron = Perceptron(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output, 0.8)
+    perceptron = PerceptronNetwork(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output, [], 0.2, 1)
 
-    error = perceptron.get_error()
-    min_error = error
-
-    loop = True
-    while (loop and error < 20) or (not loop and perceptron.get_error() > 0.485):
+    for i in range(1000000):
         perceptron.step()
-        error = perceptron.get_error()
-        if error < min_error:
-            min_error = error
-            print(error)
 
-    print(" ".join(["Finished with error:", str(perceptron.get_error())]))
     for elem, out in zip(data, output):
-        print(" ".join([str(elem), str(out * norm), "RESULT:", str(perceptron.classify(elem) * norm)]))
+        print(" ".join([str(elem), str(out), "-->", str(perceptron.classify(elem))]))
