@@ -1,5 +1,7 @@
 from perceptron.perceptron_network import PerceptronNetwork
 import numpy as np
+import ex1
+import training.exclusiveOr
 import pandas as pd
 
 
@@ -7,7 +9,7 @@ def run():
     print("Exclusive or ------------------------")
     run_exclusive_or(training.exclusiveOr.getData())
     print("Prime numbers ------------------------")
-    run_prime_numbers([0, 7, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    run_prime_numbers([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 
 def run_exclusive_or(data):
@@ -37,15 +39,15 @@ def run_prime_numbers(numbers_to_train, numbers_to_classify):
 
 
 def get_numbers_data(numbers_to_train):
-    data = read_numbers()
-    output = get_numbers_output()
-    data_to_train = []
-    output_to_train = []
+    all_data = read_numbers()
+    all_output = get_numbers_output()
+    data = []
+    output = []
     for i in numbers_to_train:
-        data_to_train.append(data[i])
-        output_to_train.append(output[i])
+        data.append(all_data[i])
+        output.append(all_output[i])
 
-    return data_to_train, output_to_train
+    return data, output
 
 
 def read_numbers():
