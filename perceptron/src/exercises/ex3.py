@@ -4,7 +4,36 @@ import pandas as pd
 
 
 def run():
-    execute_prime_numbers([0, 7, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    print("Exclusive or ------------------------")
+    run_exclusive_or(training.exclusiveOr.getData())
+    print("Prime numbers ------------------------")
+    run_prime_numbers([0, 7, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+def run_exclusive_or(data):
+    data, output = data
+    perceptron = PerceptronNetwork(lambda p: 1 if p >= 0 else -1, lambda p: 1, data, output, [8, 8], 0.01, 1, bias=1)
+
+    for i in range(100000):
+        perceptron.step()
+
+    for elem, out in zip(data, output):
+        print(" ".join([str(elem), str(out), "RESULT:", str(perceptron.classify(elem))]))
+
+
+def run_prime_numbers(numbers_to_train, numbers_to_classify):
+    data, output = get_numbers_data(numbers_to_train)
+    b = 1
+    pnw = PerceptronNetwork(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output,
+                        [8, 8], 0.2, 1)
+
+    for i in range(100000):
+        pnw.step()
+
+    data_to_classify, output_to_classify = get_numbers_data(numbers_to_classify)
+
+    for data_in, data_out in zip(data_to_classify, output_to_classify):
+        print(" ".join([str(data_in), str(data_out), "-->", str(pnw.classify(data_in))]))
 
 
 def get_numbers_data(numbers_to_train):
@@ -18,19 +47,6 @@ def get_numbers_data(numbers_to_train):
 
     return data_to_train, output_to_train
 
-def execute_prime_numbers(numbers_to_train, numbers_to_classify):
-    data, output = get_numbers_data(numbers_to_train)
-    b = 1
-    pnw = PerceptronNetwork(lambda p: np.tanh(b*p), lambda p: b * (1-((np.tanh(p))**2)), data, output,
-                        [3, 3], 0.2, 1)
-
-    for i in range(100000):
-        pnw.step()
-
-    data_to_classify, output_to_classify = get_numbers_data(numbers_to_classify)
-
-    for data_in, data_out in zip(data_to_classify, output_to_classify):
-        print(" ".join([str(data_in), str(data_out), "-->", str(pnw.classify(data_in))]))
 
 def read_numbers():
     numbers = open("../data/numeros.dat", "r")
