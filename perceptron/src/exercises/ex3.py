@@ -7,9 +7,9 @@ import pandas as pd
 
 def run():
     print("Exclusive or ------------------------")
-    run_exclusive_or(training.exclusiveOr.getData())
+    #run_exclusive_or(training.exclusiveOr.getData())
     print("Prime numbers ------------------------")
-    run_prime_numbers([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    run_prime_numbers([0,2,3,4,5,6,7,8,9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 
 def run_exclusive_or(data):

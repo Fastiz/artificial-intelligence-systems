@@ -6,9 +6,9 @@ from perceptron.perceptron_network import PerceptronNetwork
 
 
 def run():
-    print("And")
-    run_training(training.andLogic.getData())
-    print("Exclusive or")
+    #print("And")
+    #run_training(training.andLogic.getData())
+    print("Exclusive or ------------------------")
     run_training(training.exclusiveOr.getData())
 
 

@@ -57,6 +57,9 @@ public class Main {
             return;
         }
 
+
+        System.out.println("Loading files...");
+
         PipelineAdministrator pa;
         try {
             pa = new PipelineAdministrator(configReader.getPopulation(), configReader.getChildrenAmount(), configReader.getMutation(),
@@ -67,6 +70,7 @@ public class Main {
             return;
         }
 
+        System.out.println("Running...");
         try (BufferedWriter bf = new BufferedWriter(new FileWriter("./distinct"))) {
             while (!pa.shouldEnd()) {
                 bf.write(String.valueOf(pa.getDistinctIndividuals().size()) + '\n');
@@ -77,6 +81,7 @@ public class Main {
         }
 
         pa.printBestFitnessIndividual();
+        System.out.println("Output files generated.");
         try (BufferedWriter bf = new BufferedWriter(new FileWriter("./fitness"))) {
             for (double fitness : pa.getFitnessHistorial()) {
                 bf.write(String.valueOf(fitness) + '\n');
