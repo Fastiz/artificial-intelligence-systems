@@ -28,7 +28,7 @@ class PerceptronNetwork:
                  out_dim, bias=0):
         self.bias = bias
         self.alpha = alpha
-        self.layer_dims = ([len(data_in[0])+1] + dim_inner_layers + [out_dim])
+        self.layer_dims = [len(data_in[0])+1] + dim_inner_layers + [out_dim]
         self.weights = generate_weights(self.layer_dims)
         self.data_in = np.array([data + [-bias] for data in data_in])
         self.data_out = np.array(data_out)
@@ -38,6 +38,13 @@ class PerceptronNetwork:
     def classify(self, inp):
         vs, hs = self.propagate(inp + [-self.bias])
         return vs[-1]
+
+    def calculate_error(self, in_values, out_values):
+        error = 0
+        for in_val, out_val in zip(np.array([data + [-self.bias] for data in in_values]), out_values):
+            vs, hs = self.propagate(in_val)
+            error += (np.linalg.norm(np.array(out_val) - vs[-1]))**2
+        return (1/len(in_values))*error
 
     def propagate(self, in_val):
         vs = [in_val]
