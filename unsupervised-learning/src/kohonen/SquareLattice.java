@@ -1,31 +1,11 @@
 package kohonen;
 
+import utils.Vector;
+
 import java.util.*;
 import java.util.function.Supplier;
 
 public class SquareLattice implements Lattice {
-    private static class Coord {
-        int i, j;
-
-        Coord(int i, int j){
-            this.i=i;
-            this.j=j;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Coord coord = (Coord) o;
-            return i == coord.i &&
-                    j == coord.j;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(i, j);
-        }
-    }
 
     private final Cell[][] lattice;
 
@@ -108,10 +88,6 @@ public class SquareLattice implements Lattice {
 
     @Override
     public List<Neighbor> getNeighbors(Cell cell){
-        Coord cellCoord = findCoordinate(cell);
-
-        if(cellCoord == null)
-            throw new IllegalArgumentException("The cell passed as parameter does not belong to the lattice");
 
         List<Neighbor> result = new ArrayList<>();
         for(int i=0; i<lattice.length; i++){
@@ -120,7 +96,7 @@ public class SquareLattice implements Lattice {
                 result.add(
                         new Neighbor(
                                 neighbor,
-                                euclideanDistance(cellCoord.i, cellCoord.j, i, j)
+                                Vector.distance(cell.getWeights(), neighbor.getWeights())
                         )
                 );
             }
@@ -139,6 +115,34 @@ public class SquareLattice implements Lattice {
         return cells;
     }
 
+    @Override
+    public Cell bestMatchingUnit(Vector input) {
+        Coord coord = bestMatchingUnitCoord(input);
+
+        return lattice[coord.getI()][coord.getJ()];
+    }
+
+    @Override
+    public Coord bestMatchingUnitCoord(Vector input) {
+        double minDistance = Double.MAX_VALUE;
+        Coord minCellCoord = null;
+
+        for(int i=0; i < lattice.length; i++){
+            for(int j=0; j < lattice.length; j++){
+                Cell cell = lattice[i][j];
+
+                double newDistance = cell.weightDistance(input);
+
+                if(newDistance < minDistance){
+                    minCellCoord = new Coord(i, j);
+                    minDistance = newDistance;
+                }
+            }
+        }
+
+        return minCellCoord;
+    }
+
     private Coord findCoordinate(Cell cell){
         for(int i=0; i<lattice.length; i++){
             for(int j=0; j<lattice.length; j++){
@@ -147,9 +151,5 @@ public class SquareLattice implements Lattice {
             }
         }
         return null;
-    }
-
-    private double euclideanDistance(int i1, int j1, int i2, int j2){
-        return Math.sqrt(Math.pow(i1-i2, 2) + Math.pow(j1-j2, 2));
     }
 }

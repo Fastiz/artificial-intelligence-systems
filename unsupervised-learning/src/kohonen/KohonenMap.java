@@ -66,7 +66,7 @@ public class KohonenMap {
     }
 
     public void step(Vector input){
-        Cell bmu = bestMatchingUnit(input);
+        Cell bmu = lattice.bestMatchingUnit(input);
 
         List<Lattice.Neighbor> neighborhood = lattice.getNeighbors(bmu);
 
@@ -75,6 +75,10 @@ public class KohonenMap {
         }
 
         time++;
+    }
+
+    public Lattice.Coord activate(Vector input){
+         return lattice.bestMatchingUnitCoord(input);
     }
 
     private void updateWeights(Lattice.Neighbor neighbor, Vector input){
@@ -86,19 +90,4 @@ public class KohonenMap {
         neighbor.cell.sumWeights(Vector.scalarMultiplication(factor, scalar));
     }
 
-    private Cell bestMatchingUnit(Vector input){
-        double minDistance = Double.MAX_VALUE;
-        Cell minCell = null;
-
-        for(Cell cell : this.lattice.getAllCells()){
-            double newDistance = cell.weightDistance(input);
-
-            if(newDistance < minDistance){
-                minCell = cell;
-                minDistance = newDistance;
-            }
-        }
-
-        return minCell;
-    }
 }
