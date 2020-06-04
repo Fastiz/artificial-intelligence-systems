@@ -1,12 +1,23 @@
 package utils;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Vector {
     private final double[] elements;
 
     public Vector(double[] elements){
         this.elements = elements;
+    }
+
+    public Vector(List<Double> elements){
+        double[] mapped = new double[elements.size()];
+
+        for(int i=0; i<elements.size(); i++){
+            mapped[i] = elements.get(i);
+        }
+
+        this.elements = mapped;
     }
 
     public static Vector zero(int dim){
