@@ -24,6 +24,11 @@ public class SquareLattice implements Lattice {
     }
 
     @Override
+    public Cell get(int i, int j){
+        return lattice[i][j];
+    }
+
+    @Override
     public List<Cell> getNeighbors(Cell cell, double distance) {
 
         List<Cell> result = new ArrayList<>();

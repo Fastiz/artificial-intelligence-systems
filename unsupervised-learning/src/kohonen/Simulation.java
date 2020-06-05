@@ -5,8 +5,13 @@ import utils.Vector;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static utils.Statistics.mean;
 
 public class Simulation {
 
@@ -16,11 +21,12 @@ public class Simulation {
         //Kohonen map generator
         int latticeDim = 3;
         int inputDim = 7;
+        Lattice lattice = new SquareLattice(cellGenerator(inputDim), latticeDim);
         KohonenMap map = (new KohonenMap.Builder())
-                .setLattice(new SquareLattice(cellGenerator(inputDim), latticeDim))
+                .setLattice(lattice)
                 .setNeighborhoodFunction(Simulation::neighborhoodFunction)
                 .setLearningRateFunction(Simulation::learningRateFunction)
-                .setTimeConstant(numberOfIterations/Math.log(2))
+                .setTimeConstant(numberOfIterations/Math.log(inputDim))
                 .create();
 
         //Read europe.csv for training
@@ -78,6 +84,26 @@ public class Simulation {
                 System.out.print("(" + i + ", " + j +"): " + frequencyMatrix.getCellMembers(i, j) + "");
                 System.out.print("\n");
             }
+        }
+
+        //Print average distance of neighbors
+        System.out.println("\nAverage distance of neighbors:");
+        for(int i=0; i<latticeDim; i++){
+            for(int j=0; j<latticeDim; j++){
+                Cell cell = lattice.get(i, j);
+                List<Cell> neighbors = lattice.getNeighbors(cell, 1)
+                        .stream().filter(n->!n.equals(cell)).collect(Collectors.toList());
+
+                List<Double> distances = new ArrayList<>();
+                for(Cell neighbor: neighbors){
+                    distances.add(
+                            neighbor.weightDistance(cell.getWeights())
+                    );
+                }
+                System.out.print(mean(distances) + "");
+                System.out.print(" ");
+            }
+            System.out.print("\n");
         }
 
     }

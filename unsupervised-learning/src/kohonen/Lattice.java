@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public interface Lattice {
+
     class Coord{
         private final int i;
         private int j;
@@ -46,6 +47,7 @@ public interface Lattice {
             this.cell = cell;
         }
     }
+    Cell get(int i, int j);
 
     public List<Cell> getNeighbors(Cell cell, double maxDistance);
 
