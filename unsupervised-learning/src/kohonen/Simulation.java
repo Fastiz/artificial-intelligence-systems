@@ -82,14 +82,9 @@ public class Simulation {
 
     }
 
-    public static double neighborhoodFunction(double distance, int time, double timeConstant){
-        if(distance == 0)
-            return 1;
-
-        double a0 = 1.0/5;
-        double aux = a0*Math.exp(-time/timeConstant);
-
-        return Math.exp(-Math.pow(distance, 2)/(2*Math.pow(aux, 2)));
+    public static double neighborhoodFunction(int time, double timeConstant){
+        double r0 = 3;
+        return r0*Math.exp(-time/timeConstant);
     }
 
     public static double learningRateFunction(int time, double timeConstant){

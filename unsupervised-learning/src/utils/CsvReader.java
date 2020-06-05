@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.DoubleSummaryStatistics;
 
 public class CsvReader {
     private final String filePath;
@@ -68,19 +69,23 @@ public class CsvReader {
 
     public CsvReader standardizeValues(){
         List<Double> means = new ArrayList<>(vectorDim);
+        List<Double> stds = new ArrayList<>(vectorDim);
+
         for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
-            double sum = 0;
+            List<Double> values = new ArrayList<>();
             for(String key: categories.keySet()){
-                sum += categories.get(key).get(vectorIndex);
+                values.add(categories.get(key).get(vectorIndex));
             }
-            means.add(sum/vectorDim);
+
+            means.add(mean(values));
+            stds.add(std(values));
         }
 
         for(String key: categories.keySet()){
             Vector v = categories.get(key);
             List<Double> newValues = new ArrayList<>(vectorDim);
             for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
-                newValues.add(v.get(vectorIndex) / means.get(vectorIndex));
+                newValues.add((v.get(vectorIndex) - means.get(vectorIndex))/stds.get(vectorIndex));
             }
             Vector newVector = new Vector(newValues);
             categories.put(key, newVector);
@@ -91,5 +96,38 @@ public class CsvReader {
 
     public Map<String, Vector> getCategories() {
         return categories;
+    }
+
+    private double std(List<Double> values){
+        if(values.size() == 0)
+            throw new IllegalArgumentException("No values to calculate std");
+
+        double sum = 0.0, standardDeviation = 0.0;
+        int length = values.size();
+
+        for(double num : values) {
+            sum += num;
+        }
+
+        double mean = sum/length;
+
+        for(double num: values) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+
+        return Math.sqrt(standardDeviation/length);
+    }
+
+    private double mean(List<Double> values){
+        if(values.size() == 0)
+            throw new IllegalArgumentException("No values to calculate mean");
+
+        double sum = 0.0;
+
+        for(double num : values) {
+            sum += num;
+        }
+
+        return sum/values.size();
     }
 }
