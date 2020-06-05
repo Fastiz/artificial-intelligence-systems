@@ -27,6 +27,14 @@ public class Vector {
         return new Vector(elements);
     }
 
+    public double get(int index){
+        return elements[index];
+    }
+
+    public void set(int index, double value){
+        elements[index] = value;
+    }
+
     public int getDimension(){
         return elements.length;
     }

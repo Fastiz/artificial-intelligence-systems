@@ -8,7 +8,7 @@ public class KohonenMap {
 
     @FunctionalInterface
     public interface NeighborhoodFunction {
-        Double apply(Double distance, Integer time, Double timeConstant);
+        Double apply(Integer time, Double timeConstant);
     }
 
     @FunctionalInterface
@@ -68,9 +68,12 @@ public class KohonenMap {
     public void step(Vector input){
         Cell bmu = lattice.bestMatchingUnit(input);
 
-        List<Lattice.Neighbor> neighborhood = lattice.getNeighbors(bmu);
+        List<Cell> neighborhood = lattice.getNeighbors(bmu,
+                neighborhoodFunction.apply(time, timeConstant) *
+                learningRateFunction.apply(time, timeConstant)
+        );
 
-        for(Lattice.Neighbor neighbor : neighborhood){
+        for(Cell neighbor : neighborhood){
             updateWeights(neighbor, input);
         }
 
@@ -81,13 +84,10 @@ public class KohonenMap {
          return lattice.bestMatchingUnitCoord(input);
     }
 
-    private void updateWeights(Lattice.Neighbor neighbor, Vector input){
-        double scalar = neighborhoodFunction.apply(neighbor.distance, time, timeConstant) *
-                learningRateFunction.apply(time, timeConstant);
+    private void updateWeights(Cell neighbor, Vector input){
+        Vector factor = Vector.subtract(input, neighbor.getWeights());
 
-        Vector factor = Vector.subtract(input, neighbor.cell.getWeights());
-
-        neighbor.cell.sumWeights(Vector.scalarMultiplication(factor, scalar));
+        neighbor.sumWeights(Vector.scalarMultiplication(factor, learningRateFunction.apply(time, timeConstant)));
     }
 
 }

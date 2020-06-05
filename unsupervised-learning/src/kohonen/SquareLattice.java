@@ -23,10 +23,15 @@ public class SquareLattice implements Lattice {
         }
     }
 
-    /*@Override
-    public List<Neighbor> getNeighbors(Cell cell, double distance) {
+    @Override
+    public Cell get(int i, int j){
+        return lattice[i][j];
+    }
 
-        List<Neighbor> result = new ArrayList<>();
+    @Override
+    public List<Cell> getNeighbors(Cell cell, double distance) {
+
+        List<Cell> result = new ArrayList<>();
 
         Set<Coord> addedCoords = new HashSet<>();
 
@@ -41,40 +46,40 @@ public class SquareLattice implements Lattice {
         while(!frontier.isEmpty()){
             Coord current = frontier.poll();
 
-            double eucDistance = euclideanDistance(cellCoord.i, cellCoord.j, current.i, current.j);
+            double eucDistance = euclideanDistance(cellCoord.getI(), cellCoord.getJ(), current.getI(), current.getJ());
             if(eucDistance > distance)
                 continue;
 
-            result.add(new Neighbor(lattice[current.i][current.j], eucDistance));
+            result.add(lattice[current.getI()][current.getJ()]);
 
             Coord newCoord;
 
-            if(current.i + 1 < lattice.length){
-                newCoord = new Coord(current.i + 1, current.j);
+            if(current.getI() + 1 < lattice.length){
+                newCoord = new Coord(current.getI() + 1, current.getJ());
                 if(!addedCoords.contains(newCoord)){
                     addedCoords.add(newCoord);
                     frontier.add(newCoord);
                 }
             }
 
-            if(current.i - 1 >= 0){
-                newCoord = new Coord(current.i - 1, current.j);
+            if(current.getI() - 1 >= 0){
+                newCoord = new Coord(current.getI() - 1, current.getJ());
                 if(!addedCoords.contains(newCoord)){
                     addedCoords.add(newCoord);
                     frontier.add(newCoord);
                 }
             }
 
-            if(current.j + 1 < lattice.length){
-                newCoord = new Coord(current.i, current.j + 1);
+            if(current.getJ() + 1 < lattice.length){
+                newCoord = new Coord(current.getI(), current.getJ() + 1);
                 if(!addedCoords.contains(newCoord)){
                     addedCoords.add(newCoord);
                     frontier.add(newCoord);
                 }
             }
 
-            if(current.j - 1 >= 0){
-                newCoord = new Coord(current.i, current.j - 1);
+            if(current.getJ() - 1 >= 0){
+                newCoord = new Coord(current.getI(), current.getJ() - 1);
                 if(!addedCoords.contains(newCoord)){
                     addedCoords.add(newCoord);
                     frontier.add(newCoord);
@@ -83,24 +88,6 @@ public class SquareLattice implements Lattice {
 
         }
 
-        return result;
-    }*/
-
-    @Override
-    public List<Neighbor> getNeighbors(Cell cell){
-
-        List<Neighbor> result = new ArrayList<>();
-        for(int i=0; i<lattice.length; i++){
-            for(int j=0; j<lattice.length; j++) {
-                Cell neighbor = lattice[i][j];
-                result.add(
-                        new Neighbor(
-                                neighbor,
-                                Vector.distance(cell.getWeights(), neighbor.getWeights())
-                        )
-                );
-            }
-        }
         return result;
     }
 
@@ -151,5 +138,9 @@ public class SquareLattice implements Lattice {
             }
         }
         return null;
+    }
+
+    private double euclideanDistance(int i, int j, int k, int w){
+        return Math.sqrt(Math.pow(i-k, 2) + Math.pow(j-w, 2));
     }
 }

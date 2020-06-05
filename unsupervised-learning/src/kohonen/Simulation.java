@@ -4,22 +4,29 @@ import utils.CsvReader;
 import utils.Vector;
 
 import java.io.IOException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static utils.Statistics.mean;
 
 public class Simulation {
 
     public static void run(){
+        int numberOfIterations = 300000;
 
         //Kohonen map generator
         int latticeDim = 3;
         int inputDim = 7;
+        Lattice lattice = new SquareLattice(cellGenerator(inputDim), latticeDim);
         KohonenMap map = (new KohonenMap.Builder())
-                .setLattice(new SquareLattice(cellGenerator(inputDim), latticeDim))
+                .setLattice(lattice)
                 .setNeighborhoodFunction(Simulation::neighborhoodFunction)
                 .setLearningRateFunction(Simulation::learningRateFunction)
-                .setTimeConstant(1)
+                .setTimeConstant(numberOfIterations/Math.log(inputDim))
                 .create();
 
         //Read europe.csv for training
@@ -31,6 +38,7 @@ public class Simulation {
                     true)
             )
                     .read()
+                    .standardizeValues()
                     .getCategories();
 
         }catch (IOException e){
@@ -41,7 +49,7 @@ public class Simulation {
 
         //Training
         System.out.println("\nStarting training");
-        for(int t=0; t< 30000; t++){
+        for(int t=0; t< numberOfIterations; t++){
             for(Vector vector : categories.values()){
                 map.step(vector);
             }
@@ -69,16 +77,40 @@ public class Simulation {
             System.out.print("\n");
         }
 
+        //Print members of each coordinates
+        System.out.println("\nMembers on each coordinate (i, j):");
+        for(int i=0; i<latticeDim; i++){
+            for(int j=0; j<latticeDim; j++){
+                System.out.print("(" + i + ", " + j +"): " + frequencyMatrix.getCellMembers(i, j) + "");
+                System.out.print("\n");
+            }
+        }
+
+        //Print average distance of neighbors
+        System.out.println("\nAverage distance of neighbors:");
+        for(int i=0; i<latticeDim; i++){
+            for(int j=0; j<latticeDim; j++){
+                Cell cell = lattice.get(i, j);
+                List<Cell> neighbors = lattice.getNeighbors(cell, 1)
+                        .stream().filter(n->!n.equals(cell)).collect(Collectors.toList());
+
+                List<Double> distances = new ArrayList<>();
+                for(Cell neighbor: neighbors){
+                    distances.add(
+                            neighbor.weightDistance(cell.getWeights())
+                    );
+                }
+                System.out.print(mean(distances) + "");
+                System.out.print(" ");
+            }
+            System.out.print("\n");
+        }
+
     }
 
-    public static double neighborhoodFunction(double distance, int time, double timeConstant){
-        if(distance == 0)
-            return 1;
-
-        double a0 = 1;
-        double aux = a0*Math.exp(-time/timeConstant);
-
-        return Math.exp(-Math.pow(distance, 2)/(2*Math.pow(aux, 2)));
+    public static double neighborhoodFunction(int time, double timeConstant){
+        double r0 = 3;
+        return r0*Math.exp(-time/timeConstant);
     }
 
     public static double learningRateFunction(int time, double timeConstant){
