@@ -3,9 +3,7 @@ package utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CsvReader {
@@ -13,6 +11,7 @@ public class CsvReader {
     private final String separator;
     private final Map<String, Vector> categories;
     private final boolean ignoreFistLine;
+    private int vectorDim;
 
     public CsvReader(String filePath, String separator, boolean ignoreFirstLine){
         this.filePath = filePath;
@@ -34,8 +33,59 @@ public class CsvReader {
                         .map(Double::valueOf)
                         .collect(Collectors.toList()))
                 );
+
+                vectorDim = values.length - 1;
             }
         }
+        return this;
+    }
+
+    public CsvReader normalizeValues(){
+        List<Double> maxs = new ArrayList<>(vectorDim);
+        for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
+            double max = 0;
+            for(String key: categories.keySet()){
+                double newVal = categories.get(key).get(vectorIndex);
+                if(newVal > max){
+                    max = newVal;
+                }
+            }
+            maxs.add(max);
+        }
+
+        for(String key: categories.keySet()){
+            Vector v = categories.get(key);
+            List<Double> newValues = new ArrayList<>(vectorDim);
+            for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
+                newValues.add(v.get(vectorIndex) / maxs.get(vectorIndex));
+            }
+            Vector newVector = new Vector(newValues);
+            categories.put(key, newVector);
+        }
+
+        return this;
+    }
+
+    public CsvReader standardizeValues(){
+        List<Double> means = new ArrayList<>(vectorDim);
+        for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
+            double sum = 0;
+            for(String key: categories.keySet()){
+                sum += categories.get(key).get(vectorIndex);
+            }
+            means.add(sum/vectorDim);
+        }
+
+        for(String key: categories.keySet()){
+            Vector v = categories.get(key);
+            List<Double> newValues = new ArrayList<>(vectorDim);
+            for(int vectorIndex = 0; vectorIndex < vectorDim; vectorIndex++){
+                newValues.add(v.get(vectorIndex) / means.get(vectorIndex));
+            }
+            Vector newVector = new Vector(newValues);
+            categories.put(key, newVector);
+        }
+
         return this;
     }
 
