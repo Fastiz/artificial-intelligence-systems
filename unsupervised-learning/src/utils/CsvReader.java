@@ -13,7 +13,7 @@ import static utils.Statistics.std;
 public class CsvReader {
     private final String filePath;
     private final String separator;
-    private final Map<String, Vector> categories;
+    private final TreeMap<String, Vector> categories;
     private final boolean ignoreFistLine;
     private int vectorDim;
 
@@ -21,7 +21,7 @@ public class CsvReader {
         this.filePath = filePath;
         this.separator = separator;
         this.ignoreFistLine = ignoreFirstLine;
-        this.categories = new HashMap<>();
+        this.categories = new TreeMap<>();
     }
 
     public CsvReader read() throws IOException {
@@ -97,7 +97,7 @@ public class CsvReader {
         return this;
     }
 
-    public Map<String, Vector> getCategories() {
+    public TreeMap<String, Vector> getCategories() {
         return categories;
     }
 }
