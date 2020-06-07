@@ -3,6 +3,9 @@ package kohonen;
 import utils.CsvReader;
 import utils.Vector;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -16,6 +19,14 @@ import static utils.Statistics.mean;
 public class Simulation {
 
     public static void run(){
+        try {
+            sim();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sim() throws IOException {
         int numberOfIterations = 300000;
 
         //Kohonen map generator
@@ -66,44 +77,82 @@ public class Simulation {
             Lattice.Coord coord = map.activate(vector);
             frequencyMatrix.addMember(coord.getI(), coord.getJ(), key);
         }
-        
-        //Print frequency of categories inside each cell
-        System.out.println("\nNumber of members on each cell:");
-        for(int i=0; i<latticeDim; i++){
-            for(int j=0; j<latticeDim; j++){
-                System.out.print(frequencyMatrix.getCellPopulation(i, j) + "");
-                System.out.print(" ");
-            }
-            System.out.print("\n");
-        }
 
-        //Print members of each coordinates
-        System.out.println("\nMembers on each coordinate (i, j):");
-        for(int i=0; i<latticeDim; i++){
-            for(int j=0; j<latticeDim; j++){
-                System.out.print("(" + i + ", " + j +"): " + frequencyMatrix.getCellMembers(i, j) + "");
+        //Creating directories to save result
+        (new File("./unsupervised-learning/results/")).mkdir();
+        (new File("./unsupervised-learning/results/kohonen")).mkdir();
+
+        try(BufferedWriter bw = new BufferedWriter(
+                new FileWriter("./unsupervised-learning/results/kohonen/cellPopulation"))){
+            //Set dimensions of matrix
+            bw.write(latticeDim + " " + latticeDim + "\n");
+
+            //Print frequency of categories inside each cell
+            System.out.println("\nNumber of members on each cell:");
+            for(int i=0; i<latticeDim; i++){
+                for(int j=0; j<latticeDim; j++){
+                    System.out.print(frequencyMatrix.getCellPopulation(i, j) + " ");
+                    bw.write(frequencyMatrix.getCellPopulation(i, j) + "\n");
+                }
                 System.out.print("\n");
             }
         }
 
-        //Print average distance of neighbors
-        System.out.println("\nAverage distance of neighbors:");
-        for(int i=0; i<latticeDim; i++){
-            for(int j=0; j<latticeDim; j++){
-                Cell cell = lattice.get(i, j);
-                List<Cell> neighbors = lattice.getNeighbors(cell, 1)
-                        .stream().filter(n->!n.equals(cell)).collect(Collectors.toList());
+        try(BufferedWriter bw = new BufferedWriter(
+                new FileWriter("./unsupervised-learning/results/kohonen/cellMembers"))){
+            //Set dimensions of matrix
+            bw.write(latticeDim + " " + latticeDim + "\n");
 
-                List<Double> distances = new ArrayList<>();
-                for(Cell neighbor: neighbors){
-                    distances.add(
-                            neighbor.weightDistance(cell.getWeights())
-                    );
+            //Print members of each coordinates
+            System.out.println("\nMembers on each coordinate (i, j):");
+            for(int i=0; i<latticeDim; i++){
+                for(int j=0; j<latticeDim; j++){
+                    System.out.print("(" + i + ", " + j +"): " + frequencyMatrix.getCellMembers(i, j) + "\n");
+                    bw.write(frequencyMatrix.getCellMembers(i, j) + "\n");
                 }
-                System.out.print(mean(distances) + "");
-                System.out.print(" ");
             }
-            System.out.print("\n");
+        }
+
+        try(BufferedWriter bw = new BufferedWriter(
+                new FileWriter("./unsupervised-learning/results/kohonen/cellDistance"))) {
+            //Set dimensions of matrix
+            bw.write(latticeDim + " " + latticeDim + "\n");
+
+            //Print average distance of neighbors
+            System.out.println("\nAverage distance of neighbors:");
+            for(int i=0; i<latticeDim; i++){
+                for(int j=0; j<latticeDim; j++){
+                    Cell cell = lattice.get(i, j);
+                    List<Cell> neighbors = lattice.getNeighbors(cell, 1)
+                            .stream().filter(n->!n.equals(cell)).collect(Collectors.toList());
+
+                    List<Double> distances = new ArrayList<>();
+                    for(Cell neighbor: neighbors){
+                        distances.add(
+                                neighbor.weightDistance(cell.getWeights())
+                        );
+                    }
+
+                    double mean = mean(distances);
+                    System.out.print(mean + " ");
+                    bw.write(mean + "\n");
+                }
+                System.out.print("\n");
+            }
+        }
+
+        try(BufferedWriter bw = new BufferedWriter(
+                new FileWriter("./unsupervised-learning/results/kohonen/cellWeights"))) {
+            //Set dimensions of matrix
+            bw.write(latticeDim + " " + latticeDim + "\n");
+
+            //Save cell weights
+            for(int i=0; i<latticeDim; i++) {
+                for (int j = 0; j < latticeDim; j++) {
+                    Cell cell = lattice.get(i, j);
+                    bw.write(cell.getWeights() + "\n");
+                }
+            }
         }
 
     }
