@@ -15,15 +15,23 @@ public class OjaAlgorithm {
     public OjaAlgorithm(double learnFactor, List<Vector> x) {
         this.learnFactor = learnFactor;
         this.x = x;
-        double [] weights = new double[x.get(0).getDimension()];
-        int factor = Math.random() > 0.5 ? 1 : -1;
-        Arrays.fill(weights, factor / Math.sqrt(weights.length));
-        this.weights = new Vector(weights);
+        this.weights = new Vector(x.get(0).getDimension());
+        int factor = -1;
+        this.weights.fill(factor / Math.sqrt(weights.getDimension()));
+    }
+
+    public void resetWeights() {
+        int factor = -1;
+        this.weights.fill(factor / Math.sqrt(weights.getDimension()));
+    }
+
+    public void setLearnFactor(double learnFactor) {
+        this.learnFactor = learnFactor;
     }
 
     public void step() {
-        for(int i = 0; i < x.size(); i++) {
-            Vector deltaWeight = getDelta(x.get(i));
+        for (Vector vector : x) {
+            Vector deltaWeight = getDelta(vector);
             weights.sumInstance(deltaWeight);
         }
     }

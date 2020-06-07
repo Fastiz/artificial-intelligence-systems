@@ -20,9 +20,13 @@ public class Vector {
         this.elements = mapped;
     }
 
+    public Vector(int size) {
+        this.elements = new double[size];
+    }
+
     public static Vector ones(int dim){
         double[] elements = new double[dim];
-        Arrays.fill(elements, -1);
+        Arrays.fill(elements, 1);
 
         return new Vector(elements);
     }
@@ -32,6 +36,24 @@ public class Vector {
         Arrays.fill(elements, 0);
 
         return new Vector(elements);
+    }
+
+    public void fill(double value) {
+        Arrays.fill(this.elements, value);
+    }
+
+    public void dotInstance(double value) {
+        for(int i = 0; i < this.elements.length; i++){
+            this.elements[i] = this.elements[i] * value;
+        }
+    }
+
+    public double getModule() {
+        double sum = 0;
+        for(int i = 0; i < this.elements.length; i++){
+            sum += this.elements[i] * this.elements[i];
+        }
+        return Math.sqrt(sum);
     }
 
     public double get(int index){
