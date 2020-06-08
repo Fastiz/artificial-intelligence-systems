@@ -4,20 +4,26 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 
-def matrix_graph(path):
+def matrix_graph(path, format_annotate=False):
     lines = open(path).read().splitlines()
 
     dims = [int(dim) for dim in lines[0].split(" ")]
     matrix = np.zeros(dims)
+
+    fig, ax = plt.subplots()
 
     matrix_lines = lines[1:]
     for i in range(dims[0]):
         for j in range(dims[1]):
             line = matrix_lines[i*dims[1] + j]
             matrix[i, j] = float(line)
+            if format_annotate:
+                ax.annotate("{0:0.2f}".format(float(line)), (j-0.1, i))
+            else:
+                ax.annotate(float(line), (j-0.07, i))
 
-    fig = plt.figure()
-    im = plt.imshow(X=np.squeeze(matrix))
+    squeezed_matrix = np.squeeze(matrix)
+    im = plt.imshow(X=squeezed_matrix)
     fig.colorbar(im)
     plt.xticks(np.arange(0, dims[0], 1))
     plt.yticks(np.arange(0, dims[1], 1))
@@ -75,6 +81,6 @@ def graph_weights():
 
 
 matrix_graph("../results/kohonen/cellPopulation")
-matrix_graph("../results/kohonen/cellDistance")
+matrix_graph("../results/kohonen/cellDistance", True)
 cell_members_graph()
 graph_weights()
