@@ -16,8 +16,7 @@ public class OjaAlgorithm {
         this.learnFactor = learnFactor;
         this.x = x;
         this.weights = new Vector(x.get(0).getDimension());
-        int factor = -1;
-        this.weights.fill(factor / Math.sqrt(weights.getDimension()));
+        resetWeights();
     }
 
     public void resetWeights() {

@@ -1,4 +1,4 @@
-from pcaReaderFromJava import read_all_files, read_weights
+from pcaReaderFromJava import read_files_pc, read_weights, read_files_iterations
 from PCA import get_pca
 import numpy as np
 from matplotlib import pyplot as plt
@@ -9,12 +9,15 @@ class Grapher:
 
     data = None
     principal_components_oja = None
+    principal_components_oja_iterations = None
     principal_components = None
     learning_factors = None
+    iterations = None
 
     def __init__(self):
-        self.principal_components_oja, self.learning_factors = read_all_files()
+        self.principal_components_oja, self.learning_factors = read_files_pc()
         self.principal_components = get_pca()
+        self.principal_components_oja_iterations, self.iterations = read_files_iterations()
         self.data = pd.read_csv("../europe.csv")
 
     def get_values(self):
@@ -67,7 +70,20 @@ class Grapher:
         cat = self.data.columns.values[1::]
         graphRadarChart(cat, positive_weights)
 
+    def graph_iterations_error(self):
+        errors = []
+        for pc_oja in self.principal_components_oja_iterations:
+            errors.append(np.linalg.norm(np.array(pc_oja) - np.array(self.principal_components)))
+
+        print(errors)
+        plt.plot(self.iterations, errors)
+        plt.yscale('log')
+        plt.ylabel('Error')
+        plt.xlabel('Iterations')
+        plt.show()
+
     def graph_all(self):
         self.graph_radar()
         self.graph_error()
         self.graph_oja_vs_library()
+        self.graph_iterations_error()
