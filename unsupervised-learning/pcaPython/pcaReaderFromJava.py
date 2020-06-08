@@ -1,9 +1,17 @@
 import os
 
-def read_all_files():
+
+def read_files_iterations():
+    return read_all_files("../results/iterations/")
+
+
+def read_files_pc():
+    return read_all_files("../results/principalComponents/")
+
+
+def read_all_files(path):
     principal_components = []
     learning_factors = []
-    path = "../results/principalComponents/"
     _, _, files = next(os.walk(path))
     for iteration in range(1, len(files)):
         pc, lf = read_file(path + "principalComponents" + str(iteration))

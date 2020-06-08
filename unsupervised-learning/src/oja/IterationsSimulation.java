@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Simulation {
+public class IterationsSimulation {
     public static void run() {
         TreeMap<String, Vector> categories;
         try {
@@ -33,45 +33,33 @@ public class Simulation {
 
         List<Vector> values = new ArrayList<>(categories.values());
 
-        OjaAlgorithm ojaAlgorithm = new OjaAlgorithm(0.0000005, values);
+        OjaAlgorithm ojaAlgorithm = new OjaAlgorithm(0.000025, values);
 
         (new File("./unsupervised-learning/results/")).mkdir();
-        File folder = new File("./unsupervised-learning/results/principalComponents");
+        File folder = new File("./unsupervised-learning/results/iterations");
         folder.mkdir();
         File[] files = folder.listFiles();
         for(File file : files) {
             file.delete();
         }
 
-        int iteration = 1;
-        for (double learnFactor = 0.00005; learnFactor <= 0.15; learnFactor += 0.005) {
-            ojaAlgorithm.setLearnFactor(learnFactor);
+        int run = 1;
+        for (int iterations = 1; iterations <= 10000; iterations += 10) {
             ojaAlgorithm.resetWeights();
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < iterations; i++) {
                 ojaAlgorithm.step();
             }
-            if(iteration == 1) {
-                try (BufferedWriter bf = new BufferedWriter(new FileWriter("./unsupervised-learning/results/weights"))) {
-                    Vector weights = ojaAlgorithm.getWeights();
-                    for (int i = 0; i < weights.getDimension(); i++) {
-                        bf.write(Double.toString(weights.get(i)) + '\n');
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            try (BufferedWriter bf = new BufferedWriter(new FileWriter("./unsupervised-learning/results/principalComponents/principalComponents" + iteration))) {
-                bf.write(Double.toString(learnFactor) + '\n');
+            try (BufferedWriter bf = new BufferedWriter(new FileWriter("./unsupervised-learning/results/iterations/principalComponents" + run))) {
+                bf.write(Double.toString(iterations) + '\n');
                 for (String key : categories.keySet()) {
                     bf.write(Double.toString(ojaAlgorithm.getPrincipalComponent(categories.get(key))) + '\n');
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            iteration++;
+            run++;
         }
 
-        System.out.println();
     }
 
 
