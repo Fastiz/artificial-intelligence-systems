@@ -13,7 +13,7 @@ def read_all_files(path):
     principal_components = []
     learning_factors = []
     _, _, files = next(os.walk(path))
-    for iteration in range(1, len(files)):
+    for iteration in range(1, len(files) + 1):
         pc, lf = read_file(path + "principalComponents" + str(iteration))
         principal_components.append(pc)
         learning_factors.append(lf)

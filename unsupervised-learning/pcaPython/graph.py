@@ -75,7 +75,6 @@ class Grapher:
         for pc_oja in self.principal_components_oja_iterations:
             errors.append(np.linalg.norm(np.array(pc_oja) - np.array(self.principal_components)))
 
-        print(errors)
         plt.plot(self.iterations, errors)
         plt.yscale('log')
         plt.ylabel('Error')
