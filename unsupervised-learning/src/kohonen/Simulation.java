@@ -32,12 +32,18 @@ public class Simulation {
         //Kohonen map generator
         int latticeDim = 3;
         int inputDim = 7;
+        double timeConstant = numberOfIterations/Math.log(inputDim);
+        System.out.println("\nInitializing Kohonen Map with the following parameters:");
+        System.out.println(" - Number of iterations: " + numberOfIterations);
+        System.out.println(" - Time constant: " + timeConstant);
+        System.out.println(" - Lattice dimension: " + latticeDim);
+        System.out.println(" - Input dimension: " + inputDim);
         Lattice lattice = new SquareLattice(cellGenerator(inputDim), latticeDim);
         KohonenMap map = (new KohonenMap.Builder())
                 .setLattice(lattice)
                 .setNeighborhoodFunction(Simulation::neighborhoodFunction)
                 .setLearningRateFunction(Simulation::learningRateFunction)
-                .setTimeConstant(numberOfIterations/Math.log(inputDim))
+                .setTimeConstant(timeConstant)
                 .create();
 
         //Read europe.csv for training

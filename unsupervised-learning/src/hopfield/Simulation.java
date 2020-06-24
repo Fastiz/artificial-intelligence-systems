@@ -16,26 +16,26 @@ public class Simulation {
                 1, -1, -1, -1,  1,
                 1, -1, -1, -1,  1
         });
-        /*patterns.add(new int[]{
-                1,  1,  1,  1, -1,
-                1, -1, -1, -1,  1,
-                1,  1,  1,  1, -1,
-                1, -1, -1, -1,  1,
-                1,  1,  1,  1, -1
-        });*/
-        /*patterns.add(new int[]{
-                1,  1,  1,  1,  1,
-                1, -1, -1, -1, -1,
-                1, -1, -1, -1, -1,
-                1, -1, -1, -1, -1,
-                1,  1,  1,  1,  1
-        });*/
         patterns.add(new int[]{
-                1,  1,  1,  1, -1,
-                1, -1, -1, -1,  1,
-                1, -1, -1, -1,  1,
-                1, -1, -1, -1,  1,
-                1,  1,  1,  1, -1
+                 1, -1, -1, -1,  1,
+                -1,  1, -1,  1, -1,
+                -1, -1,  1, -1, -1,
+                -1,  1, -1,  1, -1,
+                 1, -1, -1, -1,  1
+        });
+        patterns.add(new int[]{
+                -1, -1,  1, -1, -1,
+                -1, -1, -1, -1, -1,
+                -1, -1,  1, -1, -1,
+                -1, -1,  1, -1, -1,
+                -1, -1,  1, -1, -1
+        });
+        patterns.add(new int[]{
+                 1,  1,  1,  1,  1,
+                -1, -1, -1,  1, -1,
+                -1, -1, -1,  1, -1,
+                 1, -1, -1,  1, -1,
+                 1,  1,  1, -1, -1
         });
 
         //Printing letters
@@ -51,7 +51,7 @@ public class Simulation {
         for(int t=0; t<5; t++){
             System.out.println("--------------------");
             int index = rnd.nextInt(patterns.size());
-            int[] dirtyPattern = dirtyPattern(patterns.get(index), 0.05);
+            int[] dirtyPattern = dirtyPatternByNumberOfFlips(patterns.get(index), 14);
             runHopfieldForPattern(hm, dirtyPattern);
         }
     }
@@ -76,7 +76,19 @@ public class Simulation {
         printPattern(hm.getStatus());
     }
 
-    private static int[] dirtyPattern(int[] pattern, double flipChance){
+    private static int[] dirtyPatternByNumberOfFlips(int[] pattern, int numberOfFlips){
+        int[] dirtyPattern = Arrays.copyOf(pattern, pattern.length);
+
+        Random rnd = new Random();
+        for(int i=0; i< numberOfFlips; i++){
+            int index = rnd.nextInt(dirtyPattern.length);
+            dirtyPattern[index] = dirtyPattern[index] == 1 ? -1 : 1;
+        }
+
+        return dirtyPattern;
+    }
+
+    private static int[] dirtyPatternByChance(int[] pattern, double flipChance){
         int[] dirtyPattern = new int[pattern.length];
         for(int i=0; i<5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -88,7 +100,7 @@ public class Simulation {
             }
         }
         if(Arrays.equals(dirtyPattern, pattern))
-            dirtyPattern = dirtyPattern(pattern, flipChance);
+            dirtyPattern = dirtyPatternByChance(pattern, flipChance);
         return dirtyPattern;
     }
 
