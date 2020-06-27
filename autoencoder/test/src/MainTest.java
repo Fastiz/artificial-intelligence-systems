@@ -1,17 +1,24 @@
 package src;
 
+import src.multilayerPerceptron.EncoderTest;
 import src.multilayerPerceptron.MultiLayerPerceptronTest;
 import src.multilayerPerceptron.UtilsTest;
 
 public class MainTest {
 
     public static void main(String[] args){
-        utilsTest();
+//        utilsTest();
 
-        MultiLayerPerceptronTest();
+//        multiLayerPerceptronTest();
+
+        autoEncoderTest();
     }
 
-    private static void MultiLayerPerceptronTest(){
+    public static void autoEncoderTest(){
+        EncoderTest.testEncodeDecodeForFont(2);
+    }
+
+    private static void multiLayerPerceptronTest(){
         MultiLayerPerceptronTest.and();
     }
 

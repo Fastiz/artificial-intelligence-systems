@@ -105,12 +105,11 @@ public class MultiLayerPerceptron {
         //Backwards propagation
         List<List<Double>> deltas = new ArrayList<>();
         deltas.add(
-                Arrays.asList(
-                        Utils.dotProduct(
-                                hs.get(hs.size() - 1).stream().mapToDouble(activationFunctionDerivative::apply).boxed().collect(Collectors.toList()),
-                                Utils.elementwiseOperation(outValue, vs.get(vs.size() - 1), (a, b)->a-b)
-                        )
-                )
+            Utils.elementwiseOperation(
+                    hs.get(hs.size() - 1).stream().mapToDouble(activationFunctionDerivative::apply).boxed().collect(Collectors.toList()),
+                    Utils.elementwiseOperation(outValue, vs.get(vs.size() - 1), (a, b) -> a - b),
+                    (a, b)->a*b
+            )
         );
 
         for(int m=hs.size()-2; m>=0; m--){
@@ -156,8 +155,13 @@ public class MultiLayerPerceptron {
         return vs.get(vs.size()-1);
     }
 
+    public List<Double> classify(List<Double> pattern, int starting, int end){
+        List<List<Double>> vs = propagate(pattern, starting, end).vs;
+        return vs.get(vs.size()-1);
+    }
+
     public VsAndHsWrapper propagate(List<Double> pattern){
-        return propagate(pattern, 0, 2 + innerLayersDimensions.size());
+        return propagate(pattern, 0, 1 + innerLayersDimensions.size());
     }
 
     public VsAndHsWrapper propagate(List<Double> pattern, int starting, int end){
@@ -168,10 +172,8 @@ public class MultiLayerPerceptron {
         patternWithBias.add(this.bias);
 
         vs.add(patternWithBias);
-//        hs.add(null);
 
-
-        for(List<List<Double>> layerWeights : weights){
+        for(List<List<Double>> layerWeights : weights.subList(starting, end)){
             List<Double> v = new ArrayList<>();
             List<Double> h = new ArrayList<>();
 
@@ -181,13 +183,15 @@ public class MultiLayerPerceptron {
                 v.add(activationFunction.apply(dot));
             }
 
-//            v.add(this.bias);
-
             vs.add(v);
             hs.add(h);
         }
 
         return new VsAndHsWrapper(vs, hs);
+    }
+
+    public List<Integer> getInnerLayersDimensions() {
+        return innerLayersDimensions;
     }
 
     // Private methods ---------
