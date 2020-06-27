@@ -6,10 +6,10 @@ import java.util.function.BinaryOperator;
 
 public class Utils {
 
-    public static List<List<Integer>> dataToBits(Integer[][] data) {
-        List<List<Integer>> dataInBits = new ArrayList<>(data.length);
+    public static List<List<Double>> dataToBits(Integer[][] data) {
+        List<List<Double>> dataInBits = new ArrayList<>(data.length);
         for(int i = 0; i < data.length; i++) {
-            List<Integer> dataAux = new ArrayList<>(data[i].length);
+            List<Double> dataAux = new ArrayList<>(data[i].length);
             for(int j = 0; j < data[i].length; j++) {
                 dataAux.addAll(byteToBitList(data[i][j]));
             }
@@ -18,10 +18,10 @@ public class Utils {
         return dataInBits;
     }
 
-    private static List<Integer> byteToBitList(int b) {
-        List<Integer> bitList = new ArrayList<>(8);
+    private static List<Double> byteToBitList(int b) {
+        List<Double> bitList = new ArrayList<>(8);
         for(int i = 7; i >= 0; i--) {
-            int bitValue = getBitValue(b, i) * 2 - 1;
+            double bitValue = getBitValue(b, i) * 2 - 1;
             bitList.add(bitValue);
         }
         return bitList;
