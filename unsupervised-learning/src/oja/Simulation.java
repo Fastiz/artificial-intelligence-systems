@@ -33,7 +33,7 @@ public class Simulation {
 
         List<Vector> values = new ArrayList<>(categories.values());
 
-        OjaAlgorithm ojaAlgorithm = new OjaAlgorithm(0.0000005, values);
+        OjaAlgorithm ojaAlgorithm = new OjaAlgorithm(1, values);
 
         (new File("./unsupervised-learning/results/")).mkdir();
         File folder = new File("./unsupervised-learning/results/principalComponents");
@@ -44,7 +44,7 @@ public class Simulation {
         }
 
         int iteration = 1;
-        for (double learnFactor = 0.00005; learnFactor <= 0.15; learnFactor += 0.005) {
+        for (double learnFactor = 0.00005; learnFactor <= 0.005; learnFactor += 0.000025) {
             ojaAlgorithm.setLearnFactor(learnFactor);
             ojaAlgorithm.resetWeights();
             for (int i = 0; i < 10000; i++) {
