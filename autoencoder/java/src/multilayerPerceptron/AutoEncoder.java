@@ -20,7 +20,7 @@ public class AutoEncoder {
     }
 
     public List<Double> decode(List<Double> value){
-        return perceptron.classify(value, latentSpaceLayerIndex, perceptron.getInnerLayersDimensions().size() + 1);
+        return perceptron.classify(value, latentSpaceLayerIndex+1, perceptron.getInnerLayersDimensions().size() + 1);
     }
 
     public void step(List<Double> pattern){
