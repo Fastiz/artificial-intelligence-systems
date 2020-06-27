@@ -111,22 +111,10 @@ public class EncoderTest {
         {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f}   // 0x7f, DEL
     };
 
-    private static List<List<Double>> normalizeFont(Integer[][] font){
-        int max = Arrays.stream(font)
-                .flatMap(Arrays::stream)
-                .max(Integer::compareTo).orElseThrow(IllegalArgumentException::new);
-
-        return Arrays.stream(font)
-                .map(
-                    p-> Arrays.stream(p).mapToDouble(v->2*((double) v)/max - 1).boxed().collect(Collectors.toList())
-                )
-                .collect(Collectors.toList());
-    }
-
     public static void testEncodeDecodeForFont(int fontNum){
-        List<List<Double>> font = getNormalizedFont(fontNum);
+        List<List<Double>> font = Utils.dataToBits(getFont(fontNum));
 
-        AutoEncoder autoEncoder = getEncoder(font);
+        AutoEncoder autoEncoder = getEncoder(font, font.get(0).size());
 
         Random rnd = new Random();
         int itNum = 100000;
@@ -136,8 +124,6 @@ public class EncoderTest {
             autoEncoder.step(font.get(randIndex));
         }
 
-        System.out.println("DONE training");
-
         for (List<Double> c : font){
             System.out.println(String.format("------\n%s\n%s", c.toString(), autoEncoder.decode(autoEncoder.encode(c))));
         }
@@ -145,9 +131,9 @@ public class EncoderTest {
     }
 
     public static void testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron(){
-        List<List<Double>> font = getNormalizedFont(1);
+        List<List<Double>> font = Utils.dataToBits(getFont(1));
 
-        AutoEncoder autoEncoder = getEncoder(font);
+        AutoEncoder autoEncoder = getEncoder(font, font.get(0).size());
 
         Random rnd = new Random();
         int itNum = 100000;
@@ -164,7 +150,7 @@ public class EncoderTest {
         }
     }
 
-    private static AutoEncoder getEncoder(List<List<Double>> font){
+    private static AutoEncoder getEncoder(List<List<Double>> font, int dim){
 
         return new AutoEncoder(
                 (new MultiLayerPerceptron.Builder())
@@ -172,20 +158,20 @@ public class EncoderTest {
                         .setActivationFunctionDerivative(p->3*(1-Math.pow(Math.tanh(p), 2)))
                         .setAlpha(0.01)
                         .setInnerLayersDimensions(Arrays.asList(7, 7, 2, 7, 7))
-                        .setInDim(7)
-                        .setOutDim(7)
+                        .setInDim(dim)
+                        .setOutDim(dim)
                         .create()
         );
     }
 
-    private static List<List<Double>> getNormalizedFont(int fontNum){
+    private static Integer[][] getFont(int fontNum){
         switch (fontNum){
             case 1:
-                return normalizeFont(font1);
+                return font1;
             case 2:
-                return normalizeFont(font2);
+                return font2;
             case 3:
-                return normalizeFont(font3);
+                return font3;
             default:
                 throw new IllegalArgumentException("Invalid font number");
         }

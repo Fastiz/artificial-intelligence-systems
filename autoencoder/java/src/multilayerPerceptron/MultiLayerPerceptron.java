@@ -3,7 +3,6 @@ package src.multilayerPerceptron;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class MultiLayerPerceptron {
     public static class Builder {
@@ -77,7 +76,6 @@ public class MultiLayerPerceptron {
     private final List<Integer> innerLayersDimensions;
     private final double alpha;
     private final double bias;
-    private final int inDim, outDim;
 
     private final Random random;
 
@@ -89,8 +87,6 @@ public class MultiLayerPerceptron {
         this.innerLayersDimensions = innerLayersDimensions;
         this.alpha = alpha;
         this.bias = -1.0;
-        this.inDim = inDim;
-        this.outDim = outDim;
         this.random = random;
         this.weights = new ArrayList<>(2 + innerLayersDimensions.size());
 

@@ -15,7 +15,7 @@ public class MainTest {
     }
 
     public static void autoEncoderTest(){
-//        EncoderTest.testEncodeDecodeForFont(2);
+        EncoderTest.testEncodeDecodeForFont(2);
 
         EncoderTest.testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron();
     }
