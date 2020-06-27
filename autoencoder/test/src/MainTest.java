@@ -7,15 +7,17 @@ import src.multilayerPerceptron.UtilsTest;
 public class MainTest {
 
     public static void main(String[] args){
-//        utilsTest();
+        utilsTest();
 
-//        multiLayerPerceptronTest();
+        multiLayerPerceptronTest();
 
         autoEncoderTest();
     }
 
     public static void autoEncoderTest(){
-        EncoderTest.testEncodeDecodeForFont(2);
+//        EncoderTest.testEncodeDecodeForFont(2);
+
+        EncoderTest.testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron();
     }
 
     private static void multiLayerPerceptronTest(){

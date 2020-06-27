@@ -169,7 +169,9 @@ public class MultiLayerPerceptron {
         List<List<Double>> hs = new ArrayList<>(2 + innerLayersDimensions.size());
 
         List<Double> patternWithBias = new ArrayList<>(pattern);
-        patternWithBias.add(this.bias);
+
+        if(starting == 0)
+            patternWithBias.add(this.bias);
 
         vs.add(patternWithBias);
 

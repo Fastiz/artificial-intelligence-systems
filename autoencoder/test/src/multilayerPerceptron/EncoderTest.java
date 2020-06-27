@@ -126,19 +126,10 @@ public class EncoderTest {
     public static void testEncodeDecodeForFont(int fontNum){
         List<List<Double>> font = getNormalizedFont(fontNum);
 
-        AutoEncoder autoEncoder = new AutoEncoder(
-                (new MultiLayerPerceptron.Builder())
-                        .setActivationFunction(p->Math.tanh(3*p))
-                        .setActivationFunctionDerivative(p->3*(1-Math.pow(Math.tanh(p), 2)))
-                        .setAlpha(0.01)
-                        .setInnerLayersDimensions(Arrays.asList(7, 7, 2, 7, 7))
-                        .setInDim(7)
-                        .setOutDim(7)
-                        .create()
-        );
+        AutoEncoder autoEncoder = getEncoder(font);
 
         Random rnd = new Random();
-        int itNum = 10000000;
+        int itNum = 100000;
         for(int it=0; it<itNum; it++){
             int randIndex = rnd.nextInt(font.size());
 
@@ -148,10 +139,43 @@ public class EncoderTest {
         System.out.println("DONE training");
 
         for (List<Double> c : font){
-            System.out.println(String.format("------\n%s\n%s", c.toString(), autoEncoder.getPerceptron().classify(c)));
-//            System.out.println(String.format("------\n%s\n%s", c.toString(), autoEncoder.decode(autoEncoder.encode(c))));
+            System.out.println(String.format("------\n%s\n%s", c.toString(), autoEncoder.decode(autoEncoder.encode(c))));
         }
 
+    }
+
+    public static void testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron(){
+        List<List<Double>> font = getNormalizedFont(1);
+
+        AutoEncoder autoEncoder = getEncoder(font);
+
+        Random rnd = new Random();
+        int itNum = 100000;
+        for(int it=0; it<itNum; it++){
+            int randIndex = rnd.nextInt(font.size());
+
+            autoEncoder.step(font.get(randIndex));
+        }
+
+        System.out.println("DONE training");
+
+        for (List<Double> c : font){
+            assert autoEncoder.decode(autoEncoder.encode(c)).equals(autoEncoder.getPerceptron().classify(c));
+        }
+    }
+
+    private static AutoEncoder getEncoder(List<List<Double>> font){
+
+        return new AutoEncoder(
+                (new MultiLayerPerceptron.Builder())
+                        .setActivationFunction(p->Math.tanh(3*p))
+                        .setActivationFunctionDerivative(p->3*(1-Math.pow(Math.tanh(p), 2)))
+                        .setAlpha(0.01)
+                        .setInnerLayersDimensions(Arrays.asList(7, 7, 2, 7, 7))
+                        .setInDim(7)
+                        .setOutDim(7)
+                        .create()
+        );
     }
 
     private static List<List<Double>> getNormalizedFont(int fontNum){
