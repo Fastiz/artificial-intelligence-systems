@@ -6,6 +6,31 @@ import java.util.function.BinaryOperator;
 
 public class Utils {
 
+    public static List<List<Integer>> dataToBits(Integer[][] data) {
+        List<List<Integer>> dataInBits = new ArrayList<>(data.length);
+        for(int i = 0; i < data.length; i++) {
+            List<Integer> dataAux = new ArrayList<>(data[i].length);
+            for(int j = 0; j < data[i].length; j++) {
+                dataAux.addAll(byteToBitList(data[i][j]));
+            }
+            dataInBits.add(dataAux);
+        }
+        return dataInBits;
+    }
+
+    private static List<Integer> byteToBitList(int b) {
+        List<Integer> bitList = new ArrayList<>(8);
+        for(int i = 7; i >= 0; i--) {
+            int bitValue = getBitValue(b, i) * 2 - 1;
+            bitList.add(bitValue);
+        }
+        return bitList;
+    }
+
+    private static int getBitValue(int b, int position) {
+        return (b >> position) & 1;
+    }
+
     public static List<List<Double>> transpose(List<List<Double>> list){
         List<List<Double>> transposed = new ArrayList<>(list.get(0).size());
 
