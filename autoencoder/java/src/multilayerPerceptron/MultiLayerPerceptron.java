@@ -3,6 +3,7 @@ package src.multilayerPerceptron;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MultiLayerPerceptron {
     public static class Builder {
@@ -75,6 +76,7 @@ public class MultiLayerPerceptron {
     private final Function<Double, Double> activationFunction, activationFunctionDerivative;
     private final List<Integer> innerLayersDimensions;
     private final double alpha;
+    private final double bias;
     private final int inDim, outDim;
 
     private final Random random;
@@ -86,12 +88,13 @@ public class MultiLayerPerceptron {
         this.activationFunctionDerivative = activationFunctionDerivative;
         this.innerLayersDimensions = innerLayersDimensions;
         this.alpha = alpha;
+        this.bias = -1.0;
         this.inDim = inDim;
         this.outDim = outDim;
         this.random = random;
         this.weights = new ArrayList<>(2 + innerLayersDimensions.size());
 
-        generateWeights(inDim, innerLayersDimensions, outDim);
+        generateWeights(inDim + 1, innerLayersDimensions, outDim);
     }
 
     public void step(List<Double> inValue, List<Double> outValue){
@@ -102,7 +105,7 @@ public class MultiLayerPerceptron {
         //Backwards propagation
         List<List<Double>> deltas = new ArrayList<>();
         deltas.add(
-                Collections.singletonList(
+                Arrays.asList(
                         Utils.dotProduct(
                                 hs.get(hs.size() - 1).stream().mapToDouble(activationFunctionDerivative::apply).boxed().collect(Collectors.toList()),
                                 Utils.elementwiseOperation(outValue, vs.get(vs.size() - 1), (a, b)->a-b)
@@ -110,22 +113,38 @@ public class MultiLayerPerceptron {
                 )
         );
 
-        for(int i=hs.size()-2; i>=0; i--){
-            List<Double> firstTerm, secondTerm;
-            firstTerm = hs.get(i).stream().mapToDouble(activationFunctionDerivative::apply).boxed().collect(Collectors.toList());
-            List<List<Double>> transposed = Utils.transpose(weights.get(i+1));
-            secondTerm = transposed.stream().mapToDouble(t->Utils.dotProduct(t, deltas.get(deltas.size()-1))).boxed().collect(Collectors.toList());
+        for(int m=hs.size()-2; m>=0; m--){
+            List<List<Double>> transposed = Utils.transpose(weights.get(m+1));
 
-            deltas.add(Utils.elementwiseOperation(firstTerm, secondTerm, (a, b)->a*b));
+            List<Double> firstTerm = hs.get(m).stream()
+                    .mapToDouble(activationFunctionDerivative::apply)
+                    .boxed()
+                    .collect(Collectors.toList());
+
+            List<Double> secondTerm = transposed.stream()
+                    .mapToDouble(doubles -> Utils.dotProduct(doubles, deltas.get(deltas.size() - 1)))
+                    .boxed()
+                    .collect(Collectors.toList());
+
+            deltas.add(
+                    Utils.elementwiseOperation(
+                            firstTerm,
+                            secondTerm,
+                            (a, b)->a*b
+                    )
+            );
         }
 
         //Update weights
         for(int m=0; m<deltas.size(); m++){
             List<List<Double>> layerWeights = weights.get(m);
             for(int i=0; i<layerWeights.size(); i++){
-                List<Double> iWeights = layerWeights.get(i);
-                for(int j=0; j<iWeights.size(); j++){
-                    iWeights.set(j, iWeights.get(j) + alpha * deltas.get(deltas.size()-1-m).get(i) * vs.get(m).get(j));
+                List<Double> i_weights = layerWeights.get(i);
+                for(int j=0; j<i_weights.size(); j++){
+                    double newWeight = i_weights.get(j) +
+                            alpha * deltas.get(deltas.size()-1-m).get(i) *
+                                    vs.get(m).get(j);
+                    i_weights.set(j, newWeight);
                 }
             }
         }
@@ -143,9 +162,14 @@ public class MultiLayerPerceptron {
 
     public VsAndHsWrapper propagate(List<Double> pattern, int starting, int end){
         List<List<Double>> vs = new ArrayList<>(2 + innerLayersDimensions.size());
-        vs.add(pattern);
+        List<List<Double>> hs = new ArrayList<>(2 + innerLayersDimensions.size());
 
-        List<List<Double>> hs = new ArrayList<>(1 + innerLayersDimensions.size());
+        List<Double> patternWithBias = new ArrayList<>(pattern);
+        patternWithBias.add(this.bias);
+
+        vs.add(patternWithBias);
+//        hs.add(null);
+
 
         for(List<List<Double>> layerWeights : weights){
             List<Double> v = new ArrayList<>();
@@ -156,6 +180,8 @@ public class MultiLayerPerceptron {
                 h.add(dot);
                 v.add(activationFunction.apply(dot));
             }
+
+//            v.add(this.bias);
 
             vs.add(v);
             hs.add(h);
@@ -179,7 +205,7 @@ public class MultiLayerPerceptron {
             List<List<Double>> layerWeights = new ArrayList<>(currDim);
 
             for(int j=0; j<currDim; j++){
-                layerWeights.add(generateRandomWeights(prevDim));
+                layerWeights.add(generateRandomWeights(prevDim/*+1*/));
             }
 
             weights.add(layerWeights);

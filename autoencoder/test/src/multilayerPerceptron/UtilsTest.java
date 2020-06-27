@@ -20,6 +20,18 @@ public class UtilsTest {
 
     }
 
+    public static void transposeTwoTimes(){
+        List<List<Double>> matrix = generateMatrix();
+
+        List<List<Double>> twoTimesTransposed = Utils.transpose(Utils.transpose(matrix));
+
+        for(int i=0; i<matrix.size(); i++){
+            for(int j=0; j<matrix.get(0).size(); j++){
+                assert matrix.get(i).get(j).equals(twoTimesTransposed.get(i).get(j));
+            }
+        }
+    }
+
     public static void dotProductCases(){
         assert Double.valueOf(Utils.dotProduct(
                 Arrays.asList(1.0, 1.0, 1.0, 1.0), Arrays.asList(1.0, 1.0, 1.0, 1.0)

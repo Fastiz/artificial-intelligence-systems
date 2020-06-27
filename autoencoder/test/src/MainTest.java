@@ -12,13 +12,13 @@ public class MainTest {
     }
 
     private static void MultiLayerPerceptronTest(){
-        //MultiLayerPerceptronTest.evenBetween0And10();
-
         MultiLayerPerceptronTest.and();
     }
 
     private static void utilsTest(){
         UtilsTest.checkIfMatrixIsTransposed();
+
+        UtilsTest.transposeTwoTimes();
 
         UtilsTest.dotProductCases();
 
