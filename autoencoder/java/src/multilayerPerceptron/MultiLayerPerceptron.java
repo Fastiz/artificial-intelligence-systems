@@ -11,9 +11,12 @@ public class MultiLayerPerceptron {
         private double alpha;
         private int inDim, outDim;
         private Random random;
+        private Function<Integer, Double> temperatureFunction;
+        boolean withBias;
 
         public Builder() {
             this.random = new Random();
+            this.withBias = true;
         }
 
         public Builder setActivationFunction(Function<Double, Double> activationFunction) {
@@ -51,15 +54,40 @@ public class MultiLayerPerceptron {
             return this;
         }
 
+        public Builder setTemperatureFunction(Function<Integer, Double> temperatureFunction){
+            this.temperatureFunction = temperatureFunction;
+            return this;
+        }
+
+        public Builder withBias(boolean bias){
+            this.withBias = bias;
+            return this;
+        }
+
         public MultiLayerPerceptron create(){
+
+            if(activationFunction == null ||
+                    activationFunctionDerivative == null ||
+                    innerLayersDimensions == null ||
+                    (alpha == 0 && temperatureFunction == null) ||
+                    inDim == 0 ||
+                    outDim == 0
+            )
+                throw new IllegalArgumentException("One of the fields was not set");
+
+            if(temperatureFunction == null)
+                temperatureFunction = p->this.alpha;
+
             return new MultiLayerPerceptron(
+                    temperatureFunction,
                     activationFunction,
                     activationFunctionDerivative,
                     innerLayersDimensions,
                     alpha,
                     inDim,
                     outDim,
-                    random
+                    random,
+                    withBias
             );
         }
     }
@@ -76,21 +104,29 @@ public class MultiLayerPerceptron {
     private final List<Integer> innerLayersDimensions;
     private final double alpha;
     private final double bias;
+    private final Function<Integer, Double> temperatureFunction;
 
     private final Random random;
 
-    private List<List<List<Double>>> weights;
+    private int trainingStep;
 
-    public MultiLayerPerceptron(Function<Double, Double> activationFunction, Function<Double, Double> activationFunctionDerivative, List<Integer> innerLayersDimensions, double alpha, int inDim, int outDim, Random random) {
+    private final List<List<List<Double>>> weights;
+
+    public MultiLayerPerceptron(Function<Integer, Double> temperatureFunction, Function<Double, Double> activationFunction,
+                                Function<Double, Double> activationFunctionDerivative, List<Integer> innerLayersDimensions,
+                                double alpha, int inDim, int outDim, Random random, boolean withBias) {
+        this.temperatureFunction = temperatureFunction;
         this.activationFunction = activationFunction;
         this.activationFunctionDerivative = activationFunctionDerivative;
         this.innerLayersDimensions = innerLayersDimensions;
         this.alpha = alpha;
-        this.bias = -1.0;
+        this.bias = withBias ? -1.0: 0.0;
         this.random = random;
         this.weights = new ArrayList<>(2 + innerLayersDimensions.size());
 
-        generateWeights(inDim + 1, innerLayersDimensions, outDim);
+        this.trainingStep = 0;
+
+        generateWeights(inDim, innerLayersDimensions, outDim);
     }
 
     public void step(List<Double> inValue, List<Double> outValue){
@@ -121,6 +157,8 @@ public class MultiLayerPerceptron {
                     .boxed()
                     .collect(Collectors.toList());
 
+            secondTerm.remove(secondTerm.size()-1);
+
             deltas.add(
                     Utils.elementwiseOperation(
                             firstTerm,
@@ -135,15 +173,21 @@ public class MultiLayerPerceptron {
             List<List<Double>> layerWeights = weights.get(m);
             for(int i=0; i<layerWeights.size(); i++){
                 List<Double> i_weights = layerWeights.get(i);
-                for(int j=0; j<i_weights.size(); j++){
+                for(int j=0; j<i_weights.size()-1; j++){
+                    double v = vs.get(m).get(j);
+
                     double newWeight = i_weights.get(j) +
-                            alpha * deltas.get(deltas.size()-1-m).get(i) *
-                                    vs.get(m).get(j);
+                            temperatureFunction.apply(this.trainingStep) * deltas.get(deltas.size()-1-m).get(i) * v;
                     i_weights.set(j, newWeight);
                 }
+
+                double newWeight = i_weights.get(i_weights.size()-1) +
+                        temperatureFunction.apply(this.trainingStep) * deltas.get(deltas.size()-1-m).get(i) * this.bias;
+                i_weights.set(i_weights.size()-1, newWeight);
             }
         }
 
+        trainingStep++;
     }
 
     public List<Double> classify(List<Double> pattern){
@@ -164,19 +208,17 @@ public class MultiLayerPerceptron {
         List<List<Double>> vs = new ArrayList<>(2 + innerLayersDimensions.size());
         List<List<Double>> hs = new ArrayList<>(2 + innerLayersDimensions.size());
 
-        List<Double> patternWithBias = new ArrayList<>(pattern);
-
-        if(starting == 0)
-            patternWithBias.add(this.bias);
-
-        vs.add(patternWithBias);
+        vs.add(pattern);
 
         for(List<List<Double>> layerWeights : weights.subList(starting, end)){
             List<Double> v = new ArrayList<>();
             List<Double> h = new ArrayList<>();
 
             for(List<Double> weight : layerWeights){
-                Double dot = Utils.dotProduct(weight, vs.get(vs.size()-1));
+                List<Double> withBias = new ArrayList<>(vs.get(vs.size()-1));
+                withBias.add(this.bias);
+
+                Double dot = Utils.dotProduct(weight, withBias);
                 h.add(dot);
                 v.add(activationFunction.apply(dot));
             }
@@ -207,7 +249,7 @@ public class MultiLayerPerceptron {
             List<List<Double>> layerWeights = new ArrayList<>(currDim);
 
             for(int j=0; j<currDim; j++){
-                layerWeights.add(generateRandomWeights(prevDim/*+1*/));
+                layerWeights.add(generateRandomWeights(prevDim+1));
             }
 
             weights.add(layerWeights);
@@ -226,4 +268,7 @@ public class MultiLayerPerceptron {
         return weights;
     }
 
+    public List<List<List<Double>>> getWeights() {
+        return weights;
+    }
 }

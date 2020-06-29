@@ -1,9 +1,11 @@
 package src.multilayerPerceptron;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class EncoderTest {
     static Integer[][] font1 = {
@@ -112,52 +114,102 @@ public class EncoderTest {
     };
 
     public static void testEncodeDecodeForFont(int fontNum){
-        List<List<Double>> font = Utils.dataToBits(getFont(fontNum));
+        List<List<Double>> fullFont = Utils.dataToBits(getFont(fontNum));
 
-        AutoEncoder autoEncoder = getEncoder(font, font.get(0).size());
+        Collections.shuffle(fullFont);
 
-        Random rnd = new Random();
-        int itNum = 100000;
+        int sublistDim = 8;
+
+        List<List<Double>> font = fullFont.subList(0, sublistDim);
+
+        AutoEncoder autoEncoder = getEncoder(fullFont.get(0).size(), Arrays.asList(50, 12, 2, 12, 50));
+
+        stochasticTraining(autoEncoder, font, 100);
+
+        double totalError = 0;
+        for (List<Double> c : fullFont){
+            List<Double> encodeDecode = autoEncoder.decode(autoEncoder.encode(c));
+
+            List<Double> encodeDecodeRounded = encodeDecode.stream()
+                    .mapToDouble(v->v>0?1.0:-1.0).boxed().collect(Collectors.toList());
+
+            System.out.println("\n\n-------------");
+
+            printLetter(c);
+
+            System.out.println("\n");
+
+            printLetter(encodeDecodeRounded);
+
+            System.out.println("\n");
+
+            double diff = IntStream.range(0, encodeDecode.size()).mapToDouble(i->Math.abs(encodeDecodeRounded.get(i) - c.get(i))).sum();
+            totalError+=diff/2;
+        }
+
+        System.out.println(String.format("Average difference is %s out of %s (%s)",
+                totalError/fullFont.size(),
+                fullFont.get(0).size(),
+                totalError/fullFont.size()/fullFont.get(0).size()));
+
+    }
+
+    private static void stochasticTraining(AutoEncoder ae, List<List<Double>> trainingData, int itNum){
+         Random rnd = new Random();
         for(int it=0; it<itNum; it++){
-            int randIndex = rnd.nextInt(font.size());
+            int randIndex = rnd.nextInt(trainingData.size());
 
-            autoEncoder.step(font.get(randIndex));
+            ae.step(trainingData.get(randIndex));
         }
+    }
 
-        for (List<Double> c : font){
-            System.out.println(String.format("------\n%s\n%s", c.toString(), autoEncoder.decode(autoEncoder.encode(c))));
+    private static void batchTraining(AutoEncoder ae, List<List<Double>> trainingData, int epochs){
+        for(int epochNum = 0; epochNum<epochs; epochNum++){
+            for(List<Double> c : trainingData){
+                ae.step(c);
+            }
         }
+    }
 
+    private static void printAllLetters(List<List<Double>> letters){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n------------------");
+        for(List<Double> l : letters){
+            System.out.println("\n\n\n-");
+            printLetter(l);
+        }
+        System.out.println("\n\n\n\n\n\n\n\n\n\n------------------");
     }
 
     public static void testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron(){
         List<List<Double>> font = Utils.dataToBits(getFont(1));
 
-        AutoEncoder autoEncoder = getEncoder(font, font.get(0).size());
+        AutoEncoder autoEncoder = getEncoder(font.get(0).size(), Arrays.asList(7, 7, 2, 7, 7));
 
         Random rnd = new Random();
-        int itNum = 100000;
+        int itNum = 10;
         for(int it=0; it<itNum; it++){
             int randIndex = rnd.nextInt(font.size());
 
             autoEncoder.step(font.get(randIndex));
         }
-
-        System.out.println("DONE training");
 
         for (List<Double> c : font){
             assert autoEncoder.decode(autoEncoder.encode(c)).equals(autoEncoder.getPerceptron().classify(c));
         }
     }
 
-    private static AutoEncoder getEncoder(List<List<Double>> font, int dim){
+    private static AutoEncoder getEncoder(int dim, List<Integer> innerDims){
+        double alpha = 0.01;
+        int numberOfIterationsToReachAlpha = 10000;
+        double a = 10, b = - Math.log(alpha * (1/a)) / numberOfIterationsToReachAlpha;
 
         return new AutoEncoder(
                 (new MultiLayerPerceptron.Builder())
-                        .setActivationFunction(p->Math.tanh(3*p))
-                        .setActivationFunctionDerivative(p->3*(1-Math.pow(Math.tanh(p), 2)))
-                        .setAlpha(0.01)
-                        .setInnerLayersDimensions(Arrays.asList(7, 7, 2, 7, 7))
+                        .setActivationFunction(Math::tanh)
+                        .setActivationFunctionDerivative(p->1-Math.pow(Math.tanh(p), 2))
+//                        .setTemperatureFunction(s->a*Math.exp(-b*s))
+                        .setAlpha(alpha)
+                        .setInnerLayersDimensions(innerDims)
                         .setInDim(dim)
                         .setOutDim(dim)
                         .create()
@@ -176,4 +228,21 @@ public class EncoderTest {
                 throw new IllegalArgumentException("Invalid font number");
         }
     }
+
+    private static void printLetter(List<Double> letter){
+        int rowSize = 7;
+
+        int rowIndex=0;
+        for(Double c : letter){
+            System.out.print(c.equals(-1.0) ? " " : "x");
+
+            if(rowIndex == rowSize){
+                System.out.print("\n");
+                rowIndex = 0;
+            }else{
+                rowIndex++;
+            }
+        }
+    }
+
 }
