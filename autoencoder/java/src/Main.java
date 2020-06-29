@@ -5,6 +5,9 @@ import src.multilayerPerceptron.MultiLayerPerceptron;
 import src.multilayerPerceptron.Utils;
 
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +16,7 @@ import java.util.stream.IntStream;
 public class Main {
 
     public static void main(String[] args){
-        encodeDecodeForFont(2, 0.1);
+        encodeDecodeForFont(2, 0);
     }
 
     private static void encodeDecodeForFont(int fontNum, double noiseFactor){
@@ -22,36 +25,57 @@ public class Main {
         List<List<Double>> font = fm.getFont(fontNum, noiseFactor);
         AutoEncoder autoEncoder = getEncoder(font.get(0).size(), Arrays.asList(60,15,2,15,60));
 
+
         stochasticTraining(autoEncoder, font, fm.getOutput(), 200000);
 
-        double totalError = 0;
-        for (List<Double> c : font){
-            List<Double> encoded = autoEncoder.encode(c);
-            List<Double> encodeDecode = autoEncoder.decode(encoded);
 
-            List<Double> encodeDecodeRounded = encodeDecode.stream()
-                    .mapToDouble(v->v>0?1.0:-1.0).boxed().collect(Collectors.toList());
+        try(BufferedWriter bf = new BufferedWriter(new FileWriter("data"))){
+            double totalError = 0;
+            String[] fontNames = fm.getFontNames(fontNum);
 
-            System.out.println("\n\n-------------");
 
-            printLetter(c);
+            for (int i=0; i<font.size(); i++){
+                List<Double> c = font.get(i);
 
-            System.out.println("\n");
+                List<Double> encoded = autoEncoder.encode(c);
+                List<Double> encodeDecode = autoEncoder.decode(encoded);
 
-            printLetter(encodeDecodeRounded);
+                List<Double> encodeDecodeRounded = encodeDecode.stream()
+                        .mapToDouble(v->v>0?1.0:-1.0).boxed().collect(Collectors.toList());
 
-            System.out.println("\n");
+                System.out.println("\n\n-------------");
 
-            System.out.println(encoded);
+                printLetter(c);
 
-            double diff = IntStream.range(0, encodeDecode.size()).mapToDouble(i->Math.abs(encodeDecodeRounded.get(i) - c.get(i))).sum();
-            totalError+=diff/2;
+                System.out.println("\n");
+
+                printLetter(encodeDecodeRounded);
+
+                System.out.println("\n");
+
+                System.out.println(encoded);
+
+                double diff = IntStream.range(0, encodeDecode.size()).mapToDouble(s->Math.abs(encodeDecodeRounded.get(s) - c.get(s))).sum();
+                totalError+=diff/2;
+
+                if(Double.valueOf(noiseFactor).equals(0.0) && i < fontNames.length){
+                    bf.write(encoded.get(0) + " " + encoded.get(1) + " " + fontNames[i] + "\n");
+                }else{
+                    bf.write(encoded.get(0) + " " + encoded.get(1) + "\n");
+                }
+            }
+
+            System.out.println(String.format("Average difference is %s out of %s (%s)",
+                    totalError/font.size(),
+                    font.get(0).size(),
+                    totalError/font.size()/font.get(0).size()));
+        }catch (IOException e){
+            System.err.print(e);
+            return;
         }
 
-        System.out.println(String.format("Average difference is %s out of %s (%s)",
-                totalError/font.size(),
-                font.get(0).size(),
-                totalError/font.size()/font.get(0).size()));
+
+
 
     }
 

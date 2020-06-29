@@ -42,6 +42,11 @@ public class FontManager {
             {0x0e, 0x11, 0x01, 0x02, 0x04, 0x00, 0x04}   // 0x3f, ?
     };
 
+    static String[] fontNames1 = {
+            "SPACE", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3",
+            "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?"
+    };
+
     static Integer[][] font2 = {
             {0x0e, 0x11, 0x17, 0x15, 0x17, 0x10, 0x0f},   // 0x40, @
             {0x04, 0x0a, 0x11, 0x11, 0x1f, 0x11, 0x11},   // 0x41, A
@@ -75,6 +80,11 @@ public class FontManager {
             {0x0e, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0e},   // 0x5d, ]
             {0x04, 0x0a, 0x11, 0x00, 0x00, 0x00, 0x00},   // 0x5e, ^
             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f}   // 0x5f, _
+    };
+
+    static String[] fontNames2 = {
+            "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+            "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_"
     };
 
     static Integer[][] font3 = {
@@ -112,6 +122,11 @@ public class FontManager {
             {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f}   // 0x7f, DEL
     };
 
+    static String[] fontNames3 = {
+            "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+            "t", "u", "v", "w", "x", "y", "z", "{", "|", "~", "DEL"
+    };
+
     private double noiseFactor;
     private int lastFont;
 
@@ -139,6 +154,18 @@ public class FontManager {
         lastFont = fontNum;
         noiseFactor = 0;
         return Utils.dataToBits(font);
+    }
+
+    public String[] getFontNames(int fontNum){
+        switch (fontNum){
+            case 1:
+                return fontNames1;
+            case 2:
+                return fontNames2;
+            case 3:
+                return fontNames3;
+        }
+        throw new IllegalArgumentException("Invalid font number");
     }
 
     public List<List<Double>> getFont(int fontNum, double noiseFactor) {

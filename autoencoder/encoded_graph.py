@@ -8,7 +8,7 @@ def read_from_file(path):
 
 
 def plot():
-    values = read_from_file("data")
+    values = read_from_file("../data")
 
     x = [x for x, y, letter in values]
     y = [y for x, y, letter in values]
