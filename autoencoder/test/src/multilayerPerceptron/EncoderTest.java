@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -120,15 +121,16 @@ public class EncoderTest {
 
         int sublistDim = 8;
 
-        List<List<Double>> font = fullFont.subList(0, sublistDim);
+        List<List<Double>> font = fullFont;
 
-        AutoEncoder autoEncoder = getEncoder(fullFont.get(0).size(), Arrays.asList(50, 12, 2, 12, 50));
+        AutoEncoder autoEncoder = getEncoder(fullFont.get(0).size(), Arrays.asList(60,15,2,15,60));
 
-        stochasticTraining(autoEncoder, font, 100);
+        stochasticTraining(autoEncoder, font, 200000);
 
         double totalError = 0;
-        for (List<Double> c : fullFont){
-            List<Double> encodeDecode = autoEncoder.decode(autoEncoder.encode(c));
+        for (List<Double> c : font){
+            List<Double> encoded = autoEncoder.encode(c);
+            List<Double> encodeDecode = autoEncoder.decode(encoded);
 
             List<Double> encodeDecodeRounded = encodeDecode.stream()
                     .mapToDouble(v->v>0?1.0:-1.0).boxed().collect(Collectors.toList());
@@ -143,6 +145,8 @@ public class EncoderTest {
 
             System.out.println("\n");
 
+            System.out.println(encoded);
+
             double diff = IntStream.range(0, encodeDecode.size()).mapToDouble(i->Math.abs(encodeDecodeRounded.get(i) - c.get(i))).sum();
             totalError+=diff/2;
         }
@@ -155,7 +159,7 @@ public class EncoderTest {
     }
 
     private static void stochasticTraining(AutoEncoder ae, List<List<Double>> trainingData, int itNum){
-         Random rnd = new Random();
+        Random rnd = new Random();
         for(int it=0; it<itNum; it++){
             int randIndex = rnd.nextInt(trainingData.size());
 
@@ -199,14 +203,14 @@ public class EncoderTest {
     }
 
     private static AutoEncoder getEncoder(int dim, List<Integer> innerDims){
-        double alpha = 0.01;
+        double alpha = 0.001;
         int numberOfIterationsToReachAlpha = 10000;
         double a = 10, b = - Math.log(alpha * (1/a)) / numberOfIterationsToReachAlpha;
 
         return new AutoEncoder(
                 (new MultiLayerPerceptron.Builder())
-                        .setActivationFunction(Math::tanh)
-                        .setActivationFunctionDerivative(p->1-Math.pow(Math.tanh(p), 2))
+                        .setActivationFunction((x) -> Math.tanh(x))
+                        .setActivationFunctionDerivative(p->(1-Math.pow(Math.tanh(p), 2)))
 //                        .setTemperatureFunction(s->a*Math.exp(-b*s))
                         .setAlpha(alpha)
                         .setInnerLayersDimensions(innerDims)
@@ -230,7 +234,7 @@ public class EncoderTest {
     }
 
     private static void printLetter(List<Double> letter){
-        int rowSize = 7;
+        int rowSize = 5;
 
         int rowIndex=0;
         for(Double c : letter){

@@ -11,7 +11,6 @@ public class AutoEncoder {
 
     public AutoEncoder(MultiLayerPerceptron perceptron){
         this.perceptron = perceptron;
-
         setLatentSpaceLayerIndex();
     }
 
@@ -25,6 +24,10 @@ public class AutoEncoder {
 
     public void step(List<Double> pattern){
         this.perceptron.step(pattern, pattern);
+    }
+
+    public void step(List<Double> pattern, List<Double> output){
+        this.perceptron.step(pattern, output);
     }
 
     private void setLatentSpaceLayerIndex(){
