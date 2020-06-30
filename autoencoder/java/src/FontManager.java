@@ -1,5 +1,6 @@
 package src;
 
+import com.sun.org.apache.bcel.internal.generic.LREM;
 import src.multilayerPerceptron.Utils;
 
 import java.util.ArrayList;
@@ -112,56 +113,52 @@ public class FontManager {
             {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f}   // 0x7f, DEL
     };
 
-    private double noiseFactor;
-    private int lastFont;
-
-    public FontManager() {
-        this.noiseFactor = 0;
-        this.lastFont = 0;
+    public static List<LetterData> getFont(int fontNum) {
+        return getFont(fontNum, -1);
     }
 
-    public List<List<Double>> getFont(int fontNum) {
-        Integer[][] font;
+    public static List<LetterData> getFont(int fontNum, int limit) {
+        Integer[][] fontArray;
         switch (fontNum){
             case 1:
-                font = font1;
+                fontArray = font1;
                 break;
             case 2:
-                font = font2;
+                fontArray = font2;
                 break;
             case 3:
-                font = font3;
+                fontArray = font3;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid font number");
         }
-
-        lastFont = fontNum;
-        noiseFactor = 0;
-        return Utils.dataToBits(font);
-    }
-
-    public List<List<Double>> getFont(int fontNum, double noiseFactor) {
-        List<List<Double>> font = getFont(fontNum);
-        this.noiseFactor = noiseFactor;
-        if(noiseFactor > 0) {
-            List<List<Double>> noiseFont = new ArrayList<>(font.size());
-            for (List<Double> c : font) {
-                noiseFont.add(Noise.saltAndPepper(c, noiseFactor));
-            }
-            font.addAll(noiseFont);
+        List<LetterData> font = Utils.dataToBits(fontArray);
+        if(limit != -1) {
+            Collections.shuffle(font);
+            font = font.subList(0, limit);
         }
         return font;
     }
 
-    public List<List<Double>> getOutput() {
-        double noiseFactor = this.noiseFactor;
-        List<List<Double>> output = getFont(lastFont);
-        this.noiseFactor = noiseFactor;
-        if(noiseFactor > 0) {
-            output.addAll(output);
+
+    public static List<LetterData> getFont(int fontNum, double noiseFactor) {
+        return getFont(fontNum, noiseFactor, -1);
+    }
+
+    public static List<LetterData> getFont(int fontNum, double noiseFactor, int limit) {
+        List<LetterData> font = getFont(fontNum);
+        if(limit != -1) {
+            Collections.shuffle(font);
+            font = font.subList(0, limit);
         }
-        return output;
+        if(noiseFactor > 0) {
+            List<LetterData> noiseFont = new ArrayList<>(font.size());
+            for (LetterData c : font) {
+                noiseFont.add(new LetterData(Noise.saltAndPepper(c.getInput(), noiseFactor), c.getOutput()));
+            }
+            font.addAll(noiseFont);
+        }
+        return font;
     }
 
 }

@@ -1,6 +1,5 @@
 package src;
 
-import src.multilayerPerceptron.EncoderTest;
 import src.multilayerPerceptron.MultiLayerPerceptronTest;
 import src.multilayerPerceptron.UtilsTest;
 
@@ -12,14 +11,9 @@ public class MainTest {
 
         multiLayerPerceptronTest();
 
-        autoEncoderTest();
     }
 
-    public static void autoEncoderTest(){
-        EncoderTest.testEncodeDecodeForFont(1);
 
-        EncoderTest.testIfEncodeDecodeIsTheSameAsClassifyOfThePerceptron();
-    }
 
     private static void multiLayerPerceptronTest(){
         MultiLayerPerceptronTest.and();

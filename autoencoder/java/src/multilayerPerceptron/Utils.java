@@ -1,5 +1,7 @@
 package src.multilayerPerceptron;
 
+import src.LetterData;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BinaryOperator;
@@ -8,17 +10,17 @@ import java.util.function.Supplier;
 
 public class Utils {
 
-    private static final int rows = 5;
+    private static final int rows = 4;
     private static final int columns = 5;
 
-    public static List<List<Double>> dataToBits(Integer[][] data) {
-        List<List<Double>> dataInBits = new ArrayList<>();
+    public static List<LetterData> dataToBits(Integer[][] data) {
+        List<LetterData> dataInBits = new ArrayList<>();
         for (int i = 0; i < data.length; i++) {
             List<Double> dataAux = new ArrayList<>(data[i].length);
             for (int j = 0; j < data[i].length; j++) {
                 dataAux.addAll(byteToBitList(data[i][j]));
             }
-            dataInBits.add(dataAux);
+            dataInBits.add(new LetterData(dataAux, dataAux));
         }
         return dataInBits;
     }
