@@ -73,6 +73,32 @@ public class Main {
         }
     }
 
+    private static void errorCalculatorNoise(int fontNum) {
+        List<LetterData> trainingData;
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./autoencoder/errorNoise"))) {
+            for (double noiseFactor = 0.05; noiseFactor < 0.4; noiseFactor+=0.05) {
+                trainingData = FontManager.getFont(fontNum, noiseFactor);
+                AutoEncoder autoEncoder = getEncoder(trainingData.get(0).getInput().size(), Arrays.asList(15, 2, 15));
+                for (int it = 0; it < 5000; it++) {
+                    for (LetterData letterData : trainingData) {
+                        autoEncoder.step(letterData.getInput(), letterData.getOutput());
+                    }
+                    double error = 0;
+                    for (int ln = 0; ln < trainingData.size() / 2; ln++) {
+                        LetterData letterData = trainingData.get(ln);
+                        autoEncoder.step(letterData.getInput(), letterData.getOutput());
+                        error += Math.pow(getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput()))),2);
+                    }
+                    error = Math.sqrt(error / trainingData.size());
+                    bf.write(error + "\n");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return;
+        }
+    }
+
     private static void errorCalculatorSublist(int fontNum) {
         List<LetterData> trainingData = FontManager.getFont(fontNum);
 
@@ -87,9 +113,9 @@ public class Main {
                     double error = 0;
                     for (LetterData letterData : trainingData) {
                         autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                        error += getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
+                        error += Math.pow(getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput()))),2);
                     }
-                    error /= trainingData.size();
+                    error = Math.sqrt(error / trainingData.size());
                     bf.write(error + "\n");
                 }
             }
@@ -111,9 +137,9 @@ public class Main {
                 double error = 0;
                 for (LetterData letterData : trainingData) {
                     autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                    error += getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
+                    error += Math.pow(getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput()))),2);
                 }
-                error /= trainingData.size();
+                error = Math.sqrt(error / trainingData.size());
                 bf.write(error + "\n");
             }
         } catch (Exception e) {
@@ -125,9 +151,9 @@ public class Main {
     private static double getECM(List<Double> original, List<Double> decoded) {
         double error = 0;
         for (int i = 0; i < original.size(); i++) {
-            error += Math.sqrt(Math.pow(original.get(i) - decoded.get(i), 2));
+            error += Math.pow(original.get(i) - decoded.get(i), 2);
         }
-        return error;
+        return error / original.size();
     }
 
     private static void generateFont(int fontNum, int limit) {
