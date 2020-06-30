@@ -30,6 +30,6 @@ public class Noise {
     }
 
     private static double invertedBit(double bit) {
-        return bit == 0 ? 1 : 0;
+        return bit == -1.0 ? 1.0 : -1.0;
     }
 }
