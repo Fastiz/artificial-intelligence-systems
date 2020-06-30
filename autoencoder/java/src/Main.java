@@ -16,7 +16,11 @@ import java.util.stream.IntStream;
 public class Main {
 
     public static void main(String[] args){
-        encodeDecodeForFont(2, 0);
+//        (new HSV(0.9f, 0.6f, 0.5f, 0.5f)).run();
+
+        (new HSV("starry_night.jpg")).run();
+
+//        encodeDecodeForFont(2, 0);
     }
 
     private static void encodeDecodeForFont(int fontNum, double noiseFactor){
