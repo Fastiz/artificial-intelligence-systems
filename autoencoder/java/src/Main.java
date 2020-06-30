@@ -16,7 +16,8 @@ import java.util.stream.IntStream;
 public class Main {
 
     public static void main(String[] args) {
-        encodeDecodeForFont(2, 0.1, -1);
+        //errorCalculatorNoise(2);
+        errorCalculatorIterations(45000, 2);
     }
 
     private static void encodeDecodeForFont(int fontNum, double noiseFactor, int limit) {
@@ -79,16 +80,37 @@ public class Main {
             for (double noiseFactor = 0.05; noiseFactor < 0.4; noiseFactor += 0.05) {
                 trainingData = FontManager.getFont(fontNum, noiseFactor);
                 AutoEncoder autoEncoder = getEncoder(trainingData.get(0).getInput().size(), Arrays.asList(15, 2, 15));
-                for (int it = 0; it < 5000; it++) {
+                for (int it = 0; it < 45000; it++) {
                     for (LetterData letterData : trainingData) {
                         autoEncoder.step(letterData.getInput(), letterData.getOutput());
                     }
                 }
                 double error = 0;
-                for (int ln = 0; ln < trainingData.size() / 2; ln++) {
+                for (int ln = trainingData.size() / 2; ln < trainingData.size(); ln++) {
                     LetterData letterData = trainingData.get(ln);
+                    error += getECM(letterData.getOutput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
+                }
+                error = Math.sqrt(error / (trainingData.size() * trainingData.get(0).getInput().size() / 2.0));
+                bf.write(error + "\n");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return;
+        }
+    }
+
+    private static void errorCalculatorIterations(int maxIteration, int fontNum) {
+        List<LetterData> trainingData = FontManager.getFont(fontNum);
+        AutoEncoder autoEncoder = getEncoder(trainingData.get(0).getInput().size(), Arrays.asList(60, 15, 2, 15, 60));
+
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./autoencoder/errorIt"))) {
+            for (int it = 0; it < maxIteration; it++) {
+                for (LetterData letterData : trainingData) {
                     autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                    error += getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
+                }
+                double error = 0;
+                for (LetterData letterData : trainingData) {
+                    error += getECM(letterData.getOutput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
                 }
                 error = Math.sqrt(error / (trainingData.size() * trainingData.get(0).getInput().size()));
                 bf.write(error + "\n");
@@ -112,35 +134,11 @@ public class Main {
                     }
                     double error = 0;
                     for (LetterData letterData : trainingData) {
-                        autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                        error += getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
+                        error += getECM(letterData.getOutput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
                     }
                     error = Math.sqrt(error / (trainingData.size() * trainingData.get(0).getInput().size()));
                     bf.write(error + "\n");
                 }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-            return;
-        }
-    }
-
-    private static void errorCalculatorIterations(int maxIteration, int fontNum) {
-        List<LetterData> trainingData = FontManager.getFont(fontNum);
-        AutoEncoder autoEncoder = getEncoder(trainingData.get(0).getInput().size(), Arrays.asList(30,20, 2,20, 30));
-
-        try (BufferedWriter bf = new BufferedWriter(new FileWriter("./autoencoder/errorIt"))) {
-            for (int it = 0; it < maxIteration; it++) {
-                for (LetterData letterData : trainingData) {
-                    autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                }
-                double error = 0;
-                for (LetterData letterData : trainingData) {
-                    autoEncoder.step(letterData.getInput(), letterData.getOutput());
-                    error += getECM(letterData.getInput(), autoEncoder.decode(autoEncoder.encode(letterData.getInput())));
-                }
-                error = Math.sqrt(error / (trainingData.size() * trainingData.get(0).getInput().size()));
-                bf.write(error + "\n");
             }
         } catch (Exception e) {
             System.out.println(e);
