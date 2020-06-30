@@ -262,7 +262,8 @@ public class MultiLayerPerceptron {
         List<Double> weights = new ArrayList<>(dim);
 
         for(int i=0; i<dim; i++){
-            weights.add(random.nextDouble()*2-1);
+            double factor = Math.random() > 0.5 ? 1 : -1;
+            weights.add(factor/Math.sqrt(dim));
         }
 
         return weights;
