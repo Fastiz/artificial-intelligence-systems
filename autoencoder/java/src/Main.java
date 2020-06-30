@@ -21,21 +21,21 @@ public class Main {
 
     private static void encodeDecodeForFont(int fontNum, double noiseFactor){
 
-        FontManager fm = new FontManager();
-        List<List<Double>> font = fm.getFont(fontNum, noiseFactor);
-        AutoEncoder autoEncoder = getEncoder(font.get(0).size(), Arrays.asList(60,15,2,15,60));
+        List<LetterData> trainingData = FontManager.getFont(fontNum, noiseFactor);
+        AutoEncoder autoEncoder = getEncoder(trainingData.get(0).getInput().size(), Arrays.asList(10,2,10));
 
 
-        stochasticTraining(autoEncoder, font, fm.getOutput(), 200000);
+        stochasticTraining(autoEncoder, trainingData, 200000);
 
 
         try(BufferedWriter bf = new BufferedWriter(new FileWriter("data"))){
             double totalError = 0;
-            String[] fontNames = fm.getFontNames(fontNum);
+            String[] fontNames = FontManager.getFontNames(fontNum);
 
 
-            for (int i=0; i<font.size(); i++){
-                List<Double> c = font.get(i);
+            for (int i=0; i<trainingData.size(); i++){
+                LetterData letterData = trainingData.get(i);
+                List<Double> c = letterData.getInput();
 
                 List<Double> encoded = autoEncoder.encode(c);
                 List<Double> encodeDecode = autoEncoder.decode(encoded);
@@ -66,9 +66,9 @@ public class Main {
             }
 
             System.out.println(String.format("Average difference is %s out of %s (%s)",
-                    totalError/font.size(),
-                    font.get(0).size(),
-                    totalError/font.size()/font.get(0).size()));
+                    totalError/trainingData.size(),
+                    trainingData.get(0).getInput().size(),
+                    totalError/trainingData.size()/trainingData.get(0).getInput().size()));
         }catch (IOException e){
             System.err.print(e);
             return;
@@ -79,17 +79,17 @@ public class Main {
 
     }
 
-    private static void stochasticTraining(AutoEncoder ae, List<List<Double>> trainingData, List<List<Double>> output, int itNum){
+    private static void stochasticTraining(AutoEncoder ae, List<LetterData> trainingData, int itNum){
         Random rnd = new Random();
         for(int it=0; it<itNum; it++){
             int randIndex = rnd.nextInt(trainingData.size());
-
-            ae.step(trainingData.get(randIndex), output.get(randIndex));
+            LetterData letterData = trainingData.get(randIndex);
+            ae.step(letterData.getInput(), letterData.getOutput());
         }
     }
 
     private static void printLetter(List<Double> letter){
-        int rowSize = 5;
+        int rowSize = 4;
 
         int rowIndex=0;
         for(Double c : letter){
@@ -105,14 +105,14 @@ public class Main {
     }
 
     private static AutoEncoder getEncoder(int dim, List<Integer> innerDims){
-        double alpha = 0.001;
+        double alpha = 0.001, btan = 1;
         int numberOfIterationsToReachAlpha = 10000;
         double a = 10, b = - Math.log(alpha * (1/a)) / numberOfIterationsToReachAlpha;
 
         return new AutoEncoder(
                 (new MultiLayerPerceptron.Builder())
-                        .setActivationFunction((x) -> Math.tanh(x))
-                        .setActivationFunctionDerivative(p->(1-Math.pow(Math.tanh(p), 2)))
+                        .setActivationFunction((x) -> Math.tanh(btan*x))
+                        .setActivationFunctionDerivative(p->btan*(1-Math.pow(Math.tanh(p), 2)))
 //                        .setTemperatureFunction(s->a*Math.exp(-b*s))
                         .setAlpha(alpha)
                         .setInnerLayersDimensions(innerDims)
